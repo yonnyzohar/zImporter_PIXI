@@ -18,12 +18,15 @@ You need to be using "module": "Node16", "moduleResolution": "node16", in your t
 Importing the zImporter into Your Project
 To start using zImporter, you need to import the necessary modules into your project.
 
+```typescript
 import { GameScene, GameContainer } from 'zImporter_PIXI';
+```
+
 Example Project
 Below is an example of how to integrate zImporter into a basic PixiJS project.
 
 Create a New PixiJS Application
-
+```typescript
 import * as PIXI from 'pixi.js';
 import { GameScene, GameContainer } from 'zImporter_PIXI';
 
@@ -35,17 +38,19 @@ const app = new PIXI.Application({
 });
 
 document.body.appendChild(app.view);
-
+```
 // Example: Loading and displaying a scene from zStudio
+```typescript
 const gameScene = new GameScene('path/to/your/scene.zstudio'); // Specify your zStudio scene file
 
 gameScene.load().then(() => {
   app.stage.addChild(gameScene);
 });
+```
+
 Creating and Adding Containers
 You can use the GameContainer class to group your assets.
-
-
+```typescript
 const container = new GameContainer();
 container.addChild(gameScene);
 app.stage.addChild(container);
@@ -55,6 +60,8 @@ You can interact with your imported scene just like any other PixiJS object.
 gameScene.on('click', () => {
   console.log('Scene clicked!');
 });
+```
+
 API
 The package exposes several classes and methods that allow you to interact with imported assets:
 
