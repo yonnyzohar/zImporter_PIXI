@@ -1,8 +1,7 @@
 {
   "name": "zImporter_PIXI",
   "version": "1.0.0",
-  "descrip  tion": "",
-  "main": "index.js",
+  "description": "",
   "scripts": {
     "build": "tsc"
   },
@@ -33,15 +32,45 @@
     "reflect-metadata": "^0.2.2"
   },
   "exports": {
-    "./EntityPool": "./dist/EntityPool.js",
-    "./GameBitmapTextField": "./dist/GameBitmapTextField.js",
-    "./GameButton": "./dist/GameButton.js",
-    "./GameContainer": "./dist/GameContainer.js",
-    "./GameScene": "./dist/GameScene.js",
-    "./GameSceneStack": "./dist/GameSceneStack.js",
-    "./GameTextField": "./dist/GameTextField.js",
-    "./GameTimer": "./dist/GameTimer.js",
-    "./Resizeables": "./dist/Resizeables.js",
-    "./TimelineSprite": "./dist/TimelineSprite.js"
+    "./EntityPool": {
+      "import": "./dist/EntityPool.js",
+      "types": "./dist/EntityPool.d.ts"
+    },
+    "./GameBitmapTextField": {
+      "import": "./dist/GameBitmapTextField.js",
+      "types": "./dist/GameBitmapTextField.d.ts"
+    },
+    "./GameButton": {
+      "import": "./dist/GameButton.js",
+      "types": "./dist/GameButton.d.ts"
+    },
+    "./GameContainer": {
+      "import": "./dist/GameContainer.js",
+      "types": "./dist/GameContainer.d.ts"
+    },
+    "./GameScene": {
+      "import": "./dist/GameScene.js",
+      "types": "./dist/GameScene.d.ts"
+    },
+    "./GameSceneStack": {
+      "import": "./dist/GameSceneStack.js",
+      "types": "./dist/GameSceneStack.d.ts"
+    },
+    "./GameTextField": {
+      "import": "./dist/GameTextField.js",
+      "types": "./dist/GameTextField.d.ts"
+    },
+    "./GameTimer": {
+      "import": "./dist/GameTimer.js",
+      "types": "./dist/GameTimer.d.ts"
+    },
+    "./Resizeables": {
+      "import": "./dist/Resizeables.js",
+      "types": "./dist/Resizeables.d.ts"
+    },
+    "./TimelineSprite": {
+      "import": "./dist/TimelineSprite.js",
+      "types": "./dist/TimelineSprite.d.ts"
+    }
   }
 }
