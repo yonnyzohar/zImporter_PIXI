@@ -7,7 +7,7 @@ import { TimelineSprite } from "./TimelineSprite";
 export class GameScene {
     private scene : PIXI.Spritesheet | null = null;
     private valsToSetArr: any[] = [];
-    private scenes: { placementsObj: any; templates: any; animTracks: any }[] = [];
+    private scenes: { placementsObj: any; templates: any; animTracks: any, stage:any }[] = [];
     private sceneName: string | null = null;
 
 
@@ -131,6 +131,7 @@ export class GameScene {
         this.valsToSetArr = [];
     
           this.scenes.push({
+            stage:_placementsObj.stage,
             placementsObj: _placementsObj,
             templates: _placementsObj.templates,
             animTracks: _placementsObj.animTracks,

@@ -154,6 +154,7 @@ class GameScene {
     initScene(_placementsObj) {
         this.valsToSetArr = [];
         this.scenes.push({
+            stage: _placementsObj.stage,
             placementsObj: _placementsObj,
             templates: _placementsObj.templates,
             animTracks: _placementsObj.animTracks,
