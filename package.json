@@ -1,0 +1,47 @@
+{
+  "name": "zImporter_PIXI",
+  "version": "1.0.0",
+  "descrip  tion": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/eslint": "^9.6.1",
+    "@types/gsap": "^3.0.0",
+    "@types/node": "^22.13.2",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "ignore": [
+    "node_modules",
+    "logs",
+    "*.log",
+    ".vscode"
+  ],
+  "dependencies": {
+    "@pixi/loaders": "^6.5.10",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "gsap": "^3.12.7",
+    "pixi.js": "^7.2.4",
+    "reflect-metadata": "^0.2.2"
+  },
+  "exports": {
+    "./EntityPool": "./dist/EntityPool.js",
+    "./GameBitmapTextField": "./dist/GameBitmapTextField.js",
+    "./GameButton": "./dist/GameButton.js",
+    "./GameContainer": "./dist/GameContainer.js",
+    "./GameScene": "./dist/GameScene.js",
+    "./GameSceneStack": "./dist/GameSceneStack.js",
+    "./GameTextField": "./dist/GameTextField.js",
+    "./GameTimer": "./dist/GameTimer.js",
+    "./Resizeables": "./dist/Resizeables.js",
+    "./TimelineSprite": "./dist/TimelineSprite.js"
+  }
+}
