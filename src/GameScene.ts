@@ -254,7 +254,7 @@ export class GameScene {
           if (type == "img") {
             var texName = _name;
     
-            texName = texName.substr(0, texName.indexOf("_"));
+            texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
             var img = this.createFrame(texName);
             if (!img) {
               return;
