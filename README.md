@@ -28,7 +28,6 @@ Below is an example of how to integrate zImporter into a basic PixiJS project.
 Create a New PixiJS Application
 ```typescript
 import * as PIXI from 'pixi.js';
-import { GameScene, GameContainer } from 'zImporter_PIXI';
 
 // Initialize the PixiJS application
 const app = new PIXI.Application({
@@ -41,43 +40,25 @@ document.body.appendChild(app.view);
 ```
 // Example: Loading and displaying a scene from zStudio
 ```typescript
-const gameScene = new GameScene('path/to/your/scene.zstudio'); // Specify your zStudio scene file
+import * as PIXI from 'pixi.js';
+import { GameScene } from "zImporter_PIXI/GameScene";
+import { GameSceneStack } from "zImporter_PIXI/GameSceneStack";
+import { TimelineSprite } from "zImporter_PIXI/TimelineSprite";
 
-gameScene.load().then(() => {
-  app.stage.addChild(gameScene);
-});
-```
-
-Creating and Adding Containers
-You can use the GameContainer class to group your assets.
-```typescript
-const container = new GameContainer();
-container.addChild(gameScene);
-app.stage.addChild(container);
-Handling User Interaction
-You can interact with your imported scene just like any other PixiJS object.
-
-gameScene.on('click', () => {
-  console.log('Scene clicked!');
-});
+let scene:GameScene = new GameScene();
+        scene.load("./assets/robo/",()=>{
+            GameSceneStack.push(scene);
+            let mc = GameSceneStack.spawn("RobotWalker") as TimelineSprite;
+            mc.play();
+            stage.addChild(mc);
+            mc.x = 100;
+            mc.y = 200;
+            
+        })
 ```
 
 API
 The package exposes several classes and methods that allow you to interact with imported assets:
-
-GameScene
-A class representing an imported scene from zStudio.
-
-Methods:
-load(): Loads the scene and its assets.
-addChild(child: PIXI.DisplayObject): Adds a child object to the scene.
-GameContainer
-A container to hold multiple objects in a hierarchical structure.
-
-Methods:
-addChild(child: PIXI.DisplayObject): Adds a child object to the container.
-Example Files
-You can refer to the example project in the examples directory for a more comprehensive demo on how to use zImporter.
 
 ## Contributing
 If you'd like to contribute to the development of zImporter, feel free to fork the repository, create a branch, and submit a pull request. Please make sure to follow the existing code style and add tests where applicable.
