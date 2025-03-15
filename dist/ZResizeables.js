@@ -16,4 +16,3 @@ class ZResizeables {
 }
 exports.ZResizeables = ZResizeables;
 ZResizeables.resizeables = new Map();
-//# sourceMappingURL=ZResizeables.js.map

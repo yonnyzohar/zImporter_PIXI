@@ -138,18 +138,21 @@ export class ZScene {
           });
       }
     
-    getFrames(_templateName: string) {
+    //this gives the frames of all the children of a template
+    //it combines the template name of the parent with the child name to get the frame
+    getChildrenFrames(_templateName: string) {
         var frames: any = {};
         var templates = this.scenes[0].templates;
         var animTracks = this.scenes[0].animTracks;
         var baseNode = templates[_templateName];
-        var num = 0;
         if (baseNode && baseNode.children) {
           for (var i = 0; i < baseNode.children.length; i++) {
             var childInstanceName = baseNode.children[i].instanceName;
-            if (animTracks[childInstanceName]) {
-              num++;
-              frames[childInstanceName] = animTracks[childInstanceName];
+            var combinedName = childInstanceName + "_" + _templateName;
+            //anim tracks are saved on the scene file via child name + template name to make sure it is uniquie
+            //however when passed to the ZTimeline it is just the child name - because the ZTimeline will look for the child by name to set its timeline
+            if (animTracks[combinedName]) {
+                frames[childInstanceName] = animTracks[combinedName];
             }
           }
         }
@@ -159,13 +162,12 @@ export class ZScene {
     
      spawn(tempName: string): any {
         var templates = this.scenes[0].templates;
-        var animTracks = this.scenes[0].animTracks;
         var baseNode = templates[tempName];
         if (!baseNode) {
           return;
         }
         var mc;
-        var frames = this.getFrames(tempName);
+        var frames = this.getChildrenFrames(tempName);
     
         if (Object.keys(frames).length > 0) {
           mc = new ZTimeline();
@@ -259,7 +261,7 @@ export class ZScene {
             if (!img) {
               return;
             }
-    
+            img.name = _name;
             mc[texName] = img;
             mc.addChild(img);
             img.x = _x;
@@ -284,6 +286,7 @@ export class ZScene {
             asset.interactiveChildren = true;
             //asset.rotation = this.degreesToRadians(child.rotation);
             asset.alpha = _alpha;
+            //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
             mc[asset.name] = asset;
             mc.addChild(asset);
     
@@ -302,7 +305,9 @@ export class ZScene {
             });
           }
           if (type == "asset") {
-            var frames = this.getFrames(child.name + child.parent.name);
+
+            //this will tell me fi this asses template has children with frames
+            var frames = this.getChildrenFrames(child.name);
     
             if (Object.keys(frames).length > 0) {
               asset = new ZTimeline();
@@ -310,6 +315,9 @@ export class ZScene {
             } else {
               asset = new ZContainer();
             }
+            console.log("creation",child.instanceName); // Should print "ZTimeline"
+            console.log("constructor",asset.constructor.name); // Should print "ZTimeline"
+            console.log("instanceof",asset instanceof ZTimeline);
     
             asset.name = child.instanceName;
             if (!asset.name) {
@@ -327,6 +335,8 @@ export class ZScene {
             //console.log(asset.name + " rot " + asset.rotation + " degrees " + child.rotation);
             asset.alpha = _alpha;
             mc[asset.name] = asset;
+            
+
             var m = new PIXI.Matrix();
             m.a  = a;
             m.b  = b;
@@ -336,6 +346,9 @@ export class ZScene {
             m.ty = ty;
             asset.transform.setFromMatrix(m);
             mc.addChild(asset);
+            console.log("after addition",child.instanceName); // Should print "ZTimeline"
+            console.log("constructor",asset.constructor.name); // Should print "ZTimeline"
+            console.log("instanceof",asset instanceof ZTimeline);
     
             this.valsToSetArr.push({
               mc: asset,

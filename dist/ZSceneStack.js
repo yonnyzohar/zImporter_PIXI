@@ -45,4 +45,3 @@ exports.ZSceneStack = ZSceneStack;
 ZSceneStack.stack = [];
 ZSceneStack.stackSize = 0;
 ZSceneStack.top = 0;
-//# sourceMappingURL=ZSceneStack.js.map

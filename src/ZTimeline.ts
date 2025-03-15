@@ -22,6 +22,8 @@ export class ZTimeline extends ZContainer {
         return this._frames;
     }
 
+    //these are all the frames of all the kids who have a timeline
+    //the numframes is longest child timeline
     setFrames(value: any): void {
         this._frames = value;
         let totalFrames = 0;
@@ -88,6 +90,7 @@ export class ZTimeline extends ZContainer {
         }
     }
 
+    //this code goes over all the child timlines and set the transform of the child at the current frame
     gotoAndStop(frameNum: number): void {
         this.currentFrame = frameNum;
         if (this._frames != null) {
