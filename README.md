@@ -18,6 +18,9 @@ You need to be using "module": "Node16", "moduleResolution": "node16", in your t
 Importing the zImporter into Your Project
 To start using zImporter, you need to import the necessary modules into your project.
 
+See example project here:
+https://github.com/yonnyzohar/zImporter_PIXI_Example
+
 ```typescript
 import { ZScene } from "zImporter_PIXI/ZScene";
 ```
