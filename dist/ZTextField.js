@@ -69,3 +69,4 @@ class ZTextField extends PIXI.Text {
     }
 }
 exports.ZTextField = ZTextField;
+//# sourceMappingURL=ZTextField.js.map

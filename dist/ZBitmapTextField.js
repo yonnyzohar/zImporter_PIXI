@@ -53,3 +53,4 @@ class ZBitmapTextField extends PIXI.BitmapText {
     }
 }
 exports.ZBitmapTextField = ZBitmapTextField;
+//# sourceMappingURL=ZBitmapTextField.js.map
