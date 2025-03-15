@@ -1,6 +1,5 @@
-import { GameContainer } from "zImporter_PIXI/GameContainer";
-import { GameTimer } from "zImporter_PIXI/GameTimer";
 import * as PIXI from 'pixi.js';
+import { ZUpdatables } from "zImporter_PIXI/ZUpdatables";
 import { Game } from "./Game";
 
 //npx webpack
@@ -58,7 +57,7 @@ var game = new Game(app.stage);
 
 // Append the app's view to the DOM
 document.body.appendChild(app.view as any);
-GameTimer.init(24);
+ZUpdatables.init(24);
 
 const fpsText = new PIXI.Text('FPS: 0', { fontSize: 24, fill: 'white' });
 fpsText.position.set(10, 10);
@@ -85,7 +84,7 @@ app.ticker.add(
     const ticker = PIXI.Ticker.shared;
     var deltaMS = ticker.deltaMS / 1000;
     game.update(deltaMS);
-    GameTimer.update();
+    ZUpdatables.update();
   } 
 );
 
