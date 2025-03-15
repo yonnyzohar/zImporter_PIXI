@@ -19,7 +19,7 @@ Importing the zImporter into Your Project
 To start using zImporter, you need to import the necessary modules into your project.
 
 ```typescript
-import { GameScene, GameContainer } from 'zImporter_PIXI';
+import { ZScene } from "zImporter_PIXI/ZScene";
 ```
 
 Example Project
@@ -41,14 +41,14 @@ document.body.appendChild(app.view);
 // Example: Loading and displaying a scene from zStudio
 ```typescript
 import * as PIXI from 'pixi.js';
-import { GameScene } from "zImporter_PIXI/GameScene";
-import { GameSceneStack } from "zImporter_PIXI/GameSceneStack";
-import { TimelineSprite } from "zImporter_PIXI/TimelineSprite";
+import { ZScene } from "zImporter_PIXI/ZScene";
+import { ZSceneStack } from "zImporter_PIXI/ZSceneStack";
+import { ZTimeline } from "zImporter_PIXI/ZTimeline";
 
-let scene:GameScene = new GameScene();
+let scene:ZScene = new ZScene();
         scene.load("./assets/robo/",()=>{
-            GameSceneStack.push(scene);
-            let mc = GameSceneStack.spawn("RobotWalker") as TimelineSprite;
+            ZSceneStack.push(scene);
+            let mc = ZSceneStack.spawn("RobotWalker") as ZTimeline;
             mc.play();
             stage.addChild(mc);
             mc.x = 100;
