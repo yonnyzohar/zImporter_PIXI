@@ -304,7 +304,7 @@ class ZScene {
                 });
             }
             if (type == "asset") {
-                var frames = this.getFrames(child.name);
+                var frames = this.getFrames(child.name + child.parent.name);
                 if (Object.keys(frames).length > 0) {
                     asset = new ZTimeline_1.ZTimeline();
                     asset.setFrames(this.fixRotation(frames));

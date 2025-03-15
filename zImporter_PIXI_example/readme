@@ -1,5 +1,0 @@
-To run the code:
-
-npm i
-npx webpack
-open dist/index.html is a local server
