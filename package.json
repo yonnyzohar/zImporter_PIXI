@@ -33,15 +33,15 @@
     "reflect-metadata": "^0.2.2"
   },
   "exports": {
-    "./EntityPool": "./dist/EntityPool.js",
-    "./GameBitmapTextField": "./dist/GameBitmapTextField.js",
-    "./GameButton": "./dist/GameButton.js",
-    "./GameContainer": "./dist/GameContainer.js",
-    "./GameScene": "./dist/GameScene.js",
-    "./GameSceneStack": "./dist/GameSceneStack.js",
-    "./GameTextField": "./dist/GameTextField.js",
-    "./GameTimer": "./dist/GameTimer.js",
-    "./Resizeables": "./dist/Resizeables.js",
-    "./TimelineSprite": "./dist/TimelineSprite.js"
+    "./ZPool": "./dist/ZPool.js",
+    "./ZBitmapTextField": "./dist/ZBitmapTextField.js",
+    "./ZButton": "./dist/ZButton.js",
+    "./ZContainer": "./dist/ZContainer.js",
+    "./ZScene": "./dist/ZScene.js",
+    "./ZSceneStack": "./dist/ZSceneStack.js",
+    "./ZTextField": "./dist/ZTextField.js",
+    "./ZUpdatables": "./dist/ZUpdatables.js",
+    "./ZResizeables": "./dist/ZResizeables.js",
+    "./ZTimeline": "./dist/ZTimeline.js"
   }
 }
