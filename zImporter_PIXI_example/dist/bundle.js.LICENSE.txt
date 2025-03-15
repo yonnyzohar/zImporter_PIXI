@@ -1,0 +1,98 @@
+/*!
+ * @pixi/constants - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/constants is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/core - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/core is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/extensions - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/extensions is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/loaders - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/loaders is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/math - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/math is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/runner - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/runner is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/settings - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/settings is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/ticker - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/ticker is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/utils - v6.5.10
+ * Compiled Thu, 06 Jul 2023 15:25:11 UTC
+ *
+ * @pixi/utils is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * GSAP 3.12.7
+ * https://gsap.com
+ *
+ * @license Copyright 2008-2025, GreenSock. All rights reserved.
+ * Subject to the terms at https://gsap.com/standard-license or for
+ * Club GSAP members, the agreement issued with that membership.
+ * @author: Jack Doyle, jack@greensock.com
+*/
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */

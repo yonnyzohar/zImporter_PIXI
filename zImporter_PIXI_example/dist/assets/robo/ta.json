@@ -1,0 +1,145 @@
+{
+    "frames": {
+        "R_arm_bottom_side": {
+            "frame": {
+                "x": 47,
+                "y": 87,
+                "w": 23,
+                "h": 72
+            },
+            "sourceSize": {
+                "w": 23,
+                "h": 72
+            }
+        },
+        "R_arm_side": {
+            "frame": {
+                "x": 71,
+                "y": 87,
+                "w": 22,
+                "h": 69
+            },
+            "sourceSize": {
+                "w": 22,
+                "h": 69
+            }
+        },
+        "R_hand_side": {
+            "frame": {
+                "x": 0,
+                "y": 320,
+                "w": 32,
+                "h": 52
+            },
+            "sourceSize": {
+                "w": 32,
+                "h": 52
+            }
+        },
+        "R_foot_side": {
+            "frame": {
+                "x": 0,
+                "y": 373,
+                "w": 61,
+                "h": 35
+            },
+            "sourceSize": {
+                "w": 61,
+                "h": 35
+            }
+        },
+        "L_leg_bottom_side": {
+            "frame": {
+                "x": 0,
+                "y": 97,
+                "w": 46,
+                "h": 86
+            },
+            "sourceSize": {
+                "w": 46,
+                "h": 86
+            }
+        },
+        "L_leg_top_side": {
+            "frame": {
+                "x": 84,
+                "y": 0,
+                "w": 38,
+                "h": 59
+            },
+            "sourceSize": {
+                "w": 38,
+                "h": 59
+            }
+        },
+        "Pelvis_front": {
+            "frame": {
+                "x": 33,
+                "y": 320,
+                "w": 50,
+                "h": 34
+            },
+            "sourceSize": {
+                "w": 50,
+                "h": 34
+            }
+        },
+        "R_leg_top_side": {
+            "frame": {
+                "x": 0,
+                "y": 260,
+                "w": 38,
+                "h": 59
+            },
+            "sourceSize": {
+                "w": 38,
+                "h": 59
+            }
+        },
+        "R_leg_bottom_side": {
+            "frame": {
+                "x": 37,
+                "y": 0,
+                "w": 46,
+                "h": 86
+            },
+            "sourceSize": {
+                "w": 46,
+                "h": 86
+            }
+        },
+        "Body_side": {
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 36,
+                "h": 96
+            },
+            "sourceSize": {
+                "w": 36,
+                "h": 96
+            }
+        },
+        "Head_side": {
+            "frame": {
+                "x": 0,
+                "y": 184,
+                "w": 82,
+                "h": 75
+            },
+            "sourceSize": {
+                "w": 82,
+                "h": 75
+            }
+        }
+    },
+    "meta": {
+        "image": "ta.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 122,
+            "h": 408
+        },
+        "scale": "1"
+    }
+}
