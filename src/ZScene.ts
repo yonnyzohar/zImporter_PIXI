@@ -217,6 +217,8 @@ export class ZScene {
           var d:number = child.d;
           var tx:number = child.tx;
           var ty:number = child.ty;
+          var pivotX:number = child.pivotX || 0;
+          var pivotY:number = child.pivotY || 0;
           var _alpha:number = 0;
           var type = child.type;
           var asset;
@@ -279,7 +281,8 @@ export class ZScene {
             //asset.scale.x = _scaleX;
             //asset.scale.y = _scaleY;
             _alpha = child.alpha;
-    
+            asset.pivot.x = pivotX;
+            asset.pivot.y = pivotY;
             asset.x = _x;
             asset.y = _y;
             asset.interactive = true;
@@ -335,7 +338,8 @@ export class ZScene {
             //console.log(asset.name + " rot " + asset.rotation + " degrees " + child.rotation);
             asset.alpha = _alpha;
             mc[asset.name] = asset;
-            
+            asset.pivot.x = pivotX;
+            asset.pivot.y = pivotY;
 
             var m = new PIXI.Matrix();
             m.a  = a;

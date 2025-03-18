@@ -230,6 +230,8 @@ class ZScene {
             var d = child.d;
             var tx = child.tx;
             var ty = child.ty;
+            var pivotX = child.pivotX || 0;
+            var pivotY = child.pivotY || 0;
             var _alpha = 0;
             var type = child.type;
             var asset;
@@ -284,6 +286,8 @@ class ZScene {
                 //asset.scale.x = _scaleX;
                 //asset.scale.y = _scaleY;
                 _alpha = child.alpha;
+                asset.pivot.x = pivotX;
+                asset.pivot.y = pivotY;
                 asset.x = _x;
                 asset.y = _y;
                 asset.interactive = true;
@@ -333,6 +337,8 @@ class ZScene {
                 //console.log(asset.name + " rot " + asset.rotation + " degrees " + child.rotation);
                 asset.alpha = _alpha;
                 mc[asset.name] = asset;
+                asset.pivot.x = pivotX;
+                asset.pivot.y = pivotY;
                 var m = new PIXI.Matrix();
                 m.a = a;
                 m.b = b;
