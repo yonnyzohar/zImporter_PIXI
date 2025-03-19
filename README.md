@@ -22,7 +22,7 @@ See example project here:
 https://github.com/yonnyzohar/zImporter_PIXI_Example
 
 ```typescript
-import { ZScene } from "zImporter_PIXI/ZScene";
+import { ZScene } from "zImporter_PIXI";
 ```
 
 Example Project
@@ -44,9 +44,9 @@ document.body.appendChild(app.view);
 // Example: Loading and displaying a scene from zStudio
 ```typescript
 import * as PIXI from 'pixi.js';
-import { ZScene } from "zImporter_PIXI/ZScene";
-import { ZSceneStack } from "zImporter_PIXI/ZSceneStack";
-import { ZTimeline } from "zImporter_PIXI/ZTimeline";
+import { ZScene } from "zImporter_PIXI";
+import { ZSceneStack } from "zImporter_PIXI";
+import { ZTimeline } from "zImporter_PIXI";
 
 let scene:ZScene = new ZScene();
         scene.load("./assets/robo/",()=>{
