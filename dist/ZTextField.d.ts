@@ -9,3 +9,4 @@ export declare class ZTextField extends PIXI.Text {
     setText(str: string): void;
     killMe(): void;
 }
+//# sourceMappingURL=ZTextField.d.ts.map

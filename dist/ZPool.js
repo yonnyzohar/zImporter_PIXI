@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZPool = void 0;
-const ZSceneStack_1 = require("./ZSceneStack");
-class ZPool {
+import { ZSceneStack } from "./ZSceneStack";
+export class ZPool {
+    dict = {};
+    static instance = new ZPool();
     constructor() {
-        this.dict = {};
         if (ZPool.instance) {
             throw new Error("Singleton and can only be accessed through Singleton.getInstance()");
         }
@@ -21,7 +19,7 @@ class ZPool {
         };
         const pool = this.dict[type].pool;
         for (let i = 0; i < _numElements; i++) {
-            pool[i] = ZSceneStack_1.ZSceneStack.spawn(symbolTemplate);
+            pool[i] = ZSceneStack.spawn(symbolTemplate);
         }
         console.log("pool");
     }
@@ -64,6 +62,4 @@ class ZPool {
         }
     }
 }
-exports.ZPool = ZPool;
-ZPool.instance = new ZPool();
 //# sourceMappingURL=ZPool.js.map

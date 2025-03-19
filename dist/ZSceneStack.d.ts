@@ -11,3 +11,4 @@ export declare class ZSceneStack {
     static clear(): void;
     static spawn(templateName: string): ZContainer | undefined;
 }
+//# sourceMappingURL=ZSceneStack.d.ts.map

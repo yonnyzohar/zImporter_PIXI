@@ -1,121 +1,67 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+import { Loader } from '@pixi/loaders';
+import * as PIXI from 'pixi.js';
+import { ZButton } from "./ZButton";
+import { ZContainer } from "./ZContainer";
+import { ZTimeline } from "./ZTimeline";
+export class ZScene {
+    scene = null;
+    valsToSetArr = [];
+    scenes = [];
+    sceneName = null;
+    async load(assetBasePath, _loadCompleteFnctn) {
+        let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
+        fetch(placementsUrl)
+            .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+            .then(placemenisObj => {
+            this.loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn);
+        })
+            .catch(error => {
+            //errorCallback(error);
+        });
     }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZScene = void 0;
-const loaders_1 = require("@pixi/loaders");
-const PIXI = __importStar(require("pixi.js"));
-const ZButton_1 = require("./ZButton");
-const ZContainer_1 = require("./ZContainer");
-const ZTimeline_1 = require("./ZTimeline");
-class ZScene {
-    constructor() {
-        this.scene = null;
-        this.valsToSetArr = [];
-        this.scenes = [];
-        this.sceneName = null;
+    async destroy() {
+        const spritesheet = this.scene;
+        if (spritesheet) {
+            // Ensure spritesheet is fully parsed before attempting to destroy
+            await spritesheet.parse();
+            // Destroy individual textures
+            for (const textureName in spritesheet.textures) {
+                spritesheet.textures[textureName].destroy();
+            }
+            spritesheet.baseTexture?.destroy();
+        }
+        // Now unload the asset from the asset manager
+        await PIXI.Assets.unload(this.sceneName);
     }
-    load(assetBasePath, _loadCompleteFnctn) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
-            fetch(placementsUrl)
-                .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+    async loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn) {
+        let _jsonPath = assetBasePath + "ta.json?rnd=" + Math.random();
+        this.scene = (await PIXI.Assets.load(_jsonPath));
+        this.sceneName = _jsonPath;
+        if (placemenisObj.fonts.length == 0) {
+            this.initScene(placemenisObj);
+            _loadCompleteFnctn();
+            return;
+        }
+        for (let i = 0; i < placemenisObj.fonts.length; i++) {
+            let path = placemenisObj.fonts[i];
+            let url = assetBasePath + path + ".fnt";
+            fetch(url).then(response => response.text())
+                .then(data => {
+                const fontData = new PIXI.BitmapFontData();
+                PIXI.BitmapFont.install(data, new PIXI.Texture(this.scene.baseTexture)); // Install the font data
+                console.log("Parsed font data:", fontData);
+                if (i === placemenisObj.fonts.length - 1) {
+                    this.initScene(placemenisObj);
+                    _loadCompleteFnctn();
                 }
-                return response.json();
             })
-                .then(placemenisObj => {
-                this.loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn);
-            })
-                .catch(error => {
-                //errorCallback(error);
-            });
-        });
-    }
-    destroy() {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const spritesheet = this.scene;
-            if (spritesheet) {
-                // Ensure spritesheet is fully parsed before attempting to destroy
-                yield spritesheet.parse();
-                // Destroy individual textures
-                for (const textureName in spritesheet.textures) {
-                    spritesheet.textures[textureName].destroy();
-                }
-                (_a = spritesheet.baseTexture) === null || _a === void 0 ? void 0 : _a.destroy();
-            }
-            // Now unload the asset from the asset manager
-            yield PIXI.Assets.unload(this.sceneName);
-        });
-    }
-    loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let _jsonPath = assetBasePath + "ta.json?rnd=" + Math.random();
-            this.scene = (yield PIXI.Assets.load(_jsonPath));
-            this.sceneName = _jsonPath;
-            if (placemenisObj.fonts.length == 0) {
-                this.initScene(placemenisObj);
-                _loadCompleteFnctn();
-                return;
-            }
-            for (let i = 0; i < placemenisObj.fonts.length; i++) {
-                let path = placemenisObj.fonts[i];
-                let url = assetBasePath + path + ".fnt";
-                fetch(url).then(response => response.text())
-                    .then(data => {
-                    const fontData = new PIXI.BitmapFontData();
-                    PIXI.BitmapFont.install(data, new PIXI.Texture(this.scene.baseTexture)); // Install the font data
-                    console.log("Parsed font data:", fontData);
-                    if (i === placemenisObj.fonts.length - 1) {
-                        this.initScene(placemenisObj);
-                        _loadCompleteFnctn();
-                    }
-                })
-                    .catch(error => console.error("Error loading .fnt:", error));
-            }
-        });
+                .catch(error => console.error("Error loading .fnt:", error));
+        }
     }
     createFrame(itemName) {
         //console.log(itemName);
@@ -127,7 +73,7 @@ class ZScene {
     }
     getNumOfFrames(_framePrefix) {
         let num = 0;
-        var a = loaders_1.Loader.shared.resources["data"].data;
+        var a = Loader.shared.resources["data"].data;
         for (const k in a) {
             if (k.indexOf(_framePrefix) !== -1) {
                 num++;
@@ -189,12 +135,12 @@ class ZScene {
         var mc;
         var frames = this.getChildrenFrames(tempName);
         if (Object.keys(frames).length > 0) {
-            mc = new ZTimeline_1.ZTimeline();
+            mc = new ZTimeline();
             this.createAsset(mc, baseNode);
             mc.setFrames(this.fixRotation(frames));
         }
         else {
-            mc = new ZContainer_1.ZContainer();
+            mc = new ZContainer();
             this.createAsset(mc, baseNode);
         }
         mc.name = baseNode.instanceName;
@@ -278,7 +224,7 @@ class ZScene {
                 img.height = _h;
             }
             if (type == "btn") {
-                asset = new ZButton_1.ZButton();
+                asset = new ZButton();
                 asset.name = child.instanceName;
                 if (!asset.name) {
                     return;
@@ -315,15 +261,15 @@ class ZScene {
                 //this will tell me fi this asses template has children with frames
                 var frames = this.getChildrenFrames(child.name);
                 if (Object.keys(frames).length > 0) {
-                    asset = new ZTimeline_1.ZTimeline();
+                    asset = new ZTimeline();
                     asset.setFrames(this.fixRotation(frames));
                 }
                 else {
-                    asset = new ZContainer_1.ZContainer();
+                    asset = new ZContainer();
                 }
                 console.log("creation", child.instanceName); // Should print "ZTimeline"
                 console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-                console.log("instanceof", asset instanceof ZTimeline_1.ZTimeline);
+                console.log("instanceof", asset instanceof ZTimeline);
                 asset.name = child.instanceName;
                 if (!asset.name) {
                     return;
@@ -350,7 +296,7 @@ class ZScene {
                 mc.addChild(asset);
                 console.log("after addition", child.instanceName); // Should print "ZTimeline"
                 console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-                console.log("instanceof", asset instanceof ZTimeline_1.ZTimeline);
+                console.log("instanceof", asset instanceof ZTimeline);
                 this.valsToSetArr.push({
                     mc: asset,
                     w: _w,
@@ -382,39 +328,37 @@ class ZScene {
         }
         return _frames;
     }
-    createBitmapTextFromXML(xmlUrl, textToDisplay, fontName, fontSize, callback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Load the texture atlas referenced in your XML
-            const response = yield fetch(xmlUrl);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch XML font data: ${response.statusText}`);
+    async createBitmapTextFromXML(xmlUrl, textToDisplay, fontName, fontSize, callback) {
+        // Load the texture atlas referenced in your XML
+        const response = await fetch(xmlUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch XML font data: ${response.statusText}`);
+        }
+        const xmlData = await response.text();
+        //grab the ta file name
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlData, "text/xml");
+        // Extract the page.file attribute from the XML
+        const pageElement = xmlDoc.querySelector("page");
+        if (!pageElement) {
+            throw new Error("Page element not found in XML");
+        }
+        const fileAttribute = pageElement.getAttribute("file");
+        if (!fileAttribute) {
+            throw new Error("Page file attribute not found in XML");
+        }
+        var textureUrl = "./../assets/" + fileAttribute;
+        this.loadTexture(textureUrl)
+            .then((texture) => {
+            PIXI.BitmapFont.install(xmlDoc, texture);
+            if (PIXI.BitmapFont.available[fontName]) {
+                callback();
             }
-            const xmlData = yield response.text();
-            //grab the ta file name
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlData, "text/xml");
-            // Extract the page.file attribute from the XML
-            const pageElement = xmlDoc.querySelector("page");
-            if (!pageElement) {
-                throw new Error("Page element not found in XML");
-            }
-            const fileAttribute = pageElement.getAttribute("file");
-            if (!fileAttribute) {
-                throw new Error("Page file attribute not found in XML");
-            }
-            var textureUrl = "./../assets/" + fileAttribute;
-            this.loadTexture(textureUrl)
-                .then((texture) => {
-                PIXI.BitmapFont.install(xmlDoc, texture);
-                if (PIXI.BitmapFont.available[fontName]) {
-                    callback();
-                }
-            })
-                .catch((error) => {
-                console.error("Error loading texture:", error);
-            });
-            return null;
+        })
+            .catch((error) => {
+            console.error("Error loading texture:", error);
         });
+        return null;
     }
     loadTexture(textureUrl) {
         return new Promise((resolve, reject) => {
@@ -431,6 +375,5 @@ class ZScene {
         });
     }
 }
-exports.ZScene = ZScene;
 ;
 //# sourceMappingURL=ZScene.js.map

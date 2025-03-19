@@ -1,7 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZUpdatables = void 0;
-class ZUpdatables {
+export class ZUpdatables {
+    static updatables = new Map();
+    static fpsInterval = 0;
+    static then = 0;
+    static now = 0;
+    static elapsed = 0;
+    static startTime = 0;
     static init(fps) {
         this.fpsInterval = 1000 / fps;
         this.then = Date.now();
@@ -24,11 +27,4 @@ class ZUpdatables {
         ZUpdatables.updatables.delete(mc);
     }
 }
-exports.ZUpdatables = ZUpdatables;
-ZUpdatables.updatables = new Map();
-ZUpdatables.fpsInterval = 0;
-ZUpdatables.then = 0;
-ZUpdatables.now = 0;
-ZUpdatables.elapsed = 0;
-ZUpdatables.startTime = 0;
 //# sourceMappingURL=ZUpdatables.js.map

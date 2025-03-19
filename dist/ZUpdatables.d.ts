@@ -10,3 +10,4 @@ export declare class ZUpdatables {
     static update(): void;
     static removeUpdateAble(mc: any): void;
 }
+//# sourceMappingURL=ZUpdatables.d.ts.map

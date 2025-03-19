@@ -8,3 +8,4 @@ export declare class ZPool {
     get(type: string): any;
     putBack(e: any, type: string): void;
 }
+//# sourceMappingURL=ZPool.d.ts.map

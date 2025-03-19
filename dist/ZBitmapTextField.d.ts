@@ -4,3 +4,4 @@ export declare class ZBitmapTextField extends PIXI.BitmapText {
     setText(str: string): void;
     killMe(): void;
 }
+//# sourceMappingURL=ZBitmapTextField.d.ts.map

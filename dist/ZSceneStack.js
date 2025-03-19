@@ -1,7 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZSceneStack = void 0;
-class ZSceneStack {
+export class ZSceneStack {
+    //the following is a stack of resources of tyoe T
+    static stack = [];
+    static stackSize = 0;
+    static top = 0;
     static push(resource) {
         this.stack[this.top] = resource;
         this.top++;
@@ -40,9 +41,4 @@ class ZSceneStack {
         }
     }
 }
-exports.ZSceneStack = ZSceneStack;
-//the following is a stack of resources of tyoe T
-ZSceneStack.stack = [];
-ZSceneStack.stackSize = 0;
-ZSceneStack.top = 0;
 //# sourceMappingURL=ZSceneStack.js.map

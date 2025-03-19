@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZResizeables = void 0;
-class ZResizeables {
+export class ZResizeables {
+    static resizeables = new Map();
     static addResizeable(mc) {
         ZResizeables.resizeables.set(mc, true);
     }
@@ -14,6 +12,4 @@ class ZResizeables {
         ZResizeables.resizeables.delete(mc);
     }
 }
-exports.ZResizeables = ZResizeables;
-ZResizeables.resizeables = new Map();
 //# sourceMappingURL=ZResizeables.js.map

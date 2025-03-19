@@ -4,3 +4,4 @@ export declare class ZResizeables {
     static resize(): void;
     static removeResizeable(mc: any): void;
 }
+//# sourceMappingURL=ZResizeables.d.ts.map

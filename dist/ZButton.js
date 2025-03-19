@@ -1,9 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ZButton = void 0;
-const gsap_1 = require("gsap");
-const ZContainer_1 = require("./ZContainer");
-class ZButton extends ZContainer_1.ZContainer {
+import { gsap } from 'gsap';
+import { ZContainer } from "./ZContainer";
+export class ZButton extends ZContainer {
+    textBox;
+    labelStr;
+    origScaleX;
+    origScaleY;
+    canTouch;
     constructor(_labelStr = "") {
         super();
         this.textBox;
@@ -21,7 +23,7 @@ class ZButton extends ZContainer_1.ZContainer {
     onClicked() {
         if (this.canTouch) {
             this.canTouch = false;
-            gsap_1.gsap.to(this.scale, {
+            gsap.to(this.scale, {
                 x: this.origScaleX * 0.95,
                 y: this.origScaleY * 0.95,
                 duration: 0.1,
@@ -30,7 +32,7 @@ class ZButton extends ZContainer_1.ZContainer {
         }
     }
     tweenBack() {
-        gsap_1.gsap.to(this.scale, {
+        gsap.to(this.scale, {
             x: this.origScaleX,
             y: this.origScaleY,
             duration: 0.15,
@@ -41,5 +43,4 @@ class ZButton extends ZContainer_1.ZContainer {
         this.canTouch = true;
     }
 }
-exports.ZButton = ZButton;
 //# sourceMappingURL=ZButton.js.map

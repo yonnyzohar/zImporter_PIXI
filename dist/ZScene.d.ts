@@ -20,3 +20,4 @@ export declare class ZScene {
     createBitmapTextFromXML(xmlUrl: string, textToDisplay: string, fontName: string, fontSize: number, callback: Function): Promise<null>;
     loadTexture(textureUrl: string): Promise<PIXI.Texture>;
 }
+//# sourceMappingURL=ZScene.d.ts.map
