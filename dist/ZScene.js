@@ -1,3 +1,4 @@
+import { DropShadowFilter } from "@pixi/filter-drop-shadow";
 import { Loader } from "@pixi/loaders";
 import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
@@ -194,6 +195,7 @@ export class ZScene {
                     mc.addChild(tf);
                     tf.x = _x;
                     tf.y = _y;
+                    this.applyFilters(child, tf);
                 }
                 else {
                     //if ()
@@ -241,6 +243,7 @@ export class ZScene {
                     tf.y = _y;
                     mc[_name] = tf;
                     mc.addChild(tf);
+                    this.applyFilters(child, tf);
                 }
             }
             if (type == "img") {
@@ -320,6 +323,7 @@ export class ZScene {
                 mc[asset.name] = asset;
                 asset.pivot.x = pivotX;
                 asset.pivot.y = pivotY;
+                this.applyFilters(child, asset);
                 var m = new PIXI.Matrix();
                 m.a = a;
                 m.b = b;
@@ -346,6 +350,26 @@ export class ZScene {
                 }
                 else {
                     this.createAsset(mc, childTempObj);
+                }
+            }
+        }
+    }
+    applyFilters(obj, tf) {
+        if (obj.filters) {
+            for (var k in obj.filters) {
+                let filter = obj.filters[k];
+                if (filter.type == "dropShadow") {
+                    let dropShadowFilter = new DropShadowFilter();
+                    dropShadowFilter.alpha = filter.alpha;
+                    dropShadowFilter.blur = filter.blur;
+                    dropShadowFilter.color = filter.color;
+                    dropShadowFilter.distance = filter.distance;
+                    dropShadowFilter.resolution = filter.resolution;
+                    dropShadowFilter.rotation = filter.rotation;
+                    if (!tf.filters) {
+                        tf.filters = [];
+                    }
+                    tf.filters.push(dropShadowFilter);
                 }
             }
         }

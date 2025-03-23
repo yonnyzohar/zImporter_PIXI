@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@pixi/loaders": "^6.5.10",
+    "@pixi/filter-drop-shadow": "^5.2.0",
+    "@pixi/particle-emitter": "^5.0.8",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "gsap": "^3.12.7",
