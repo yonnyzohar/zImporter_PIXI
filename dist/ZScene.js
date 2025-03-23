@@ -1,5 +1,5 @@
-import { Loader } from '@pixi/loaders';
-import * as PIXI from 'pixi.js';
+import { Loader } from "@pixi/loaders";
+import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
@@ -11,16 +11,16 @@ export class ZScene {
     async load(assetBasePath, _loadCompleteFnctn) {
         let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
         fetch(placementsUrl)
-            .then(response => {
+            .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
-            .then(placemenisObj => {
+            .then((placemenisObj) => {
             this.loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn);
         })
-            .catch(error => {
+            .catch((error) => {
             //errorCallback(error);
         });
     }
@@ -40,7 +40,7 @@ export class ZScene {
     }
     async loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn) {
         let _jsonPath = assetBasePath + "ta.json?rnd=" + Math.random();
-        this.scene = (await PIXI.Assets.load(_jsonPath));
+        this.scene = await PIXI.Assets.load(_jsonPath);
         this.sceneName = _jsonPath;
         if (placemenisObj.fonts.length == 0) {
             this.initScene(placemenisObj);
@@ -50,8 +50,9 @@ export class ZScene {
         for (let i = 0; i < placemenisObj.fonts.length; i++) {
             let path = placemenisObj.fonts[i];
             let url = assetBasePath + path + ".fnt";
-            fetch(url).then(response => response.text())
-                .then(data => {
+            fetch(url)
+                .then((response) => response.text())
+                .then((data) => {
                 const fontData = new PIXI.BitmapFontData();
                 PIXI.BitmapFont.install(data, new PIXI.Texture(this.scene.baseTexture)); // Install the font data
                 console.log("Parsed font data:", fontData);
@@ -60,7 +61,7 @@ export class ZScene {
                     _loadCompleteFnctn();
                 }
             })
-                .catch(error => console.error("Error loading .fnt:", error));
+                .catch((error) => console.error("Error loading .fnt:", error));
         }
     }
     createFrame(itemName) {
@@ -86,8 +87,8 @@ export class ZScene {
         const numFrames = this.getNumOfFrames(_framePrefix);
         //console.log(numFrames + " in " + _framePrefix);
         for (let i = 0; i < numFrames; i++) {
-            const val = i < 10 ? '0' + i : i;
-            const textureName = _framePrefix + '00' + val;
+            const val = i < 10 ? "0" + i : i;
+            const textureName = _framePrefix + "00" + val;
             frames.push(PIXI.Texture.from(textureName));
         }
         const mc = new PIXI.AnimatedSprite(frames);
@@ -185,7 +186,8 @@ export class ZScene {
                 if (PIXI.BitmapFont.available[child.uniqueFontName]) {
                     const tf = new PIXI.BitmapText(child.text || "", {
                         fontName: child.uniqueFontName, // This must match the "face" attribute in the .fnt file
-                        fontSize: child.size // Adjust as needed
+                        fontSize: child.size, // Adjust as needed,
+                        letterSpacing: 0 // Adjust the letter spacing between characters
                     });
                     tf.name = _name;
                     mc[_name] = tf;
@@ -201,6 +203,39 @@ export class ZScene {
                         fill: child.color,
                         align: "center",
                     });
+                    if (child.size) {
+                        tf.style.fontSize = child.size;
+                    }
+                    if (child.color) {
+                        tf.style.fill = child.color;
+                    }
+                    if (child.align) {
+                        tf.style.align = child.align;
+                    }
+                    if (child.stroke) {
+                        tf.style.stroke = child.stroke;
+                    }
+                    if (child.strokeThickness) {
+                        tf.style.strokeThickness = child.strokeThickness;
+                    }
+                    if (child.wordWrap) {
+                        tf.style.wordWrap = child.wordWrap;
+                    }
+                    if (child.wordWrapWidth) {
+                        tf.style.wordWrapWidth = child.wordWrapWidth;
+                    }
+                    if (child.breakWords) {
+                        tf.style.breakWords = child.breakWords;
+                    }
+                    if (child.leading) {
+                        tf.style.leading = child.leading;
+                    }
+                    if (child.letterSpacing) {
+                        tf.style.letterSpacing = child.letterSpacing;
+                    }
+                    if (child.padding) {
+                        tf.style.padding = child.padding;
+                    }
                     tf.name = _name;
                     tf.x = _x;
                     tf.y = _y;
@@ -375,5 +410,4 @@ export class ZScene {
         });
     }
 }
-;
 //# sourceMappingURL=ZScene.js.map
