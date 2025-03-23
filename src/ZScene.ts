@@ -233,7 +233,7 @@ export class ZScene {
           const tf = new PIXI.BitmapText(child.text || "", {
             fontName: child.uniqueFontName, // This must match the "face" attribute in the .fnt file
             fontSize: child.size,       // Adjust as needed,
-            letterSpacing: 0               // Adjust the letter spacing between characters
+            letterSpacing: child.letterSpacing || 0               // Adjust the letter spacing between characters
           });
 
           tf.name = _name;
