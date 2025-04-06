@@ -1,5 +1,4 @@
 import { DropShadowFilter } from "@pixi/filter-drop-shadow";
-import { Loader } from "@pixi/loaders";
 import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
@@ -104,7 +103,7 @@ export class ZScene {
 
   getNumOfFrames(_framePrefix: string): number {
     let num = 0;
-    var a: any = Loader.shared.resources["data"].data;
+    var a: any = this.scene!.data;
     for (const k in a) {
       if (k.indexOf(_framePrefix) !== -1) {
         num++;

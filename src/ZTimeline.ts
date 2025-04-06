@@ -100,6 +100,12 @@ export class ZTimeline extends ZContainer {
                     
                     if (this[k]) {
                         
+                        if (frame.pivotX != undefined) {
+                            this[k].pivot.x = frame.pivotX;
+                        }
+                        if (frame.pivotY != undefined) {
+                            this[k].pivot.y = frame.pivotY;
+                        }
 
                         if (frame.x != undefined) {
                             this[k].x = frame.x;
