@@ -177,7 +177,7 @@ export class ZScene {
     if (Object.keys(frames).length > 0) {
       mc = new ZTimeline();
       this.createAsset(mc, baseNode);
-      mc.setFrames(this.fixRotation(frames));
+      mc.setFrames(frames);
     } else {
       mc = new ZContainer();
       this.createAsset(mc, baseNode);
@@ -224,6 +224,9 @@ export class ZScene {
       var ty: number = child.ty;
       var pivotX: number = child.pivotX || 0;
       var pivotY: number = child.pivotY || 0;
+      var scaleX: number = child.scaleX || 1;
+      var scaleY: number = child.scaleY || 1;
+      var rotation:number = child.rotation || 0;
       var _alpha: number = 0;
       var type = child.type;
       var asset;
@@ -323,24 +326,19 @@ export class ZScene {
         _alpha = child.alpha;
         asset.pivot.x = pivotX;
         asset.pivot.y = pivotY;
+        asset.scale.x = scaleX;
+        asset.scale.y = scaleY;
         asset.x = _x;
         asset.y = _y;
         asset.interactive = true;
         asset.interactiveChildren = true;
-        //asset.rotation = this.degreesToRadians(child.rotation);
+        asset.rotation = rotation;
         asset.alpha = _alpha;
         //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
         mc[asset.name] = asset;
         mc.addChild(asset);
 
-        var m = new PIXI.Matrix();
-        m.a = a;
-        m.b = b;
-        m.c = c;
-        m.d = d;
-        m.tx = tx;
-        m.ty = ty;
-        asset.transform.setFromMatrix(m);
+       
         this.valsToSetArr.push({
           mc: asset,
           w: _w,
@@ -353,7 +351,7 @@ export class ZScene {
 
         if (Object.keys(frames).length > 0) {
           asset = new ZTimeline();
-          asset.setFrames(this.fixRotation(frames));
+          asset.setFrames(frames);
         } else {
           asset = new ZContainer();
         }
@@ -365,30 +363,24 @@ export class ZScene {
         if (!asset.name) {
           return;
         }
-        //asset.scale.x = _scaleX;
-        //asset.scale.y = _scaleY;
+
         _alpha = child.alpha;
 
         asset.x = _x;
         asset.y = _y;
 
-        //asset.rotation = this.degreesToRadians(child.rotation);
+        asset.rotation = rotation;
 
         //console.log(asset.name + " rot " + asset.rotation + " degrees " + child.rotation);
         asset.alpha = _alpha;
         mc[asset.name] = asset;
         asset.pivot.x = pivotX;
         asset.pivot.y = pivotY;
+        asset.scale.x = scaleX;
+        asset.scale.y = scaleY;
         this.applyFilters(child, asset);
 
-        var m = new PIXI.Matrix();
-        m.a = a;
-        m.b = b;
-        m.c = c;
-        m.d = d;
-        m.tx = tx;
-        m.ty = ty;
-        asset.transform.setFromMatrix(m);
+
         mc.addChild(asset);
         console.log("after addition", child.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
@@ -436,21 +428,6 @@ export class ZScene {
           }
         }
       }
-  }
-
-  fixRotation(_frames: any): any {
-    for (var k in _frames) {
-      for (var i = 0; i < _frames[k].length; i++) {
-        if (_frames[k][i]) {
-          if (_frames[k][i].rotation != undefined) {
-            var rotation = _frames[k][i].rotation;
-            _frames[k][i].rotation = this.degreesToRadians(rotation);
-          }
-        }
-      }
-    }
-
-    return _frames;
   }
 
   async createBitmapTextFromXML(

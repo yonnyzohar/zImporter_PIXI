@@ -17,7 +17,6 @@ export declare class ZScene {
     degreesToRadians(degrees: number): number;
     createAsset(mc: any, baseNode: any): void;
     applyFilters(obj: any, tf: PIXI.Container): void;
-    fixRotation(_frames: any): any;
     createBitmapTextFromXML(xmlUrl: string, textToDisplay: string, fontName: string, fontSize: number, callback: Function): Promise<null>;
     loadTexture(textureUrl: string): Promise<PIXI.Texture>;
 }

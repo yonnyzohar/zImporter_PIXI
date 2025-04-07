@@ -1,4 +1,3 @@
-import * as PIXI from 'pixi.js';
 import { ZContainer } from "./ZContainer";
 import { ZUpdatables } from "./ZUpdatables";
 export class ZTimeline extends ZContainer {
@@ -91,6 +90,12 @@ export class ZTimeline extends ZContainer {
                         if (frame.pivotY != undefined) {
                             this[k].pivot.y = frame.pivotY;
                         }
+                        if (frame.scaleX != undefined) {
+                            this[k].scale.x = frame.scaleX;
+                        }
+                        if (frame.scaleY != undefined) {
+                            this[k].scale.y = frame.scaleY;
+                        }
                         if (frame.x != undefined) {
                             this[k].x = frame.x;
                         }
@@ -100,32 +105,9 @@ export class ZTimeline extends ZContainer {
                         if (frame.alpha != undefined) {
                             this[k].alpha = frame.alpha;
                         }
-                        if (frame.a != undefined) {
-                            this[k].a = frame.a;
+                        if (frame.rotation != undefined) {
+                            this[k].rotation = frame.rotation;
                         }
-                        if (frame.b != undefined) {
-                            this[k].b = frame.b;
-                        }
-                        if (frame.c != undefined) {
-                            this[k].c = frame.c;
-                        }
-                        if (frame.d != undefined) {
-                            this[k].d = frame.d;
-                        }
-                        if (frame.tx != undefined) {
-                            this[k].tx = frame.tx;
-                        }
-                        if (frame.ty != undefined) {
-                            this[k].ty = frame.ty;
-                        }
-                        const m = new PIXI.Matrix();
-                        m.a = this[k].a;
-                        m.b = this[k].b;
-                        m.c = this[k].c;
-                        m.d = this[k].d;
-                        m.tx = this[k].tx;
-                        m.ty = this[k].ty;
-                        this[k].transform.setFromMatrix(m);
                     }
                     /**/
                 }
