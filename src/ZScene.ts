@@ -205,6 +205,7 @@ export class ZScene {
       mc = new ZTimeline();
       this.createAsset(mc, baseNode);
       mc.setFrames(frames);
+      mc.gotoAndStop(0);
     } else {
       mc = new ZContainer();
       this.createAsset(mc, baseNode);
