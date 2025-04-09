@@ -34,15 +34,15 @@ export class ZScene {
                 let mc = this.spawn(tempName);
                 if (mc) {
                     stage.addChild(mc);
-                    mc.name = child.instanceName;
-                    mc.x = child.x;
-                    mc.y = child.y;
-                    mc.rotation = child.rotation;
-                    mc.alpha = child.alpha;
-                    mc.scale.x = child.scaleX;
-                    mc.scale.y = child.scaleY;
-                    mc.pivot.x = child.pivotX;
-                    mc.pivot.y = child.pivotY;
+                    mc.name = child.instanceName || "";
+                    mc.x = child.x || 0;
+                    mc.y = child.y || 0;
+                    mc.rotation = child.rotation || 0;
+                    mc.alpha = child.alpha || 1;
+                    mc.scale.x = child.scaleX || 1;
+                    mc.scale.y = child.scaleY || 1;
+                    mc.pivot.x = child.pivotX || 0;
+                    mc.pivot.y = child.pivotY || 0;
                 }
             }
         }
