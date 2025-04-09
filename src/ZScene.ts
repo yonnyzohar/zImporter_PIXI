@@ -58,6 +58,7 @@ export class ZScene {
                 mc.scale.y = child.scaleY || 1;
                 mc.pivot.x = child.pivotX || 0;
                 mc.pivot.y = child.pivotY || 0;
+                (stage as any)[mc.name] = mc;
             }
         }
     }
