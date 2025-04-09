@@ -5,6 +5,7 @@ export declare class ZScene {
     private scenes;
     private sceneName;
     load(assetBasePath: string, _loadCompleteFnctn: Function): Promise<void>;
+    loadStage(stage: PIXI.Container): void;
     destroy(): Promise<void>;
     loadAssets(assetBasePath: string, placemenisObj: any, _loadCompleteFnctn: Function): Promise<void>;
     createFrame(itemName: string): PIXI.Sprite | null;

@@ -36,6 +36,33 @@ export class ZScene {
       });
   }
 
+  loadStage(stage: PIXI.Container): void {
+    let stageAssets = this.scenes[0].stage;
+    let children = stageAssets.children;
+    if(children)
+    {
+        for(let i = 0; i < children.length; i++)
+        {
+            let child = children[i];
+            let tempName = child.name;
+            let mc = this.spawn(tempName);
+            if(mc)
+            {
+                stage.addChild(mc);
+                mc.name = child.instanceName;
+                mc.x = child.x;
+                mc.y = child.y;
+                mc.rotation = child.rotation;
+                mc.alpha = child.alpha;
+                mc.scale.x = child.scaleX;
+                mc.scale.y = child.scaleY;
+                mc.pivot.x = child.pivotX;
+                mc.pivot.y = child.pivotY;
+            }
+        }
+    }
+}
+
   async destroy(): Promise<void> {
     const spritesheet = this.scene as PIXI.Spritesheet;
 
