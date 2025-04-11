@@ -15,6 +15,17 @@ export class ZScene {
     stage: any;
     resolution: {x:number, y:number};
   };
+  private static Map: Map<string, ZScene> = new Map();
+  private sceneId: string;
+
+  constructor(_sceneId:string) {
+    this.sceneId = _sceneId;
+    ZScene.Map.set(_sceneId, this);
+  }
+
+  public static getSceneById(sceneId: string): ZScene | undefined {
+    return ZScene.Map.get(sceneId);
+  }
 
   private sceneName: string | null = null;
 

@@ -8,6 +8,15 @@ export class ZScene {
     _stage = new PIXI.Container();
     valsToSetArr = [];
     data;
+    static Map = new Map();
+    sceneId;
+    constructor(_sceneId) {
+        this.sceneId = _sceneId;
+        ZScene.Map.set(_sceneId, this);
+    }
+    static getSceneById(sceneId) {
+        return ZScene.Map.get(sceneId);
+    }
     sceneName = null;
     get stage() {
         return this._stage;

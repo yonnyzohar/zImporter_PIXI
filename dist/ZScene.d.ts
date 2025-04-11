@@ -4,6 +4,10 @@ export declare class ZScene {
     private _stage;
     private valsToSetArr;
     private data;
+    private static Map;
+    private sceneId;
+    constructor(_sceneId: string);
+    static getSceneById(sceneId: string): ZScene | undefined;
     private sceneName;
     get stage(): PIXI.Container<PIXI.DisplayObject>;
     resize(width: number, height: number): void;
