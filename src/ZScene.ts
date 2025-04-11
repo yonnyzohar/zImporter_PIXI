@@ -38,8 +38,9 @@ export class ZScene {
    // this._stage.height = height;
    if(this.data && this.data.resolution)
    {
+    let ratio = this.data.resolution.x / this.data.resolution.y;
     this._stage.scale.x = width / this.data.resolution.x;
-    this._stage.scale.y = height / this.data.resolution.y;
+    this._stage.scale.y = ratio * this._stage.scale.x;
    }
   }
 

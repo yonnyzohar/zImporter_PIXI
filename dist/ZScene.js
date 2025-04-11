@@ -25,8 +25,9 @@ export class ZScene {
         // this._stage.width = width;
         // this._stage.height = height;
         if (this.data && this.data.resolution) {
+            let ratio = this.data.resolution.x / this.data.resolution.y;
             this._stage.scale.x = width / this.data.resolution.x;
-            this._stage.scale.y = height / this.data.resolution.y;
+            this._stage.scale.y = ratio * this._stage.scale.x;
         }
     }
     async load(assetBasePath, _loadCompleteFnctn) {
