@@ -22,12 +22,14 @@ export class ZScene {
         return this._stage;
     }
     resize(width, height) {
-        // this._stage.width = width;
-        // this._stage.height = height;
         if (this.data && this.data.resolution) {
-            let ratio = this.data.resolution.x / this.data.resolution.y;
-            this._stage.scale.x = width / this.data.resolution.x;
-            this._stage.scale.y = ratio * this._stage.scale.x;
+            const baseWidth = this.data.resolution.x;
+            const baseHeight = this.data.resolution.y;
+            const scaleX = width / baseWidth;
+            const scaleY = height / baseHeight;
+            const scale = Math.min(scaleX, scaleY); // uniform scale to fit
+            this._stage.scale.x = scale;
+            this._stage.scale.y = scale;
         }
     }
     async load(assetBasePath, _loadCompleteFnctn) {
