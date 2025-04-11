@@ -1,9 +1,12 @@
 import * as PIXI from "pixi.js";
 export declare class ZScene {
     private scene;
+    private _stage;
     private valsToSetArr;
-    private scenes;
+    private data;
     private sceneName;
+    get stage(): PIXI.Container<PIXI.DisplayObject>;
+    resize(width: number, height: number): void;
     load(assetBasePath: string, _loadCompleteFnctn: Function): Promise<void>;
     loadStage(stage: PIXI.Container): void;
     destroy(): Promise<void>;

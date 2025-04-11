@@ -40,5 +40,11 @@ export class ZSceneStack {
             }
         }
     }
+    static resize(width, height) {
+        for (let i = this.stack.length - 1; i >= 0; i--) {
+            let gameScene = this.stack[i];
+            gameScene.resize(width, height);
+        }
+    }
 }
 //# sourceMappingURL=ZSceneStack.js.map

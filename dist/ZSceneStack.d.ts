@@ -10,5 +10,6 @@ export declare class ZSceneStack {
     static getStackSize(): number;
     static clear(): void;
     static spawn(templateName: string): ZContainer | undefined;
+    static resize(width: number, height: number): void;
 }
 //# sourceMappingURL=ZSceneStack.d.ts.map

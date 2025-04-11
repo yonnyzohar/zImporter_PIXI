@@ -56,4 +56,12 @@ export class ZSceneStack{
             }
         }
     }
+
+    static resize(width: number, height: number): void {
+        for(let i = this.stack.length-1; i >=0 ; i-- )
+        {
+            let gameScene:ZScene = this.stack[i];
+            gameScene.resize(width, height);
+        }
+    }
 }

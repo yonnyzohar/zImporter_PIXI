@@ -5,9 +5,21 @@ import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
 export class ZScene {
     scene = null;
+    _stage = new PIXI.Container();
     valsToSetArr = [];
-    scenes = [];
+    data;
     sceneName = null;
+    get stage() {
+        return this._stage;
+    }
+    resize(width, height) {
+        // this._stage.width = width;
+        // this._stage.height = height;
+        if (this.data && this.data.resolution) {
+            this._stage.scale.x = width / this.data.resolution.x;
+            this._stage.scale.y = height / this.data.resolution.y;
+        }
+    }
     async load(assetBasePath, _loadCompleteFnctn) {
         let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
         fetch(placementsUrl)
@@ -25,7 +37,7 @@ export class ZScene {
         });
     }
     loadStage(stage) {
-        let stageAssets = this.scenes[0].stage;
+        let stageAssets = this.data.stage;
         let children = stageAssets.children;
         if (children) {
             for (let i = 0; i < children.length; i++) {
@@ -124,19 +136,14 @@ export class ZScene {
     ////////////////////////////////---done loading scene--------//////////////
     initScene(_placementsObj) {
         this.valsToSetArr = [];
-        this.scenes.push({
-            stage: _placementsObj.stage,
-            placementsObj: _placementsObj,
-            templates: _placementsObj.templates,
-            animTracks: _placementsObj.animTracks,
-        });
+        this.data = _placementsObj;
     }
     //this gives the frames of all the children of a template
     //it combines the template name of the parent with the child name to get the frame
     getChildrenFrames(_templateName) {
         var frames = {};
-        var templates = this.scenes[0].templates;
-        var animTracks = this.scenes[0].animTracks;
+        var templates = this.data.templates;
+        var animTracks = this.data.animTracks;
         var baseNode = templates[_templateName];
         if (baseNode && baseNode.children) {
             for (var i = 0; i < baseNode.children.length; i++) {
@@ -152,7 +159,7 @@ export class ZScene {
         return frames;
     }
     spawn(tempName) {
-        var templates = this.scenes[0].templates;
+        var templates = this.data.templates;
         var baseNode = templates[tempName];
         if (!baseNode) {
             return;
@@ -355,7 +362,7 @@ export class ZScene {
                     h: _h,
                 });
             }
-            var templates = this.scenes[0].templates;
+            var templates = this.data.templates;
             var childTempObj = templates[child.name];
             if (childTempObj && childTempObj.children) {
                 if (asset) {
