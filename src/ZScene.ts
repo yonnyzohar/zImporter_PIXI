@@ -6,7 +6,7 @@ import { ZTimeline } from "./ZTimeline";
 
 export class ZScene {
   private scene: PIXI.Spritesheet | null = null;
-  private _stage:PIXI.Container  = new PIXI.Container();
+  private _sceneStage:PIXI.Container  = new PIXI.Container();
   private valsToSetArr: any[] = [];
   private data: {
     placementsObj: any;
@@ -15,6 +15,7 @@ export class ZScene {
     stage: any;
     resolution: {x:number, y:number};
   };
+  private resizeMap: Map<ZContainer, boolean> = new Map();
   private static Map: Map<string, ZScene> = new Map();
   private sceneId: string;
 
@@ -29,23 +30,77 @@ export class ZScene {
 
   private sceneName: string | null = null;
 
-  public get stage() {
-    return this._stage;
+  public get sceneStage() {
+    return this._sceneStage;
   }
 
-  public resize(width: number, height: number): void {
-
-   if (this.data && this.data.resolution) {
-    const baseWidth = this.data.resolution.x;
-    const baseHeight = this.data.resolution.y;
-
-    const scaleX = width / baseWidth;
-    const scaleY = height / baseHeight;
-    const scale = Math.min(scaleX, scaleY); // uniform scale to fit
-
-    this._stage.scale.x = scale;
-    this._stage.scale.y = scale;
+  loadStage(globalStage: PIXI.Container): void {
+    let stageAssets = this.data.stage;
+    let children = stageAssets.children;
+    if(children)
+    {
+        for(let i = 0; i < children.length; i++)
+        {
+            let child = children[i];
+            let tempName = child.name;
+            let mc:ZContainer = this.spawn(tempName);
+            if(mc)
+            {
+                this._sceneStage.addChild(mc);
+                mc.name = child.instanceName || "";
+                mc.x = child.x || 0;
+                mc.y = child.y || 0;
+                mc.rotation = child.rotation || 0;
+                mc.alpha = child.alpha || 1;
+                mc.scale.x = child.scaleX || 1;
+                mc.scale.y = child.scaleY || 1;
+                mc.pivot.x = child.pivotX || 0;
+                mc.pivot.y = child.pivotY || 0;
+                mc.setAnchor(child);
+                if(child.anchorType)
+                {
+                  this.addToResizeMap(mc!);
+                }
+                (this._sceneStage as any)[mc.name] = mc;
+            }
+        }
+    }
+    globalStage.addChild(this._sceneStage);
+    this.resize(window.innerWidth, window.innerHeight);
 }
+
+  public addToResizeMap(mc: ZContainer): void
+  {
+    this.resizeMap.set(mc, true);
+  }
+
+  public removeFromResizeMap(mc: ZContainer): void
+  {
+    this.resizeMap.delete(mc);
+  }
+
+  public resize(width: number, height: number): void 
+  {
+      if (this.data && this.data.resolution) {
+        const baseWidth = this.data.resolution.x;
+        const baseHeight = this.data.resolution.y;
+
+        const scaleX = width / baseWidth;
+        const scaleY = height / baseHeight;
+        const scale = Math.min(scaleX, scaleY); // uniform scale to fit
+        console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
+
+        this._sceneStage.scale.x = scale;
+        this._sceneStage.scale.y = scale;
+
+        // Center the stage
+        this._sceneStage.x = (width - baseWidth * scale) / 2;
+        this._sceneStage.y = (height - baseHeight * scale) / 2;
+
+        for (const [mc, _] of this.resizeMap) {
+          mc.resize(width, height);
+        }
+    }
   }
 
   async load(
@@ -69,33 +124,7 @@ export class ZScene {
       });
   }
 
-  loadStage(stage: PIXI.Container): void {
-    let stageAssets = this.data.stage;
-    let children = stageAssets.children;
-    if(children)
-    {
-        for(let i = 0; i < children.length; i++)
-        {
-            let child = children[i];
-            let tempName = child.name;
-            let mc = this.spawn(tempName);
-            if(mc)
-            {
-                stage.addChild(mc);
-                mc.name = child.instanceName || "";
-                mc.x = child.x || 0;
-                mc.y = child.y || 0;
-                mc.rotation = child.rotation || 0;
-                mc.alpha = child.alpha || 1;
-                mc.scale.x = child.scaleX || 1;
-                mc.scale.y = child.scaleY || 1;
-                mc.pivot.x = child.pivotX || 0;
-                mc.pivot.y = child.pivotY || 0;
-                (stage as any)[mc.name] = mc;
-            }
-        }
-    }
-}
+  
 
   async destroy(): Promise<void> {
     const spritesheet = this.scene as PIXI.Spritesheet;
@@ -238,7 +267,7 @@ export class ZScene {
       mc = new ZContainer();
       this.createAsset(mc, baseNode);
     }
-
+    
     mc.name = baseNode.instanceName;
 
     return mc;
@@ -264,35 +293,35 @@ export class ZScene {
   createAsset(mc: any, baseNode: any): void {
     // console.log(baseNode.name);
     for (var i = 0; i < baseNode.children.length; i++) {
-      var child = baseNode.children[i];
+      var childNode = baseNode.children[i];
       //console.log(child);
 
-      var _name = child.name;
-      var _x: number = parseFloat(child.x);
-      var _y: number = parseFloat(child.y);
-      var _w: number = parseFloat(child.width);
-      var _h: number = parseFloat(child.height);
-      var a: number = child.a;
-      var b: number = child.b;
-      var c: number = child.c;
-      var d: number = child.d;
-      var tx: number = child.tx;
-      var ty: number = child.ty;
-      var pivotX: number = child.pivotX || 0;
-      var pivotY: number = child.pivotY || 0;
-      var scaleX: number = child.scaleX || 1;
-      var scaleY: number = child.scaleY || 1;
-      var rotation:number = child.rotation || 0;
+      var _name = childNode.name;
+      var _x: number = parseFloat(childNode.x);
+      var _y: number = parseFloat(childNode.y);
+      var _w: number = parseFloat(childNode.width);
+      var _h: number = parseFloat(childNode.height);
+      var a: number = childNode.a;
+      var b: number = childNode.b;
+      var c: number = childNode.c;
+      var d: number = childNode.d;
+      var tx: number = childNode.tx;
+      var ty: number = childNode.ty;
+      var pivotX: number = childNode.pivotX || 0;
+      var pivotY: number = childNode.pivotY || 0;
+      var scaleX: number = childNode.scaleX || 1;
+      var scaleY: number = childNode.scaleY || 1;
+      var rotation:number = childNode.rotation || 0;
       var _alpha: number = 0;
-      var type = child.type;
+      var type = childNode.type;
       var asset;
 
       if (type == "bmpTextField" || type == "textField") {
-        if (PIXI.BitmapFont.available[child.uniqueFontName]) {
-          const tf = new PIXI.BitmapText(child.text || "", {
-            fontName: child.uniqueFontName, // This must match the "face" attribute in the .fnt file
-            fontSize: child.size,       // Adjust as needed,
-            letterSpacing: child.letterSpacing || 0               // Adjust the letter spacing between characters
+        if (PIXI.BitmapFont.available[childNode.uniqueFontName]) {
+          const tf = new PIXI.BitmapText(childNode.text || "", {
+            fontName: childNode.uniqueFontName, // This must match the "face" attribute in the .fnt file
+            fontSize: childNode.size,       // Adjust as needed,
+            letterSpacing: childNode.letterSpacing || 0               // Adjust the letter spacing between characters
           });
 
           tf.name = _name;
@@ -300,49 +329,49 @@ export class ZScene {
           mc.addChild(tf);
           tf.x = _x;
           tf.y = _y;
-          this.applyFilters(child, tf);
+          this.applyFilters(childNode, tf);
         } else {
           //if ()
 
-          const tf = new PIXI.Text(child.text + "", {
-            fontFamily: child.fontName,
-            fontSize: child.size,
-            fill: child.color,
+          const tf = new PIXI.Text(childNode.text + "", {
+            fontFamily: childNode.fontName,
+            fontSize: childNode.size,
+            fill: childNode.color,
             align: "center",
           });
 
-          if (child.size) {
-            tf.style.fontSize = child.size;
+          if (childNode.size) {
+            tf.style.fontSize = childNode.size;
           }
-          if (child.color) {
-            tf.style.fill = child.color;
+          if (childNode.color) {
+            tf.style.fill = childNode.color;
           }
-          if (child.align) {
-            tf.style.align = child.align;
+          if (childNode.align) {
+            tf.style.align = childNode.align;
           }
-          if (child.stroke) {
-            tf.style.stroke = child.stroke;
+          if (childNode.stroke) {
+            tf.style.stroke = childNode.stroke;
           }
-          if (child.strokeThickness) {
-            tf.style.strokeThickness = child.strokeThickness;
+          if (childNode.strokeThickness) {
+            tf.style.strokeThickness = childNode.strokeThickness;
           }
-          if (child.wordWrap) {
-            tf.style.wordWrap = child.wordWrap;
+          if (childNode.wordWrap) {
+            tf.style.wordWrap = childNode.wordWrap;
           }
-          if (child.wordWrapWidth) {
-            tf.style.wordWrapWidth = child.wordWrapWidth;
+          if (childNode.wordWrapWidth) {
+            tf.style.wordWrapWidth = childNode.wordWrapWidth;
           }
-          if (child.breakWords) {
-            tf.style.breakWords = child.breakWords;
+          if (childNode.breakWords) {
+            tf.style.breakWords = childNode.breakWords;
           }
-          if (child.leading) {
-            tf.style.leading = child.leading;
+          if (childNode.leading) {
+            tf.style.leading = childNode.leading;
           }
-          if (child.letterSpacing) {
-            tf.style.letterSpacing = child.letterSpacing;
+          if (childNode.letterSpacing) {
+            tf.style.letterSpacing = childNode.letterSpacing;
           }
-          if (child.padding) {
-            tf.style.padding = child.padding;
+          if (childNode.padding) {
+            tf.style.padding = childNode.padding;
           }
 
           tf.name = _name;
@@ -350,7 +379,7 @@ export class ZScene {
           tf.y = _y;
           mc[_name] = tf;
           mc.addChild(tf);
-          this.applyFilters(child, tf);
+          this.applyFilters(childNode, tf);
         }
       }
 
@@ -372,14 +401,14 @@ export class ZScene {
       }
       if (type == "btn") {
         asset = new ZButton();
-        asset.name = child.instanceName;
+        asset.name = childNode.instanceName;
 
         if (!asset.name) {
           return;
         }
         //asset.scale.x = _scaleX;
         //asset.scale.y = _scaleY;
-        _alpha = child.alpha;
+        _alpha = childNode.alpha;
         asset.pivot.x = pivotX;
         asset.pivot.y = pivotY;
         asset.scale.x = scaleX;
@@ -403,7 +432,7 @@ export class ZScene {
       }
       if (type == "asset") {
         //this will tell me fi this asses template has children with frames
-        var frames = this.getChildrenFrames(child.name);
+        var frames = this.getChildrenFrames(childNode.name);
 
         if (Object.keys(frames).length > 0) {
           asset = new ZTimeline();
@@ -411,16 +440,16 @@ export class ZScene {
         } else {
           asset = new ZContainer();
         }
-        console.log("creation", child.instanceName); // Should print "ZTimeline"
+        console.log("creation", childNode.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         console.log("instanceof", asset instanceof ZTimeline);
 
-        asset.name = child.instanceName;
+        asset.name = childNode.instanceName;
         if (!asset.name) {
           return;
         }
 
-        _alpha = child.alpha;
+        _alpha = childNode.alpha;
 
         asset.x = _x;
         asset.y = _y;
@@ -434,11 +463,11 @@ export class ZScene {
         asset.pivot.y = pivotY;
         asset.scale.x = scaleX;
         asset.scale.y = scaleY;
-        this.applyFilters(child, asset);
+        this.applyFilters(childNode, asset);
 
 
         mc.addChild(asset);
-        console.log("after addition", child.instanceName); // Should print "ZTimeline"
+        console.log("after addition", childNode.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         console.log("instanceof", asset instanceof ZTimeline);
 
@@ -449,7 +478,7 @@ export class ZScene {
         });
       }
       var templates = this.data.templates;
-      var childTempObj = templates[child.name];
+      var childTempObj = templates[childNode.name];
 
       if (childTempObj && childTempObj.children) {
         if (asset) {
@@ -458,8 +487,18 @@ export class ZScene {
           this.createAsset(mc, childTempObj);
         }
       }
+      if(asset)
+      {
+        asset!.setAnchor(childNode);
+        if(childNode.anchorType)
+        {
+          this.addToResizeMap(asset!);
+        }
+      }
+      
     }
   }
+
 
   applyFilters(obj: any, tf: PIXI.Container) {
     if(obj.filters)
