@@ -3,25 +3,25 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
+import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData} from "./SceneData";
 
 export class ZScene {
   private scene: PIXI.Spritesheet | null = null;
   private _sceneStage:PIXI.Container  = new PIXI.Container();
-  private valsToSetArr: any[] = [];
-  private data: {
-    placementsObj: any;
-    templates: any;
-    animTracks: any;
-    stage: any;
-    resolution: {x:number, y:number};
-  };
+  private data: SceneData;
   private resizeMap: Map<ZContainer, boolean> = new Map();
   private static Map: Map<string, ZScene> = new Map();
   private sceneId: string;
+  private orientation: "landscape" | "portrait" = "portrait";
 
   constructor(_sceneId:string) {
     this.sceneId = _sceneId;
+    this.setOrientation();
     ZScene.Map.set(_sceneId, this);
+  }
+
+  public setOrientation(): void {
+    this.orientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
   }
 
   public static getSceneById(sceneId: string): ZScene | undefined {
@@ -35,39 +35,28 @@ export class ZScene {
   }
 
   loadStage(globalStage: PIXI.Container): void {
+    this.resize(window.innerWidth, window.innerHeight);
     let stageAssets = this.data.stage;
-    let children = stageAssets.children;
+    let children = stageAssets!.children;
     if(children)
     {
         for(let i = 0; i < children.length; i++)
         {
-            let child = children[i];
+            let child = children[i] as InstanceData;
             let tempName = child.name;
-            let mc:ZContainer = this.spawn(tempName);
+            let mc:ZContainer | undefined = this.spawn(tempName);
             if(mc)
             {
+                mc.setInstanceData(child, this.orientation);
+                this.addToResizeMap(mc);
                 this._sceneStage.addChild(mc);
-                mc.name = child.instanceName || "";
-                mc.x = child.x || 0;
-                mc.y = child.y || 0;
-                mc.rotation = child.rotation || 0;
-                mc.alpha = child.alpha || 1;
-                mc.scale.x = child.scaleX || 1;
-                mc.scale.y = child.scaleY || 1;
-                mc.pivot.x = child.pivotX || 0;
-                mc.pivot.y = child.pivotY || 0;
-                mc.setAnchor(child);
-                if(child.anchorType)
-                {
-                  this.addToResizeMap(mc!);
-                }
                 (this._sceneStage as any)[mc.name] = mc;
             }
         }
     }
     globalStage.addChild(this._sceneStage);
     this.resize(window.innerWidth, window.innerHeight);
-}
+  }
 
   public addToResizeMap(mc: ZContainer): void
   {
@@ -82,8 +71,16 @@ export class ZScene {
   public resize(width: number, height: number): void 
   {
       if (this.data && this.data.resolution) {
-        const baseWidth = this.data.resolution.x;
-        const baseHeight = this.data.resolution.y;
+        
+        this.setOrientation();
+        let baseWidth = this.data.resolution.x;
+        let baseHeight = this.data.resolution.y;
+        if(this.orientation === "portrait")
+        {
+          baseWidth = this.data.resolution.y;
+          baseHeight = this.data.resolution.x;
+
+        }
 
         const scaleX = width / baseWidth;
         const scaleY = height / baseHeight;
@@ -98,7 +95,7 @@ export class ZScene {
         this._sceneStage.y = (height - baseHeight * scale) / 2;
 
         for (const [mc, _] of this.resizeMap) {
-          mc.resize(width, height);
+          mc.resize(width, height, this.orientation);
         }
     }
   }
@@ -222,21 +219,21 @@ export class ZScene {
 
   ////////////////////////////////---done loading scene--------//////////////
 
-  initScene(_placementsObj: any) {
-    this.valsToSetArr = [];
+  initScene(_placementsObj: SceneData): void {
     this.data = _placementsObj;
   }
 
   //this gives the frames of all the children of a template
   //it combines the template name of the parent with the child name to get the frame
   getChildrenFrames(_templateName: string) {
-    var frames: any = {};
+    var frames: Record<string, AnimTrackData[]> = {};
     var templates = this.data.templates;
-    var animTracks = this.data.animTracks;
+    var animTracks = this.data.animTracks!;
     var baseNode = templates[_templateName];
     if (baseNode && baseNode.children) {
       for (var i = 0; i < baseNode.children.length; i++) {
-        var childInstanceName = baseNode.children[i].instanceName;
+        let childNode = baseNode.children[i] as InstanceData;
+        var childInstanceName = childNode.instanceName;
         var combinedName = childInstanceName + "_" + _templateName;
         //anim tracks are saved on the scene file via child name + template name to make sure it is uniquie
         //however when passed to the ZTimeline it is just the child name - because the ZTimeline will look for the child by name to set its timeline
@@ -249,7 +246,7 @@ export class ZScene {
     return frames;
   }
 
-  spawn(tempName: string): any {
+  spawn(tempName: string): ZContainer | undefined {
     var templates = this.data.templates;
     var baseNode = templates[tempName];
     if (!baseNode) {
@@ -268,7 +265,7 @@ export class ZScene {
       this.createAsset(mc, baseNode);
     }
     
-    mc.name = baseNode.instanceName;
+    //mc.name = baseNode.instanceName;
 
     return mc;
   }
@@ -290,100 +287,91 @@ export class ZScene {
     return (degrees * Math.PI) / 180;
   }
 
-  createAsset(mc: any, baseNode: any): void {
+  createAsset(mc: ZContainer, baseNode: TemplateData): void {
     // console.log(baseNode.name);
     for (var i = 0; i < baseNode.children.length; i++) {
-      var childNode = baseNode.children[i];
+      var childNode = baseNode.children[i] as BaseAssetData;
       //console.log(child);
 
       var _name = childNode.name;
-      var _x: number = parseFloat(childNode.x);
-      var _y: number = parseFloat(childNode.y);
-      var _w: number = parseFloat(childNode.width);
-      var _h: number = parseFloat(childNode.height);
-      var a: number = childNode.a;
-      var b: number = childNode.b;
-      var c: number = childNode.c;
-      var d: number = childNode.d;
-      var tx: number = childNode.tx;
-      var ty: number = childNode.ty;
-      var pivotX: number = childNode.pivotX || 0;
-      var pivotY: number = childNode.pivotY || 0;
-      var scaleX: number = childNode.scaleX || 1;
-      var scaleY: number = childNode.scaleY || 1;
-      var rotation:number = childNode.rotation || 0;
-      var _alpha: number = 0;
+      
       var type = childNode.type;
       var asset;
 
       if (type == "bmpTextField" || type == "textField") {
-        if (PIXI.BitmapFont.available[childNode.uniqueFontName]) {
-          const tf = new PIXI.BitmapText(childNode.text || "", {
-            fontName: childNode.uniqueFontName, // This must match the "face" attribute in the .fnt file
-            fontSize: childNode.size,       // Adjust as needed,
-            letterSpacing: childNode.letterSpacing || 0               // Adjust the letter spacing between characters
+        let textInstanceNode = childNode as any as TextData;
+        if (PIXI.BitmapFont.available[textInstanceNode.fontName as string]) {
+          const tf = new PIXI.BitmapText(textInstanceNode.text || "", {
+            fontName: textInstanceNode.fontName as string, // This must match the "face" attribute in the .fnt file
+            fontSize: textInstanceNode.size as number,       // Adjust as needed,
+            letterSpacing: textInstanceNode.letterSpacing || 0               // Adjust the letter spacing between characters
           });
 
           tf.name = _name;
-          mc[_name] = tf;
+          (mc as any)[_name] = tf;
           mc.addChild(tf);
-          tf.x = _x;
-          tf.y = _y;
+          tf.x = textInstanceNode.x;
+          tf.y = textInstanceNode.y;
           this.applyFilters(childNode, tf);
         } else {
           //if ()
 
-          const tf = new PIXI.Text(childNode.text + "", {
-            fontFamily: childNode.fontName,
-            fontSize: childNode.size,
-            fill: childNode.color,
+          const tf = new PIXI.Text(textInstanceNode.text + "", {
+            fontFamily: textInstanceNode.fontName,
+            fontSize: textInstanceNode.size,
+            fill: textInstanceNode.color,
             align: "center",
           });
 
-          if (childNode.size) {
-            tf.style.fontSize = childNode.size;
+          if (textInstanceNode.size) {
+            tf.style.fontSize = textInstanceNode.size;
           }
-          if (childNode.color) {
-            tf.style.fill = childNode.color;
+          if (textInstanceNode.color) {
+            tf.style.fill = textInstanceNode.color;
           }
-          if (childNode.align) {
-            tf.style.align = childNode.align;
+          if (textInstanceNode.align) {
+            tf.style.align = textInstanceNode.align as PIXI.TextStyleAlign;
           }
-          if (childNode.stroke) {
-            tf.style.stroke = childNode.stroke;
+          if (textInstanceNode.stroke) {
+            tf.style.stroke = textInstanceNode.stroke;
           }
-          if (childNode.strokeThickness) {
-            tf.style.strokeThickness = childNode.strokeThickness;
+          if (textInstanceNode.strokeThickness) {
+            tf.style.strokeThickness = textInstanceNode.strokeThickness;
           }
-          if (childNode.wordWrap) {
-            tf.style.wordWrap = childNode.wordWrap;
+          if (textInstanceNode.wordWrap) {
+            tf.style.wordWrap = textInstanceNode.wordWrap;
           }
-          if (childNode.wordWrapWidth) {
-            tf.style.wordWrapWidth = childNode.wordWrapWidth;
+          if (textInstanceNode.wordWrapWidth) {
+            tf.style.wordWrapWidth = textInstanceNode.wordWrapWidth;
           }
-          if (childNode.breakWords) {
-            tf.style.breakWords = childNode.breakWords;
+          if (textInstanceNode.breakWords) {
+            tf.style.breakWords = textInstanceNode.breakWords;
           }
-          if (childNode.leading) {
-            tf.style.leading = childNode.leading;
+          if (textInstanceNode.leading) {
+            tf.style.leading = textInstanceNode.leading;
           }
-          if (childNode.letterSpacing) {
-            tf.style.letterSpacing = childNode.letterSpacing;
+          if (textInstanceNode.letterSpacing) {
+            tf.style.letterSpacing = textInstanceNode.letterSpacing;
           }
-          if (childNode.padding) {
-            tf.style.padding = childNode.padding;
+          if (textInstanceNode.padding) {
+            tf.style.padding = textInstanceNode.padding as number;
           }
 
           tf.name = _name;
-          tf.x = _x;
-          tf.y = _y;
-          mc[_name] = tf;
+          tf.x = textInstanceNode.x;
+          tf.y = textInstanceNode.y;
+          (mc as any)[_name] = tf;
           mc.addChild(tf);
           this.applyFilters(childNode, tf);
         }
       }
 
       if (type == "img") {
+        let spriteData = childNode as SpriteData;
+        var _w: number = (spriteData.width);
+        var _h: number = (spriteData.height);
+        var _x: number = spriteData.x;
+        var _y: number = spriteData.y;
         var texName = _name;
 
         texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
@@ -392,7 +380,7 @@ export class ZScene {
           return;
         }
         img.name = _name;
-        mc[texName] = img;
+        (mc as any)[texName] = img;
         mc.addChild(img);
         img.x = _x;
         img.y = _y;
@@ -400,37 +388,24 @@ export class ZScene {
         img.height = _h;
       }
       if (type == "btn") {
+        var instanceData = childNode as InstanceData;
+
         asset = new ZButton();
-        asset.name = childNode.instanceName;
+        asset.name = instanceData.instanceName;
 
         if (!asset.name) {
           return;
         }
-        //asset.scale.x = _scaleX;
-        //asset.scale.y = _scaleY;
-        _alpha = childNode.alpha;
-        asset.pivot.x = pivotX;
-        asset.pivot.y = pivotY;
-        asset.scale.x = scaleX;
-        asset.scale.y = scaleY;
-        asset.x = _x;
-        asset.y = _y;
-        asset.interactive = true;
-        asset.interactiveChildren = true;
-        asset.rotation = rotation;
-        asset.alpha = _alpha;
-        //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
-        mc[asset.name] = asset;
-        mc.addChild(asset);
 
-       
-        this.valsToSetArr.push({
-          mc: asset,
-          w: _w,
-          h: _h,
-        });
+        //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
+        (mc as any)[asset.name] = asset;
+        asset.setInstanceData(instanceData, this.orientation);
+        mc.addChild(asset);
+        this.addToResizeMap(asset);
+        
       }
       if (type == "asset") {
+        var instanceData = childNode as InstanceData;
         //this will tell me fi this asses template has children with frames
         var frames = this.getChildrenFrames(childNode.name);
 
@@ -440,42 +415,26 @@ export class ZScene {
         } else {
           asset = new ZContainer();
         }
-        console.log("creation", childNode.instanceName); // Should print "ZTimeline"
+        console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         console.log("instanceof", asset instanceof ZTimeline);
 
-        asset.name = childNode.instanceName;
+        asset.name = instanceData.instanceName;
         if (!asset.name) {
           return;
         }
-
-        _alpha = childNode.alpha;
-
-        asset.x = _x;
-        asset.y = _y;
-
-        asset.rotation = rotation;
-
-        //console.log(asset.name + " rot " + asset.rotation + " degrees " + child.rotation);
-        asset.alpha = _alpha;
-        mc[asset.name] = asset;
-        asset.pivot.x = pivotX;
-        asset.pivot.y = pivotY;
-        asset.scale.x = scaleX;
-        asset.scale.y = scaleY;
+        (mc as any)[asset.name] = asset;
         this.applyFilters(childNode, asset);
-
-
+        asset.setInstanceData(instanceData, this.orientation);
         mc.addChild(asset);
-        console.log("after addition", childNode.instanceName); // Should print "ZTimeline"
+        this.addToResizeMap(asset);
+
+        
+        console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         console.log("instanceof", asset instanceof ZTimeline);
+        
 
-        this.valsToSetArr.push({
-          mc: asset,
-          w: _w,
-          h: _h,
-        });
       }
       var templates = this.data.templates;
       var childTempObj = templates[childNode.name];
@@ -487,15 +446,7 @@ export class ZScene {
           this.createAsset(mc, childTempObj);
         }
       }
-      if(asset)
-      {
-        asset!.setAnchor(childNode);
-        if(childNode.anchorType)
-        {
-          this.addToResizeMap(asset!);
-        }
-      }
-      
+
     }
   }
 

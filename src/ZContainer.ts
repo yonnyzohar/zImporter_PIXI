@@ -1,5 +1,9 @@
 
 import * as PIXI from 'pixi.js';
+import { InstanceData } from './SceneData';
+import { OrientationData } from './SceneData';
+import { ZScene } from './ZScene';
+import { ZTimeline } from './ZTimeline';
 
 export interface AnchorData{
     anchorType: string;
@@ -11,82 +15,72 @@ export interface AnchorData{
 
 export class ZContainer extends PIXI.Container{
 
-
+    portrait: OrientationData;
+    landscape: OrientationData;
+    currentTransform: OrientationData;
     name: string = "";
-    anChorData: any;
+    //anChorData: any;
     public setState(stateName:string):void
     {
 
     }
 
-
-    public setAnchor(childNode: any) {
-        if(childNode.anchorType)
-        {
-            this.anChorData = {anchorType : childNode.anchorType, anchorPercentage: childNode.anchorPercentage};
-            this.applyAnchor();
-        }
+    public setInstanceData(data:InstanceData, orientation:string):void
+    {
+        this.portrait = data.portrait;
+        this.landscape = data.landscape;
+        this.currentTransform = orientation === "portrait" ? this.portrait : this.landscape;
+        this.applyTransform();
+        this.name = data.instanceName || "";
+        
+        //this.name = data.instanceName;
+        //this.anChorData = data.portrait.isAnchored ? {anchorType: data.portrait.anchorType, anchorPercentage: data.portrait.anchorPercentage} : null;
+        //this.applyAnchor();
     }
 
-    public resize(width: number, height: number) {
-        if(this.anChorData)
+    private applyTransform() {
+        if (!this.currentTransform) return;
+        if(this.parent )
         {
-            this.applyAnchor();
+            let currentFrame = (this.parent as any).currentFrame;
+            if(currentFrame !== undefined && currentFrame > 0)
+            {
+                return; // do not apply transform if parent timeline is playing
+            }
         }
+
+        this.x = this.currentTransform.x || 0;
+        this.y = this.currentTransform.y || 0;
+        this.rotation = this.currentTransform.rotation || 0;
+        this.alpha = this.currentTransform.alpha || 1;
+        this.scale.x = this.currentTransform.scaleX || 1;
+        this.scale.y = this.currentTransform.scaleY || 1;
+        this.pivot.x = this.currentTransform.pivotX || 0;
+        this.pivot.y = this.currentTransform.pivotY || 0;
+        this.applyAnchor();
+    }
+
+
+    public resize(width: number, height: number, orientation: "portrait" | "landscape") {
+        this.currentTransform = orientation === "portrait" ? this.portrait : this.landscape;
+        this.applyTransform();
     }
 
     public applyAnchor() {
-        if(this.anChorData)
+        if(this.currentTransform && this.currentTransform.isAnchored && this.parent)
         {
-            let xPer = this.anChorData.anchorPercentage.x || 0;
-            let yPer = this.anChorData.anchorPercentage.y || 0;
+            let xPer = this.currentTransform!.anchorPercentage!.x || 0;
+            let yPer = this.currentTransform!.anchorPercentage!.y || 0;
             let x = xPer * window.innerWidth;
             let y = yPer * window.innerHeight;
             const globalPoint = new PIXI.Point(x, y);
             const localPoint = this.parent.toLocal(globalPoint);
-            //give me the global point x,y in local space
-
-
             this.x = localPoint.x;
             this.y = localPoint.y;
-            return;
-
-            switch (this.anChorData.anchorType) {
-                case "top":
-                    this.y = y;
-                    break;
-                case "btm":
-                    this.y = window.innerHeight - y;
-                    break;
-                case "left":
-                    this.x = x;
-                    break;
-                case "right":
-                    this.x = window.innerWidth - x;
-                    break;
-                case "topLeft":
-                    this.x = x;
-                    this.y = y;
-                    break;
-                case "topRight":
-                    this.x = window.innerWidth - x;
-                    this.y = y;
-                    break;
-                case "btmLeft":
-                    this.x = x;
-                    this.y = window.innerHeight - y;
-                    break;
-                case "btmRight":
-                    this.x = window.innerWidth - x;
-                    this.y = window.innerHeight - y;
-                    break;
-                case "center":
-                    this.x = (window.innerWidth - this.width) / 2 + x;
-                    this.y = (window.innerHeight - this.height) / 2 + y;
-                    break;
-                default:
-                    break;  
-            }
         }
-      }
+    }
+
+    public isAnchored(): boolean {
+        return this.currentTransform && this.currentTransform.isAnchored || false;
+    }
 }

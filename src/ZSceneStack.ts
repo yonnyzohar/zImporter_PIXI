@@ -49,7 +49,7 @@ export class ZSceneStack{
         for(let i = this.stack.length-1; i >=0 ; i-- )
         {
             let gameScene:ZScene = this.stack[i];
-            let ent:ZContainer = gameScene.spawn(templateName);
+            let ent:ZContainer | undefined = gameScene.spawn(templateName);
             if(ent)
             {
                 return ent;
