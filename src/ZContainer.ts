@@ -83,4 +83,52 @@ export class ZContainer extends PIXI.Container{
     public isAnchored(): boolean {
         return this.currentTransform && this.currentTransform.isAnchored || false;
     }
+
+    public set x(value: number) {
+        super.x = value;
+        if (this.currentTransform) {
+            this.currentTransform.x = value;
+        }
+    }
+
+    public set y(value: number) {
+        super.y = value;
+        if (this.currentTransform) {
+            this.currentTransform.y = value;
+        }
+    }
+    public set rotation(value: number) {
+        super.rotation = value;
+        if (this.currentTransform) {
+            this.currentTransform.rotation = value;
+        }
+    }
+
+
+    public set scaleX(value: number) {
+        super.scale.x = value;
+        if (this.currentTransform) {
+            this.currentTransform.scaleX = value;
+        }
+    }
+    public set scaleY(value: number) {
+        super.scale.y = value;
+        if (this.currentTransform) {
+            this.currentTransform.scaleY = value;
+        }
+    }
+
+    public set pivotX(value: number) {
+        super.pivot.x = value;
+        if (this.currentTransform) {
+            this.currentTransform.pivotX = value;
+        }
+    }
+    public set pivotY(value: number) {
+        super.pivot.y = value;
+        if (this.currentTransform) {
+            this.currentTransform.pivotY = value;
+        }
+    }
+
 }
