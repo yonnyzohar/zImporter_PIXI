@@ -25,6 +25,11 @@ export class ZContainer extends PIXI.Container{
 
     }
 
+    //this is called once all children of the container are loaded
+    public init():void{
+
+    }
+
     public setInstanceData(data:InstanceData, orientation:string):void
     {
         this.portrait = data.portrait;
