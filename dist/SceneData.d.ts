@@ -73,6 +73,9 @@ export interface TextData extends BaseAssetData {
     leading?: number;
     letterSpacing?: number;
     padding?: number | number[];
+    textAnchorX: number;
+    textAnchorY: number;
+    fontWeight: string;
 }
 export interface TemplateData {
     type: string;

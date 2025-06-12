@@ -7,6 +7,9 @@ export class ZContainer extends PIXI.Container {
     //anChorData: any;
     setState(stateName) {
     }
+    //this is called once all children of the container are loaded
+    init() {
+    }
     setInstanceData(data, orientation) {
         this.portrait = data.portrait;
         this.landscape = data.landscape;

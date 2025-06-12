@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
+import { ZState } from "./ZState";
 export class ZScene {
     scene = null;
     _sceneStage = new PIXI.Container();
@@ -204,8 +205,19 @@ export class ZScene {
             mc.gotoAndStop(0);
         }
         else {
-            mc = new ZContainer();
+            if (baseNode.type == "btn") {
+                mc = new ZButton();
+            }
+            else {
+                if (baseNode.type == "state") {
+                    mc = new ZState();
+                }
+                else {
+                    mc = new ZContainer();
+                }
+            }
             this.createAsset(mc, baseNode);
+            mc.init();
         }
         //mc.name = baseNode.instanceName;
         return mc;
@@ -255,6 +267,9 @@ export class ZScene {
                         fill: textInstanceNode.color,
                         align: "center",
                     });
+                    if (textInstanceNode.textAnchorX && textInstanceNode.textAnchorY) {
+                        tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
+                    }
                     if (textInstanceNode.size) {
                         tf.style.fontSize = textInstanceNode.size;
                     }
@@ -287,6 +302,9 @@ export class ZScene {
                     }
                     if (textInstanceNode.padding) {
                         tf.style.padding = textInstanceNode.padding;
+                    }
+                    if (textInstanceNode.fontWeight) {
+                        tf.style.fontWeight = textInstanceNode.fontWeight;
                     }
                     tf.name = _name;
                     tf.x = textInstanceNode.x;
@@ -329,7 +347,7 @@ export class ZScene {
                 mc.addChild(asset);
                 this.addToResizeMap(asset);
             }
-            if (type == "asset") {
+            if (type == "asset" || type == "state") {
                 var instanceData = childNode;
                 //this will tell me fi this asses template has children with frames
                 var frames = this.getChildrenFrames(childNode.name);
@@ -338,7 +356,12 @@ export class ZScene {
                     asset.setFrames(frames);
                 }
                 else {
-                    asset = new ZContainer();
+                    if (type == "state") {
+                        asset = new ZState();
+                    }
+                    else {
+                        asset = new ZContainer();
+                    }
                 }
                 console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
                 console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
@@ -366,6 +389,7 @@ export class ZScene {
                     this.createAsset(mc, childTempObj);
                 }
             }
+            asset?.init();
         }
     }
     applyFilters(obj, tf) {

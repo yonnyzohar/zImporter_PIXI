@@ -14,7 +14,8 @@
     "@types/eslint": "^9.6.1",
     "@types/gsap": "^3.0.0",
     "@types/node": "^22.13.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "@pixi/filter-drop-shadow": "^5.2.0",
