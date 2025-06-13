@@ -6,35 +6,89 @@ import { ZTimeline } from "./ZTimeline";
 import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData} from "./SceneData";
 import { ZState } from "./ZState";
 
+
+/**
+ * Represents a scene in the application, managing its assets, layout, and lifecycle.
+ * Handles loading, resizing, and instantiation of scene elements using PIXI.js.
+ *
+ * @remarks
+ * - Supports both landscape and portrait orientations.
+ * - Manages scene assets, templates, and animation tracks.
+ * - Provides methods for loading assets, creating display objects, and handling responsive resizing.
+ * - Integrates with custom containers such as `ZContainer`, `ZButton`, `ZState`, and `ZTimeline`.
+ */
 export class ZScene {
+  /**
+   * The loaded PIXI spritesheet for the scene, or null if not loaded.
+   */
   private scene: PIXI.Spritesheet | null = null;
+  /**
+   * The root container for all scene display objects.
+   */
   private _sceneStage:PIXI.Container  = new PIXI.Container();
+  /**
+   * The data describing the scene's structure, assets, and templates.
+   */
   private data: SceneData;
+  /**
+   * A map of containers that should be resized when the scene resizes.
+   */
   private resizeMap: Map<ZContainer, boolean> = new Map();
+  /**
+   * Static map of all instantiated scenes by their ID.
+   */
   private static Map: Map<string, ZScene> = new Map();
+  /**
+   * The unique identifier for this scene.
+   */
   private sceneId: string;
+  /**
+   * The current orientation of the scene ("landscape" or "portrait").
+   */
   private orientation: "landscape" | "portrait" = "portrait";
 
+  /**
+   * The current stage of the scene, used for managing scene transitions.
+   */
+  private sceneName: string | null = null;
+
+
+  public get sceneStage() {
+    return this._sceneStage;
+  }
+
+  /**
+   * Constructs a new ZScene instance.
+   * @param _sceneId - The unique identifier for the scene.
+   */
   constructor(_sceneId:string) {
     this.sceneId = _sceneId;
     this.setOrientation();
     ZScene.Map.set(_sceneId, this);
   }
 
+  /**
+   * Sets the orientation property based on the current window dimensions.
+   */
   public setOrientation(): void {
     this.orientation = window.innerWidth > window.innerHeight ? "landscape" : "portrait";
   }
 
+  /**
+   * Retrieves a scene instance by its ID.
+   * @param sceneId - The ID of the scene to retrieve.
+   * @returns The ZScene instance, or undefined if not found.
+   */
   public static getSceneById(sceneId: string): ZScene | undefined {
     return ZScene.Map.get(sceneId);
   }
 
-  private sceneName: string | null = null;
 
-  public get sceneStage() {
-    return this._sceneStage;
-  }
 
+  /**
+   * Loads and initializes the scene's stage, adding its children to the global stage.
+   * @param globalStage - The main PIXI.Container to which the scene will be added.
+   */
   loadStage(globalStage: PIXI.Container): void {
     this.resize(window.innerWidth, window.innerHeight);
     let stageAssets = this.data.stage;
@@ -59,16 +113,30 @@ export class ZScene {
     this.resize(window.innerWidth, window.innerHeight);
   }
 
+  /**
+   * Adds a container to the resize map, so it will be resized with the scene.
+   * @param mc - The container to add.
+   */
   public addToResizeMap(mc: ZContainer): void
   {
     this.resizeMap.set(mc, true);
   }
 
+
+  /**
+   * Removes a container from the resize map.
+   * @param mc - The container to remove.
+   */
   public removeFromResizeMap(mc: ZContainer): void
   {
     this.resizeMap.delete(mc);
   }
 
+  /**
+   * Resizes the scene and all registered containers to fit the given dimensions.
+   * @param width - The new width.
+   * @param height - The new height.
+   */
   public resize(width: number, height: number): void 
   {
       if (this.data && this.data.resolution) {
@@ -101,6 +169,11 @@ export class ZScene {
     }
   }
 
+  /**
+   * Loads the scene's placement and asset data asynchronously.
+   * @param assetBasePath - The base path for assets.
+   * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
+   */
   async load(
     assetBasePath: string,
     _loadCompleteFnctn: Function
@@ -123,7 +196,9 @@ export class ZScene {
   }
 
   
-
+  /**
+   * Destroys the scene and its assets, freeing resources.
+   */
   async destroy(): Promise<void> {
     const spritesheet = this.scene as PIXI.Spritesheet;
 
@@ -142,6 +217,12 @@ export class ZScene {
     await PIXI.Assets.unload(this.sceneName!);
   }
 
+  /**
+   * Loads the scene's assets and fonts, then initializes the scene.
+   * @param assetBasePath - The base path for assets.
+   * @param placemenisObj - The placements object describing the scene.
+   * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
+   */
   async loadAssets(
     assetBasePath: string,
     placemenisObj: any,
@@ -176,6 +257,11 @@ export class ZScene {
     }
   }
 
+  /**
+   * Creates a PIXI.Sprite for a given frame name from the loaded spritesheet.
+   * @param itemName - The name of the frame.
+   * @returns The created sprite, or null if not found.
+   */
   createFrame(itemName: string): PIXI.Sprite | null {
     //console.log(itemName);
     let img: PIXI.Sprite | null = new PIXI.Sprite(
@@ -189,6 +275,11 @@ export class ZScene {
     return img;
   }
 
+  /**
+   * Gets the number of frames that match a given prefix in the spritesheet data.
+   * @param _framePrefix - The prefix to search for.
+   * @returns The number of matching frames.
+   */
   getNumOfFrames(_framePrefix: string): number {
     let num = 0;
     var a: any = this.scene!.data;
@@ -201,6 +292,11 @@ export class ZScene {
     return num;
   }
 
+  /**
+   * Creates an animated sprite (movie clip) from frames with a given prefix.
+   * @param _framePrefix - The prefix for the frames.
+   * @returns The created animated sprite.
+   */
   createMovieClip(_framePrefix: string): PIXI.AnimatedSprite {
     const frames: PIXI.Texture[] = [];
     const numFrames = this.getNumOfFrames(_framePrefix);
@@ -220,10 +316,19 @@ export class ZScene {
 
   ////////////////////////////////---done loading scene--------//////////////
 
+  /**
+   * Initializes the scene with the given placements object.
+   * @param _placementsObj - The scene data.
+   */
   initScene(_placementsObj: SceneData): void {
     this.data = _placementsObj;
   }
 
+  /**
+   * Retrieves animation frames for all children of a template.
+   * @param _templateName - The name of the template.
+   * @returns A record mapping child instance names to their animation tracks.
+   */
   //this gives the frames of all the children of a template
   //it combines the template name of the parent with the child name to get the frame
   getChildrenFrames(_templateName: string) {
@@ -247,6 +352,11 @@ export class ZScene {
     return frames;
   }
 
+  /**
+   * Spawns a new container or timeline for a given template name.
+   * @param tempName - The template name.
+   * @returns The created container or timeline, or undefined if not found.
+   */
   spawn(tempName: string): ZContainer | undefined {
     var templates = this.data.templates;
     var baseNode = templates[tempName];
@@ -288,6 +398,12 @@ export class ZScene {
     return mc;
   }
 
+  /**
+   * Recursively collects all asset nodes from a given object.
+   * @param o - The object to search.
+   * @param allAssets - The accumulator for found assets.
+   * @returns The map of all found assets.
+   */
   getAllAssets(o: any, allAssets: any): any {
     for (const k in o) {
       if (k === "type" && o[k] === "asset") {
@@ -301,10 +417,20 @@ export class ZScene {
     return allAssets;
   }
 
+  /**
+   * Converts degrees to radians.
+   * @param degrees - The angle in degrees.
+   * @returns The angle in radians.
+   */
   degreesToRadians(degrees: number): number {
     return (degrees * Math.PI) / 180;
   }
 
+  /**
+   * Recursively creates and adds child assets to a container based on template data.
+   * @param mc - The parent container.
+   * @param baseNode - The template data for the asset.
+   */
   createAsset(mc: ZContainer, baseNode: TemplateData): void {
     // console.log(baseNode.name);
     for (var i = 0; i < baseNode.children.length; i++) {
@@ -486,7 +612,11 @@ export class ZScene {
     }
   }
 
-
+  /**
+   * Applies visual filters (such as drop shadow) to a PIXI container.
+   * @param obj - The object containing filter data.
+   * @param tf - The PIXI container to apply filters to.
+   */
   applyFilters(obj: any, tf: PIXI.Container) {
     if(obj.filters)
       {
@@ -512,6 +642,15 @@ export class ZScene {
       }
   }
 
+  /**
+   * Loads a bitmap font from XML and creates a bitmap text object.
+   * @param xmlUrl - The URL to the XML font data.
+   * @param textToDisplay - The text to display.
+   * @param fontName - The name of the font.
+   * @param fontSize - The size of the font.
+   * @param callback - Callback to invoke when the font is loaded.
+   * @returns A promise that resolves when the font is loaded.
+   */
   async createBitmapTextFromXML(
     xmlUrl: string,
     textToDisplay: string,
@@ -557,6 +696,11 @@ export class ZScene {
     return null;
   }
 
+  /**
+   * Loads a texture from a given URL.
+   * @param textureUrl - The URL of the texture.
+   * @returns A promise that resolves to the loaded PIXI.Texture.
+   */
   loadTexture(textureUrl: string): Promise<PIXI.Texture> {
     return new Promise((resolve, reject) => {
       const texture = PIXI.Texture.from(textureUrl);

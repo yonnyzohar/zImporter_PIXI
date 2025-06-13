@@ -60,8 +60,19 @@ let scene:ZScene = new ZScene();
         })
 ```
 
-API
+## API
 The package exposes several classes and methods that allow you to interact with imported assets:
+
+ZScene:
+Everything sits inside a scene. 
+
+ZContainer:
+This is the core class
+
+ZButton:
+ZTimeline:
+ZState:
+
 
 ## Contributing
 If you'd like to contribute to the development of zImporter, feel free to fork the repository, create a branch, and submit a pull request. Please make sure to follow the existing code style and add tests where applicable.
