@@ -146,7 +146,7 @@ export class ZContainer extends PIXI.Container{
         this.x = this.currentTransform.x || 0;
         this.y = this.currentTransform.y || 0;
         this.rotation = this.currentTransform.rotation || 0;
-        this.alpha = this.currentTransform.alpha || 1;
+        this.alpha = this.currentTransform.alpha;
         this.scale.x = this.currentTransform.scaleX || 1;
         this.scale.y = this.currentTransform.scaleY || 1;
         this.pivot.x = this.currentTransform.pivotX || 0;
