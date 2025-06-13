@@ -8,4 +8,5 @@ export { ZSceneStack } from './ZSceneStack';
 export { ZTextField } from './ZTextField';
 export { ZTimeline } from './ZTimeline';
 export { ZUpdatables } from './ZUpdatables';
+export { ZState } from './ZState';
 
