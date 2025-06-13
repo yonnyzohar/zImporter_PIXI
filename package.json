@@ -1,5 +1,5 @@
 {
-  "name": "zImporter_PIXI",
+  "name": "zimporter-pixi",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
