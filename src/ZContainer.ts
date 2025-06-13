@@ -103,7 +103,10 @@ export class ZContainer extends PIXI.Container{
                 {
                     if(child && child instanceof ZContainer)
                     {
-                        return child.get(childName);
+                        let res = child.get(childName);
+                        if (res) {
+                            return res;
+                        }
                     }
                 }
             }
