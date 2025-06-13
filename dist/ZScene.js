@@ -22,7 +22,7 @@ export class ZScene {
     /**
      * The root container for all scene display objects.
      */
-    _sceneStage = new PIXI.Container();
+    _sceneStage = new ZContainer();
     /**
      * The data describing the scene's structure, assets, and templates.
      */

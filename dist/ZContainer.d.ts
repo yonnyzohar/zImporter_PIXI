@@ -81,7 +81,7 @@ export declare class ZContainer extends PIXI.Container {
     landscape: OrientationData;
     currentTransform: OrientationData;
     name: string;
-    setState(stateName: string): void;
+    get(childName: string): ZContainer | null;
     init(): void;
     setInstanceData(data: InstanceData, orientation: string): void;
     private applyTransform;

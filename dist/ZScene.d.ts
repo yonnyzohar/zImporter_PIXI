@@ -44,7 +44,7 @@ export declare class ZScene {
      * The current stage of the scene, used for managing scene transitions.
      */
     private sceneName;
-    get sceneStage(): PIXI.Container<PIXI.DisplayObject>;
+    get sceneStage(): ZContainer;
     /**
      * Constructs a new ZScene instance.
      * @param _sceneId - The unique identifier for the scene.

@@ -73,7 +73,21 @@ export class ZContainer extends PIXI.Container {
     currentTransform;
     name = "";
     //anChorData: any;
-    setState(stateName) {
+    get(childName) {
+        if (this.children && this.children.length > 0) {
+            for (let i = 0; i < this.children.length; i++) {
+                if (this.children[i].name === childName) {
+                    return this.children[i];
+                }
+                else {
+                    const child = this.children[i].get(childName);
+                    if (child) {
+                        return child;
+                    }
+                }
+            }
+        }
+        return null;
     }
     //this is called once all children of the container are loaded
     init() {

@@ -88,9 +88,28 @@ export class ZContainer extends PIXI.Container{
     currentTransform: OrientationData;
     name: string = "";
     //anChorData: any;
-    public setState(stateName:string):void
+    public get(childName:string):ZContainer | null
     {
-
+        if(this.children && this.children.length > 0)
+        {
+            for(let i = 0; i < this.children.length; i++)
+            {
+                
+                if(this.children[i].name === childName)
+                {
+                    return this.children[i] as ZContainer;
+                }
+                else
+                {
+                    const child = (this.children[i] as ZContainer).get(childName);
+                    if(child)
+                    {
+                        return child;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     //this is called once all children of the container are loaded
