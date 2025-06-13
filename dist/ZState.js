@@ -19,7 +19,7 @@ export class ZState extends ZContainer {
     currentState = null;
     //this is called once all children of the container are loaded
     init() {
-        this.currentState = this.setState("idle");
+        this.setState("idle");
     }
     getCurrentState() {
         return this.currentState;
@@ -50,6 +50,7 @@ export class ZState extends ZContainer {
                 t.play();
             }
         }
+        this.currentState = chosenChild;
         return chosenChild;
     }
 }
