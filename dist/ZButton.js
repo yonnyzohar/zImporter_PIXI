@@ -64,8 +64,7 @@ export class ZButton extends ZContainer {
             this.labelContainer.alpha = 1;
         }
         this.on('touchend', this.onClickBinded);
-        this.on('mouseupoutside', this.onClickBinded);
-        this.on('touchendoutside', this.onClickBinded);
+        this.on('click', this.onClickBinded);
         this.onOut();
     }
     disable() {
