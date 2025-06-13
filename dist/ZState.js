@@ -2,9 +2,16 @@ import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
 //in a state, all children are turned off at any given moment except one
 export class ZState extends ZContainer {
+    currentState = null;
     //this is called once all children of the container are loaded
     init() {
-        this.setState("idle");
+        this.currentState = this.setState("idle");
+    }
+    getCurrentState() {
+        return this.currentState;
+    }
+    hasState(str) {
+        return this.getChildByName(str) !== null;
     }
     setState(str) {
         let chosenChild = this.getChildByName(str);

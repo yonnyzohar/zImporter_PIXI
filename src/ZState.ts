@@ -4,9 +4,20 @@ import { ZTimeline } from "./ZTimeline";
 
 //in a state, all children are turned off at any given moment except one
 export class ZState extends ZContainer{
+    private currentState:ZContainer | null = null;
     //this is called once all children of the container are loaded
     public init():void{
-        this.setState("idle");
+        this.currentState = this.setState("idle");
+    }
+
+    public getCurrentState():ZContainer | null
+    {
+        return this.currentState;
+    }
+
+    public hasState(str:string):boolean
+    {
+        return this.getChildByName(str) !== null;
     }
 
     public setState(str:string):ZContainer | null
