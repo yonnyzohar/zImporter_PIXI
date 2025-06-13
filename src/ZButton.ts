@@ -1,10 +1,13 @@
 ﻿import { gsap } from 'gsap';
 import { ZContainer } from "./ZContainer";
 
+/**
+ * Represents a customizable button component extending ZContainer.
+ * Handles different visual states (up, over, down, disabled) and user interactions.
+ * Supports label display and animated feedback on click.
+ */
 export class ZButton extends ZContainer {
-    origScaleX: number;
-    origScaleY: number;
-    canTouch: boolean;
+
     labelContainer:ZContainer;
     overState:ZContainer;
     disabledState:ZContainer;
@@ -16,17 +19,13 @@ export class ZButton extends ZContainer {
     onOutBinded:any;
     onOverBinded:any;
     onDownBinded:any;
+    callback: any;
 
 
     constructor(_labelStr: string = "") {
         super();
         console.log("Button!");
-        //this.labelStr = _labelStr;
-        this.origScaleX = this.scale.x;
-        this.origScaleY = this.scale.y;
-
         this.interactive = true;
-        this.canTouch = true;
         this.interactiveChildren = true;
         
         this.onClickBinded = this.onClicked.bind(this);
@@ -36,6 +35,14 @@ export class ZButton extends ZContainer {
 
 
         
+    }
+
+    setCallback(func: () => void): void {
+        this.callback = func;
+    }
+
+    removeCallback(): void {
+        this.callback = undefined;
     }
 
     //this is called once all children of the container are loaded
@@ -161,30 +168,11 @@ export class ZButton extends ZContainer {
     }
 
     onClicked(): void {
-         console.log("onClicked");
-        if (this.canTouch) {
-            this.canTouch = false;
-
-            gsap.to(this.scale,{
-                x: this.origScaleX * 0.95,
-                y: this.origScaleY * 0.95,
-                duration : 0.1,
-                onComplete: this.tweenBack.bind(this)
-            });
+         if(this.callback)
+        {
+            console.log("onClicked");
+            this.callback();
         }
-    }
-
-    tweenBack(): void {
-        gsap.to(this.scale, {
-            x: this.origScaleX,
-            y: this.origScaleY,
-            duration : 0.15,
-            onComplete: this.animDone.bind(this)
-        });
-    }
-
-    animDone(): void {
-        this.canTouch = true;
     }
 }
 

@@ -1,8 +1,10 @@
 import { ZContainer } from "./ZContainer";
+/**
+ * Represents a customizable button component extending ZContainer.
+ * Handles different visual states (up, over, down, disabled) and user interactions.
+ * Supports label display and animated feedback on click.
+ */
 export declare class ZButton extends ZContainer {
-    origScaleX: number;
-    origScaleY: number;
-    canTouch: boolean;
     labelContainer: ZContainer;
     overState: ZContainer;
     disabledState: ZContainer;
@@ -12,7 +14,10 @@ export declare class ZButton extends ZContainer {
     onOutBinded: any;
     onOverBinded: any;
     onDownBinded: any;
+    callback: any;
     constructor(_labelStr?: string);
+    setCallback(func: () => void): void;
+    removeCallback(): void;
     init(): void;
     enable(): void;
     disable(): void;
@@ -20,7 +25,5 @@ export declare class ZButton extends ZContainer {
     onOut(): void;
     onOver(): void;
     onClicked(): void;
-    tweenBack(): void;
-    animDone(): void;
 }
 //# sourceMappingURL=ZButton.d.ts.map

@@ -1,9 +1,10 @@
-import { gsap } from 'gsap';
 import { ZContainer } from "./ZContainer";
+/**
+ * Represents a customizable button component extending ZContainer.
+ * Handles different visual states (up, over, down, disabled) and user interactions.
+ * Supports label display and animated feedback on click.
+ */
 export class ZButton extends ZContainer {
-    origScaleX;
-    origScaleY;
-    canTouch;
     labelContainer;
     overState;
     disabledState;
@@ -14,19 +15,22 @@ export class ZButton extends ZContainer {
     onOutBinded;
     onOverBinded;
     onDownBinded;
+    callback;
     constructor(_labelStr = "") {
         super();
         console.log("Button!");
-        //this.labelStr = _labelStr;
-        this.origScaleX = this.scale.x;
-        this.origScaleY = this.scale.y;
         this.interactive = true;
-        this.canTouch = true;
         this.interactiveChildren = true;
         this.onClickBinded = this.onClicked.bind(this);
         this.onOutBinded = this.onOut.bind(this);
         this.onOverBinded = this.onOver.bind(this);
         this.onDownBinded = this.onDown.bind(this);
+    }
+    setCallback(func) {
+        this.callback = func;
+    }
+    removeCallback() {
+        this.callback = undefined;
     }
     //this is called once all children of the container are loaded
     init() {
@@ -123,27 +127,10 @@ export class ZButton extends ZContainer {
         }
     }
     onClicked() {
-        console.log("onClicked");
-        if (this.canTouch) {
-            this.canTouch = false;
-            gsap.to(this.scale, {
-                x: this.origScaleX * 0.95,
-                y: this.origScaleY * 0.95,
-                duration: 0.1,
-                onComplete: this.tweenBack.bind(this)
-            });
+        if (this.callback) {
+            console.log("onClicked");
+            this.callback();
         }
-    }
-    tweenBack() {
-        gsap.to(this.scale, {
-            x: this.origScaleX,
-            y: this.origScaleY,
-            duration: 0.15,
-            onComplete: this.animDone.bind(this)
-        });
-    }
-    animDone() {
-        this.canTouch = true;
     }
 }
 //# sourceMappingURL=ZButton.js.map
