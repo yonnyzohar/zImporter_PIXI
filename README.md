@@ -10,7 +10,8 @@ The `zImporter` is a TypeScript package designed to import and manage graphical 
 ## Installation
 
 To install the `zImporter` package, you can add it to your project using npm (or yarn) from the npm registry.
-eg (npm i git@github.com:yonnyzohar/zImporter_PIXI.git)
+eg:
+npm install zimporter-pixi@1.0.0
 
 You need to be using "module": "ESNext", "moduleResolution": "bundler", in your tsconfig.json
 
@@ -22,7 +23,7 @@ See example project here:
 https://github.com/yonnyzohar/zImporter_PIXI_Example
 
 ```typescript
-import { ZScene } from "zImporter_PIXI";
+import { ZTimeline } from 'zimporter-pixi';
 ```
 
 Example Project
@@ -44,9 +45,9 @@ document.body.appendChild(app.view);
 // Example: Loading and displaying a scene from zStudio
 ```typescript
 import * as PIXI from 'pixi.js';
-import { ZScene } from "zImporter_PIXI";
-import { ZSceneStack } from "zImporter_PIXI";
-import { ZTimeline } from "zImporter_PIXI";
+import { ZScene } from "zimporter-pixi";
+import { ZSceneStack } from "zimporter-pixi";
+import { ZTimeline } from "zimporter-pixi";
 
 let scene:ZScene = new ZScene();
         scene.load("./assets/robo/",()=>{
