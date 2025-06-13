@@ -76,13 +76,13 @@ export class ZContainer extends PIXI.Container {
     get(childName) {
         if (this.children && this.children.length > 0) {
             for (let i = 0; i < this.children.length; i++) {
-                if (this.children[i].name === childName) {
-                    return this.children[i];
+                const child = (this.children[i]);
+                if (child.name === childName) {
+                    return child;
                 }
                 else {
-                    const child = this.children[i].get(childName);
-                    if (child) {
-                        return child;
+                    if (child && child instanceof ZContainer) {
+                        return child.get(childName);
                     }
                 }
             }
