@@ -86,6 +86,7 @@ export class ZContainer extends PIXI.Container{
     portrait: OrientationData;
     landscape: OrientationData;
     currentTransform: OrientationData;
+    resizeable: boolean = true;
     name: string = "";
     //anChorData: any;
     public get(childName:string):ZContainer | null
@@ -166,6 +167,7 @@ export class ZContainer extends PIXI.Container{
 
     private applyTransform() {
         if (!this.currentTransform) return;
+        if(!this.resizeable)return;
         if(this.parent )
         {
             let currentFrame = (this.parent as any).currentFrame;
