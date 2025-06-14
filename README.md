@@ -143,6 +143,13 @@ The package exposes several classes and methods for interacting with imported as
   * Orientation data from zStudio
 * Set `.resizeable = false` to disable responsive behavior.
 
+#### `Working with Text`
+  In ZStudio, texts are always wrapper in a container, and are called "label" by default.
+  If you know a specific container holds a text fields, you can acces it via:
+  `getTextField():PIXI.Text | null`
+  You can also set a string on the text via the container using:
+  `setText(text:string):void`
+
 ### `ZButton`
 
 * Extends `ZContainer`.
