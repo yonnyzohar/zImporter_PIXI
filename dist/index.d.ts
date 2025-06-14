@@ -5,7 +5,6 @@ export { ZPool } from './ZPool';
 export { ZResizeables } from './ZResizeables';
 export { ZScene } from './ZScene';
 export { ZSceneStack } from './ZSceneStack';
-export { ZTextField } from './ZTextField';
 export { ZTimeline } from './ZTimeline';
 export { ZUpdatables } from './ZUpdatables';
 export { ZState } from './ZState';
