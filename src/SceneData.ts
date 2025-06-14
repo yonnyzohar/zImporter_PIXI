@@ -32,6 +32,8 @@ export interface OrientationData {
     isAnchored: boolean ;
     anchorType?: AnchorConsts ;
     anchorPercentage?:{x:number, y:number};
+    width: number;
+    height: number;
 }
 
 export interface BaseAssetData{

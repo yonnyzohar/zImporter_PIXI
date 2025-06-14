@@ -217,17 +217,65 @@ export class ZContainer extends PIXI.Container{
         }
     }
 
+    public set width(value: number) {
+        super.width = value;
+        if (this.currentTransform) {
+            this.currentTransform.width = value;
+            this.currentTransform.scaleX = this.scale.x;
+        }
+    }
+
+    public get width(): number {
+        return super.width;
+    }
+    public get height(): number {
+        return super.height;
+    }
+
+    public set height(value: number) {
+        super.height = value;
+        if (this.currentTransform) {
+            this.currentTransform.height = value;
+            this.currentTransform.scaleY = this.scale.y;
+        }
+    }
+
+
     public set y(value: number) {
         super.y = value;
         if (this.currentTransform) {
             this.currentTransform.y = value;
         }
     }
+
+    
     public set rotation(value: number) {
         super.rotation = value;
         if (this.currentTransform) {
             this.currentTransform.rotation = value;
         }
+    }
+
+    public get x(): number {
+        return super.x;
+    }
+    public get y(): number {
+        return super.y;
+    }
+    public get rotation(): number {
+        return super.rotation;
+    }
+    public get scaleX(): number {
+        return super.scale.x;
+    }
+    public get scaleY(): number {
+        return super.scale.y;
+    }
+    public get pivotX(): number {
+        return super.pivot.x;
+    }
+    public get pivotY(): number {
+        return super.pivot.y;
     }
 
 

@@ -171,6 +171,26 @@ export class ZContainer extends PIXI.Container {
             this.currentTransform.x = value;
         }
     }
+    set width(value) {
+        super.width = value;
+        if (this.currentTransform) {
+            this.currentTransform.width = value;
+            this.currentTransform.scaleX = this.scale.x;
+        }
+    }
+    get width() {
+        return super.width;
+    }
+    get height() {
+        return super.height;
+    }
+    set height(value) {
+        super.height = value;
+        if (this.currentTransform) {
+            this.currentTransform.height = value;
+            this.currentTransform.scaleY = this.scale.y;
+        }
+    }
     set y(value) {
         super.y = value;
         if (this.currentTransform) {
@@ -182,6 +202,27 @@ export class ZContainer extends PIXI.Container {
         if (this.currentTransform) {
             this.currentTransform.rotation = value;
         }
+    }
+    get x() {
+        return super.x;
+    }
+    get y() {
+        return super.y;
+    }
+    get rotation() {
+        return super.rotation;
+    }
+    get scaleX() {
+        return super.scale.x;
+    }
+    get scaleY() {
+        return super.scale.y;
+    }
+    get pivotX() {
+        return super.pivot.x;
+    }
+    get pivotY() {
+        return super.pivot.y;
     }
     set scaleX(value) {
         super.scale.x = value;

@@ -31,6 +31,8 @@ export interface OrientationData {
         x: number;
         y: number;
     };
+    width: number;
+    height: number;
 }
 export interface BaseAssetData {
     type: string;
