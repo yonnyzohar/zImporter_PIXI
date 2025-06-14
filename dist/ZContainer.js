@@ -95,6 +95,28 @@ export class ZContainer extends PIXI.Container {
     //this is called once all children of the container are loaded
     init() {
     }
+    setText(text) {
+        let textChild = null;
+        if (this["label"]) {
+            textChild = this["label"];
+        }
+        if (!textChild) {
+            textChild = this.getChildByName("label");
+        }
+        if (!textChild) {
+            let children = this.children;
+            for (let i = 0; i < children.length; i++) {
+                let child = children[i];
+                if (child instanceof PIXI.Text) {
+                    textChild = child;
+                    break;
+                }
+            }
+        }
+        if (textChild) {
+            textChild.text = text;
+        }
+    }
     setInstanceData(data, orientation) {
         this.portrait = data.portrait;
         this.landscape = data.landscape;
