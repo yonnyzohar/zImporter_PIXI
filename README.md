@@ -11,7 +11,11 @@ The `zImporter` is a TypeScript package designed to import and manage graphical 
 
 To install the `zImporter` package, you can add it to your project using npm (or yarn) from the npm registry.
 eg:
-npm install zimporter-pixi@1.0.0
+
+npm install zimporter-pixi@1.0.10
+
+or just get latest:
+npm install zimporter-pixi@latest
 
 You need to be using "module": "ESNext", "moduleResolution": "bundler", in your tsconfig.json
 
