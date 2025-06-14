@@ -152,6 +152,33 @@ export class ZContainer extends PIXI.Container{
         
     }
 
+    public getTextField():PIXI.Text | null
+    {
+        let textChild:PIXI.Text | null = null;
+        if((this as any)["label"])
+        {
+            textChild = (this as any)["label"] as PIXI.Text;
+        }
+        if(!textChild)
+        {
+            textChild = this.getChildByName("label") as PIXI.Text;
+        }
+        if(!textChild)
+        {
+            let children = this.children;
+            for(let i = 0; i < children.length; i++)
+            {
+                let child = children[i];
+                if(child instanceof PIXI.Text)
+                {
+                    textChild = child;
+                    break;
+                }
+            }
+        }
+        return textChild;
+    }
+
     public setInstanceData(data:InstanceData, orientation:string):void
     {
         this.portrait = data.portrait;

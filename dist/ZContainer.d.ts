@@ -85,6 +85,7 @@ export declare class ZContainer extends PIXI.Container {
     get(childName: string): ZContainer | null;
     init(): void;
     setText(text: string): void;
+    getTextField(): PIXI.Text | null;
     setInstanceData(data: InstanceData, orientation: string): void;
     private applyTransform;
     resize(width: number, height: number, orientation: "portrait" | "landscape"): void;
