@@ -82,13 +82,17 @@ export declare class ZContainer extends PIXI.Container {
     currentTransform: OrientationData;
     resizeable: boolean;
     name: string;
+    _fitToScreen: boolean;
     get(childName: string): ZContainer | null;
     init(): void;
     setText(text: string): void;
     getTextField(): PIXI.Text | null;
     setInstanceData(data: InstanceData, orientation: string): void;
-    private applyTransform;
+    set fitToScreen(value: boolean);
+    get fitToScreen(): boolean;
+    applyTransform(): void;
     resize(width: number, height: number, orientation: "portrait" | "landscape"): void;
+    executeFitToScreen(): void;
     applyAnchor(): void;
     isAnchored(): boolean;
     set x(value: number);

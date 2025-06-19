@@ -88,7 +88,8 @@ export class ZContainer extends PIXI.Container{
     currentTransform: OrientationData;
     resizeable: boolean = true;
     name: string = "";
-    //anChorData: any;
+    _fitToScreen: boolean = false;
+    
     public get(childName:string):ZContainer | null
     {
         if(this.children && this.children.length > 0)
@@ -192,7 +193,27 @@ export class ZContainer extends PIXI.Container{
         //this.applyAnchor();
     }
 
-    private applyTransform() {
+    set fitToScreen(value:boolean) {
+        this._fitToScreen = value;
+        if (value) {
+            this.executeFitToScreen();
+        }
+        else {
+            this.applyTransform();
+        }
+    }
+
+    get fitToScreen(): boolean {
+        return this._fitToScreen;
+    }
+
+    applyTransform() 
+    {
+        if(this._fitToScreen) // if fitToScreen is true, do not apply transform
+        {
+            this.executeFitToScreen();
+            return;
+        }
         if (!this.currentTransform) return;
         if(!this.resizeable)return;
         if(this.parent )
@@ -219,6 +240,35 @@ export class ZContainer extends PIXI.Container{
     public resize(width: number, height: number, orientation: "portrait" | "landscape") {
         this.currentTransform = orientation === "portrait" ? this.portrait : this.landscape;
         this.applyTransform();
+    }
+
+    //this assumes that the asset pivot is topLeft
+    executeFitToScreen() 
+    {
+        if(this.parent){
+            this.pivot.x = 0;
+            this.pivot.y = 0;
+            let pos = this.parent.toLocal(new PIXI.Point(0, 0));
+            this.x = pos.x;
+            this.y = pos.y;
+            
+            
+            if(window.innerWidth > window.innerHeight)
+            {
+                let rightPoint = this.parent.toLocal( new PIXI.Point(window.innerWidth, window.innerHeight));
+                this.width = rightPoint.x - pos.x;
+                this.scaleY = this.scaleX;
+            }
+            else{
+                let btmPoint = this.parent.toLocal( new PIXI.Point(window.innerWidth, window.innerHeight));
+                this.height = btmPoint.y - pos.y;
+                this.scaleX = this.scaleY;
+            }
+
+            let midScreen = this.parent.toLocal(new PIXI.Point(window.innerWidth/2, window.innerHeight/2));
+            this.x = midScreen.x - this.width / 2;
+            this.y = midScreen.y - this.height / 2;
+        }
     }
 
     public applyAnchor() {
