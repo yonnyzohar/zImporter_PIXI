@@ -90,31 +90,35 @@ export class ZContainer extends PIXI.Container{
     name: string = "";
     _fitToScreen: boolean = false;
     
-    public get(childName:string):ZContainer | null
-    {
-        if(this.children && this.children.length > 0)
-        {
-            for(let i = 0; i < this.children.length; i++)
-            {
-                const child = (this.children[i])
-                if(child.name === childName)
-                {
-                    return child as ZContainer;
+    public get(childName: string): ZContainer | null {
+        const queue: ZContainer[] = [];
+
+        if (this.children && this.children.length > 0) {
+            for (let child of this.children) {
+                if (child instanceof ZContainer) {
+                    queue.push(child);
                 }
-                else
-                {
-                    if(child && child instanceof ZContainer)
-                    {
-                        let res = child.get(childName);
-                        if (res) {
-                            return res;
-                        }
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            if (current.name === childName) {
+                return current;
+            }
+
+            if (current.children && current.children.length > 0) {
+                for (let child of current.children) {
+                    if (child instanceof ZContainer) {
+                        queue.push(child);
                     }
                 }
             }
         }
+
         return null;
     }
+
 
     //this is called once all children of the container are loaded
     public init():void{
