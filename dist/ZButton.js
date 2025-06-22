@@ -63,6 +63,7 @@ export class ZButton extends ZContainer {
             this.addChild(this.labelContainer);
             this.labelContainer.alpha = 1;
         }
+        this.removeAllListeners();
         this.on('touchend', this.onClickBinded);
         this.on('click', this.onClickBinded);
         this.onOut();
@@ -76,6 +77,7 @@ export class ZButton extends ZContainer {
         this.off('touchend', this.onClickBinded);
         this.off('mouseupoutside', this.onClickBinded);
         this.off('touchendoutside', this.onClickBinded);
+        this.removeAllListeners();
         if (this.disabledState) {
             this.disabledState.visible = true;
             this.addChild(this.disabledState);
