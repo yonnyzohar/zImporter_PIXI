@@ -1,6 +1,6 @@
 {
   "name": "zimporter-pixi",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
   },
   "peerDependencies": {
     "pixi.js": "^7.4.2",
-    "@pixi-spine/all-4.0": "^4.1.0"
+   "@pixi-spine/all-4.0": "^4.0.4"
   },
   "keywords": [],
   "author": "",
