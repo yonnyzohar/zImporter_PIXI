@@ -1,5 +1,1 @@
 node_modules/*
-!node_modules/@pixi/
-!node_modules/@pixi-spine/
-!node_modules/@pixi/**/*
-!node_modules/@pixi-spine/**/*
