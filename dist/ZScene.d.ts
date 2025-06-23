@@ -12,6 +12,7 @@ import { SceneData, TemplateData, AnimTrackData } from "./SceneData";
  * - Integrates with custom containers such as `ZContainer`, `ZButton`, `ZState`, and `ZTimeline`.
  */
 export declare class ZScene {
+    private assetBasePath;
     /**
      * The loaded PIXI spritesheet for the scene, or null if not loaded.
      */

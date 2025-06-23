@@ -16,6 +16,8 @@ import { Spine } from "@pixi-spine/all-4.0";
  * - Integrates with custom containers such as `ZContainer`, `ZButton`, `ZState`, and `ZTimeline`.
  */
 export class ZScene {
+    //the base path for assets used in the scene, set during loading.
+    assetBasePath = "";
     /**
      * The loaded PIXI spritesheet for the scene, or null if not loaded.
      */
@@ -146,6 +148,7 @@ export class ZScene {
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
      */
     async load(assetBasePath, _loadCompleteFnctn) {
+        this.assetBasePath = assetBasePath;
         let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
         fetch(placementsUrl)
             .then((response) => {
@@ -503,13 +506,17 @@ export class ZScene {
                 //console.log("instanceof", asset instanceof ZTimeline);
             }
             if (type == "spine") {
+                let assetBasePath = this.assetBasePath;
+                if (!assetBasePath.endsWith("/")) {
+                    assetBasePath += "/";
+                }
                 let spineData = childNode;
                 PIXI.Assets.load({
                     alias: spineData.name,
-                    src: spineData.spineJson,
+                    src: assetBasePath + spineData.spineJson,
                     data: {
                         metadata: {
-                            spineAtlasFile: spineData.spineAtlas,
+                            spineAtlasFile: assetBasePath + spineData.spineAtlas,
                         }
                     }
                 })
