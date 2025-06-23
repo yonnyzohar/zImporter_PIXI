@@ -4,6 +4,7 @@ import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
 import { ZState } from "./ZState";
+import { Spine } from "@pixi-spine/all-4.0";
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
  * Handles loading, resizing, and instantiation of scene elements using PIXI.js.
@@ -500,6 +501,23 @@ export class ZScene {
                 console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
                 console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
                 console.log("instanceof", asset instanceof ZTimeline);
+            }
+            if (type == "spine") {
+                let spineData = childNode;
+                PIXI.Assets.load({
+                    alias: spineData.name,
+                    src: spineData.spineJson,
+                    data: {
+                        metadata: {
+                            spineAtlasFile: spineData.spineAtlas,
+                        }
+                    }
+                })
+                    .then((texture) => {
+                    const data = PIXI.Assets.get(spineData.name).spineData;
+                    let spine = new Spine(data);
+                    mc.addChild(spine);
+                });
             }
             var templates = this.data.templates;
             var childTempObj = templates[childNode.name];

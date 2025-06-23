@@ -97,7 +97,7 @@ export declare class ZScene {
      * @param placemenisObj - The placements object describing the scene.
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
      */
-    loadAssets(assetBasePath: string, placemenisObj: any, _loadCompleteFnctn: Function): Promise<void>;
+    loadAssets(assetBasePath: string, placemenisObj: SceneData, _loadCompleteFnctn: Function): Promise<void>;
     /**
      * Creates a PIXI.Sprite for a given frame name from the loaded spritesheet.
      * @param itemName - The name of the frame.

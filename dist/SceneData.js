@@ -11,4 +11,5 @@ export var AnchorConsts;
     AnchorConsts["BOTTOM"] = "btm";
     AnchorConsts["CENTER"] = "center";
 })(AnchorConsts || (AnchorConsts = {}));
+;
 //# sourceMappingURL=SceneData.js.map

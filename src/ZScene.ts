@@ -3,8 +3,9 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
-import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData} from "./SceneData";
+import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData, SpineData} from "./SceneData";
 import { ZState } from "./ZState";
+import { Spine } from "@pixi-spine/all-4.0";
 
 
 /**
@@ -225,7 +226,7 @@ export class ZScene {
    */
   async loadAssets(
     assetBasePath: string,
-    placemenisObj: any,
+    placemenisObj: SceneData,
     _loadCompleteFnctn: Function
   ) {
     let _jsonPath: string = assetBasePath + "ta.json?rnd=" + Math.random();
@@ -594,8 +595,24 @@ export class ZScene {
         console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
         console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         console.log("instanceof", asset instanceof ZTimeline);
-        
+      }
 
+      if(type == "spine"){
+        let spineData = childNode as SpineData;
+        PIXI.Assets.load({
+          alias: spineData.name,
+          src: spineData.spineJson,
+          data: {
+            metadata: {
+              spineAtlasFile: spineData.spineAtlas,
+            }
+          }
+        })
+          .then((texture: PIXI.Texture) => {
+            const data = PIXI.Assets.get(spineData.name).spineData;
+            let spine = new Spine(data);
+            mc.addChild(spine);
+          });
       }
       var templates = this.data.templates;
       var childTempObj = templates[childNode.name];

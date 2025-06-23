@@ -39,6 +39,12 @@ export interface BaseAssetData {
     name: string;
     filters: any;
 }
+export interface SpineData extends BaseAssetData {
+    name: string;
+    spineJson: string;
+    spineAtlas: string;
+    atlasPath: string;
+}
 export interface InstanceData extends BaseAssetData {
     template: boolean;
     instanceName: string;
