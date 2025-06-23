@@ -14,7 +14,7 @@ export class ZBitmapTextField extends PIXI.BitmapText {
 
     setText(str: string): void {
 
-        console.log("setText " + str);
+        ////console.log("setText " + str);
         this.text = str;
         
     }

@@ -21,7 +21,7 @@ export class ZPool {
         for (let i = 0; i < _numElements; i++) {
             pool[i] = ZSceneStack.spawn(symbolTemplate);
         }
-        console.log("pool");
+        ////console.log("pool");
     }
     clear(type) {
         if (this.dict[type]) {

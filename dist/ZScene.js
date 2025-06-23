@@ -129,7 +129,7 @@ export class ZScene {
             const scaleX = width / baseWidth;
             const scaleY = height / baseHeight;
             const scale = Math.min(scaleX, scaleY); // uniform scale to fit
-            console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
+            //console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
             this._sceneStage.scale.x = scale;
             this._sceneStage.scale.y = scale;
             // Center the stage
@@ -201,7 +201,7 @@ export class ZScene {
                 .then((data) => {
                 const fontData = new PIXI.BitmapFontData();
                 PIXI.BitmapFont.install(data, new PIXI.Texture(this.scene.baseTexture)); // Install the font data
-                console.log("Parsed font data:", fontData);
+                //console.log("Parsed font data:", fontData);
                 if (i === placemenisObj.fonts.length - 1) {
                     this.initScene(placemenisObj);
                     _loadCompleteFnctn();
@@ -216,10 +216,10 @@ export class ZScene {
      * @returns The created sprite, or null if not found.
      */
     createFrame(itemName) {
-        //console.log(itemName);
+        ////console.log(itemName);
         let img = new PIXI.Sprite(this.scene.textures[itemName]);
         if (img === null) {
-            console.log("COULD NOT FIND " + itemName);
+            //console.log("COULD NOT FIND " + itemName);
         }
         return img;
     }
@@ -246,7 +246,7 @@ export class ZScene {
     createMovieClip(_framePrefix) {
         const frames = [];
         const numFrames = this.getNumOfFrames(_framePrefix);
-        //console.log(numFrames + " in " + _framePrefix);
+        ////console.log(numFrames + " in " + _framePrefix);
         for (let i = 0; i < numFrames; i++) {
             const val = i < 10 ? "0" + i : i;
             const textureName = _framePrefix + "00" + val;
@@ -360,10 +360,10 @@ export class ZScene {
      * @param baseNode - The template data for the asset.
      */
     createAsset(mc, baseNode) {
-        // console.log(baseNode.name);
+        // //console.log(baseNode.name);
         for (var i = 0; i < baseNode.children.length; i++) {
             var childNode = baseNode.children[i];
-            //console.log(child);
+            ////console.log(child);
             var _name = childNode.name;
             var type = childNode.type;
             var asset;
@@ -486,9 +486,9 @@ export class ZScene {
                         asset = new ZContainer();
                     }
                 }
-                console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
-                console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-                console.log("instanceof", asset instanceof ZTimeline);
+                //console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
+                //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
+                //console.log("instanceof", asset instanceof ZTimeline);
                 asset.name = instanceData.instanceName;
                 if (!asset.name) {
                     return;
@@ -498,9 +498,9 @@ export class ZScene {
                 asset.setInstanceData(instanceData, this.orientation);
                 mc.addChild(asset);
                 this.addToResizeMap(asset);
-                console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
-                console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-                console.log("instanceof", asset instanceof ZTimeline);
+                //console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
+                //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
+                //console.log("instanceof", asset instanceof ZTimeline);
             }
             if (type == "spine") {
                 let spineData = childNode;

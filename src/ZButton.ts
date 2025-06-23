@@ -24,7 +24,7 @@ export class ZButton extends ZContainer {
 
     constructor(_labelStr: string = "") {
         super();
-        console.log("Button!");
+        ////console.log("Button!");
         this.interactive = true;
         this.interactiveChildren = true;
         
@@ -153,7 +153,7 @@ export class ZButton extends ZContainer {
             this.addChild(this.labelContainer);
         }
 
-        console.log("onOut");
+        ////console.log("onOut");
     }
 
     onOver():void{
@@ -171,7 +171,7 @@ export class ZButton extends ZContainer {
     onClicked(): void {
          if(this.callback)
         {
-            console.log("onClicked");
+            ////console.log("onClicked");
             this.callback();
         }
     }

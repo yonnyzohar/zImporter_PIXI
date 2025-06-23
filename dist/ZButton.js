@@ -18,7 +18,7 @@ export class ZButton extends ZContainer {
     callback;
     constructor(_labelStr = "") {
         super();
-        console.log("Button!");
+        ////console.log("Button!");
         this.interactive = true;
         this.interactiveChildren = true;
         this.onClickBinded = this.onClicked.bind(this);
@@ -116,7 +116,7 @@ export class ZButton extends ZContainer {
         if (this.labelContainer) {
             this.addChild(this.labelContainer);
         }
-        console.log("onOut");
+        ////console.log("onOut");
     }
     onOver() {
         if (this.overState) {
@@ -129,7 +129,7 @@ export class ZButton extends ZContainer {
     }
     onClicked() {
         if (this.callback) {
-            console.log("onClicked");
+            ////console.log("onClicked");
             this.callback();
         }
     }

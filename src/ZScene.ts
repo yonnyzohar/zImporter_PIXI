@@ -155,7 +155,7 @@ export class ZScene {
         const scaleX = width / baseWidth;
         const scaleY = height / baseHeight;
         const scale = Math.min(scaleX, scaleY); // uniform scale to fit
-        console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
+        //console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
 
         this._sceneStage.scale.x = scale;
         this._sceneStage.scale.y = scale;
@@ -248,7 +248,7 @@ export class ZScene {
             data,
             new PIXI.Texture(this.scene!.baseTexture)
           ); // Install the font data
-          console.log("Parsed font data:", fontData);
+          //console.log("Parsed font data:", fontData);
           if (i === placemenisObj.fonts.length - 1) {
             this.initScene(placemenisObj);
             _loadCompleteFnctn();
@@ -264,13 +264,13 @@ export class ZScene {
    * @returns The created sprite, or null if not found.
    */
   createFrame(itemName: string): PIXI.Sprite | null {
-    //console.log(itemName);
+    ////console.log(itemName);
     let img: PIXI.Sprite | null = new PIXI.Sprite(
       this.scene!.textures[itemName]
     );
 
     if (img === null) {
-      console.log("COULD NOT FIND " + itemName);
+      //console.log("COULD NOT FIND " + itemName);
     }
 
     return img;
@@ -301,7 +301,7 @@ export class ZScene {
   createMovieClip(_framePrefix: string): PIXI.AnimatedSprite {
     const frames: PIXI.Texture[] = [];
     const numFrames = this.getNumOfFrames(_framePrefix);
-    //console.log(numFrames + " in " + _framePrefix);
+    ////console.log(numFrames + " in " + _framePrefix);
     for (let i = 0; i < numFrames; i++) {
       const val = i < 10 ? "0" + i : i;
       const textureName = _framePrefix + "00" + val;
@@ -433,10 +433,10 @@ export class ZScene {
    * @param baseNode - The template data for the asset.
    */
   createAsset(mc: ZContainer, baseNode: TemplateData): void {
-    // console.log(baseNode.name);
+    // //console.log(baseNode.name);
     for (var i = 0; i < baseNode.children.length; i++) {
       var childNode = baseNode.children[i] as BaseAssetData;
-      //console.log(child);
+      ////console.log(child);
 
       var _name = childNode.name;
       
@@ -577,9 +577,9 @@ export class ZScene {
           }
           
         }
-        console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
-        console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-        console.log("instanceof", asset instanceof ZTimeline);
+        //console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
+        //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
+        //console.log("instanceof", asset instanceof ZTimeline);
 
         asset.name = instanceData.instanceName;
         if (!asset.name) {
@@ -592,9 +592,9 @@ export class ZScene {
         this.addToResizeMap(asset);
 
         
-        console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
-        console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
-        console.log("instanceof", asset instanceof ZTimeline);
+        //console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
+        //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
+        //console.log("instanceof", asset instanceof ZTimeline);
       }
 
       if(type == "spine"){
