@@ -620,6 +620,7 @@ export class ZScene {
           .then((texture: PIXI.Texture) => {
             const data = PIXI.Assets.get(spineData.name).spineData;
             let spine = new Spine(data);
+            spine.name = spineData.name;
             mc.addChild(spine);
           });
       }
