@@ -484,7 +484,7 @@ export class ZScene {
                     asset = new ZTimeline();
                     asset.setFrames(frames);
                     if (this.data.cuePoints && this.data.cuePoints[childNode.name]) {
-                        mc.setCuePoints(this.data.cuePoints[childNode.name]);
+                        asset.setCuePoints(this.data.cuePoints[childNode.name]);
                     }
                 }
                 else {
