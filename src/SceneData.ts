@@ -123,5 +123,6 @@ export interface SceneData{
     animTracks?: Record<string, AnimTrackData[]>;
     stage:TemplateData | undefined;
     templates:Record<string, TemplateData>;
+    cuePoints: Record<string, Record<number, string>>;
     fonts:string[];
 }

@@ -7,5 +7,6 @@ export { ZScene } from './ZScene';
 export { ZSceneStack } from './ZSceneStack';
 export { ZTimeline } from './ZTimeline';
 export { ZUpdatables } from './ZUpdatables';
+export { CuePointsManager } from './CuePointsManager';
 export { ZState } from './ZState';
 //# sourceMappingURL=index.d.ts.map

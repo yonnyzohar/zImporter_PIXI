@@ -368,14 +368,18 @@ export class ZScene {
     if (!baseNode) {
       return;
     }
-    var mc;
+    var mc:ZContainer;
     var frames = this.getChildrenFrames(tempName);
 
     if (Object.keys(frames).length > 0) {
       mc = new ZTimeline();
       this.createAsset(mc, baseNode);
-      mc.setFrames(frames);
-      mc.gotoAndStop(0);
+      (mc as ZTimeline).setFrames(frames);
+      if(this.data.cuePoints && this.data.cuePoints[tempName])
+      {
+        (mc as ZTimeline).setCuePoints(this.data.cuePoints[tempName]);
+      }
+      (mc as ZTimeline).gotoAndStop(0);
     } else {
       if(baseNode.type == "btn")
       {

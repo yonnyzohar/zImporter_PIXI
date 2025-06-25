@@ -1,3 +1,4 @@
+import { CuePointsManager } from "./CuePointsManager";
 import { ZContainer } from "./ZContainer";
 import { ZUpdatables } from "./ZUpdatables";
 
@@ -27,6 +28,7 @@ export class ZTimeline extends ZContainer {
     _frames: any;
     currentFrame: number = 0;
     looping: boolean = true;
+    cuePoints: Record<number, string> = {};
     func: ((self: ZTimeline) => void) | undefined;
 
     constructor() {
@@ -35,6 +37,10 @@ export class ZTimeline extends ZContainer {
         this._frames;
         this.currentFrame = 0;
         this.looping = true;
+    }
+
+    setCuePoints(cuePoints: Record<number, string>): void {
+        this.cuePoints = cuePoints;
     }
 
     getFrames(): any {
@@ -92,8 +98,13 @@ export class ZTimeline extends ZContainer {
         this.play();
     }
 
+    //todo, this is not time dependent, it is frame dependent
     update(): void {
         this.gotoAndStop(this.currentFrame);
+        if (this.cuePoints && this.cuePoints[this.currentFrame] !== undefined) {
+            //emit the cue point event
+            CuePointsManager.triggerCuePoint(this.cuePoints[this.currentFrame], this);
+        }
         this.currentFrame++;
 
         if (this.currentFrame > this.totalFrames!) {

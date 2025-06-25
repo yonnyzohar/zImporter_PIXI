@@ -312,6 +312,9 @@ export class ZScene {
             mc = new ZTimeline();
             this.createAsset(mc, baseNode);
             mc.setFrames(frames);
+            if (this.data.cuePoints && this.data.cuePoints[tempName]) {
+                mc.setCuePoints(this.data.cuePoints[tempName]);
+            }
             mc.gotoAndStop(0);
         }
         else {

@@ -25,8 +25,10 @@ export declare class ZTimeline extends ZContainer {
     _frames: any;
     currentFrame: number;
     looping: boolean;
+    cuePoints: Record<number, string>;
     func: ((self: ZTimeline) => void) | undefined;
     constructor();
+    setCuePoints(cuePoints: Record<number, string>): void;
     getFrames(): any;
     setFrames(value: any): void;
     removeStateEndEventListener(): void;
