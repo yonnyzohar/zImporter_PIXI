@@ -575,6 +575,10 @@ export class ZScene {
         if (Object.keys(frames).length > 0) {
           asset = new ZTimeline();
           asset.setFrames(frames);
+          if(this.data.cuePoints && this.data.cuePoints[childNode.name])
+          {
+            (mc as ZTimeline).setCuePoints(this.data.cuePoints[childNode.name]);
+          }
         } else {
           if (type == "state") {
             asset = new ZState();
