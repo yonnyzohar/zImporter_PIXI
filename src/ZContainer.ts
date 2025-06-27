@@ -4,6 +4,7 @@ import { InstanceData } from './SceneData';
 import { OrientationData } from './SceneData';
 import { ZScene } from './ZScene';
 import { ZTimeline } from './ZTimeline';
+import { Emitter } from "@pixi/particle-emitter";
 
 export interface AnchorData{
     anchorType: string;
@@ -11,6 +12,22 @@ export interface AnchorData{
         x: number;
         y: number;
     };
+}
+
+interface TextureSingleBehaviorConfig {
+    texture: PIXI.Texture;
+    [key: string]: any;
+}
+
+interface EmitterBehavior {
+    type: string;
+    config: TextureSingleBehaviorConfig | { [key: string]: any };
+    [key: string]: any;
+}
+
+interface EmitterConfig {
+    behaviors: EmitterBehavior[];
+    [key: string]: any;
 }
 
 /**
@@ -89,6 +106,7 @@ export class ZContainer extends PIXI.Container{
     resizeable: boolean = true;
     name: string = "";
     _fitToScreen: boolean = false;
+    emitter: Emitter | undefined;
     
     public get(childName: string): ZContainer | null {
         const queue: ZContainer[] = [];
@@ -386,6 +404,51 @@ export class ZContainer extends PIXI.Container{
         if (this.currentTransform) {
             this.currentTransform.pivotY = value;
         }
+    }
+
+    public loadParticle(emitterConfig: any, texture:PIXI.Texture, name:string): void {
+        try {
+            (emitterConfig as EmitterConfig).behaviors.find(
+                (b: EmitterBehavior) => b.type === "textureSingle"
+            )!.config = {
+                ...(emitterConfig as EmitterConfig).behaviors.find(
+                    (b: EmitterBehavior) => b.type === "textureSingle"
+                )!.config,
+                texture: texture
+            };
+
+            // Then pass it to the emitter:
+            this.emitter = new Emitter(this, emitterConfig);
+            this.playParticleAnim();
+
+        } catch (error) {
+            console.error("Error creating ParticleController:", error);
+            alert("Failed to load particle effect. Please make sure you're using the new Pixi JSON format (with 'behaviors'). Legacy configs with 'alpha', 'scale', 'speed', etc. are no longer supported in the latest version of the particle system.");
+
+            console.warn(
+                "⚠️ Particle config may be in legacy format.\n" +
+                "New versions of @pixi/particle-emitter require 'behaviors' instead of 'alpha', 'speed', etc.\n" +
+                "Convert your old config or use pixi-particles@4 if you must keep the old format.\n\n" +
+                "Docs: https://github.com/pixijs/particle-emitter#emitterconfig"
+                );
+
+        }
+    }
+
+    playParticleAnim() {
+        if (!this.emitter) {
+            console.warn("Emitter not initialized. Call loadParticle first.");
+            return;
+        }
+        this.emitter!.emit = true;
+    }
+
+    stopParticleAnim() {
+        if (!this.emitter) {
+            console.warn("Emitter not initialized. Call loadParticle first.");
+            return;
+        }
+        this.emitter!.emit = false;
     }
 
 }

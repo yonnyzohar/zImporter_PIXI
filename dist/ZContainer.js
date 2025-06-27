@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Emitter } from "@pixi/particle-emitter";
 /**
  * A custom container class extending `PIXI.Container` that supports orientation-based transforms,
  * anchoring, and instance data management for responsive layouts.
@@ -74,6 +75,7 @@ export class ZContainer extends PIXI.Container {
     resizeable = true;
     name = "";
     _fitToScreen = false;
+    emitter;
     get(childName) {
         const queue = [];
         if (this.children && this.children.length > 0) {
@@ -315,6 +317,39 @@ export class ZContainer extends PIXI.Container {
         if (this.currentTransform) {
             this.currentTransform.pivotY = value;
         }
+    }
+    loadParticle(emitterConfig, texture, name) {
+        try {
+            emitterConfig.behaviors.find((b) => b.type === "textureSingle").config = {
+                ...emitterConfig.behaviors.find((b) => b.type === "textureSingle").config,
+                texture: texture
+            };
+            // Then pass it to the emitter:
+            this.emitter = new Emitter(this, emitterConfig);
+            this.playParticleAnim();
+        }
+        catch (error) {
+            console.error("Error creating ParticleController:", error);
+            alert("Failed to load particle effect. Please make sure you're using the new Pixi JSON format (with 'behaviors'). Legacy configs with 'alpha', 'scale', 'speed', etc. are no longer supported in the latest version of the particle system.");
+            console.warn("⚠️ Particle config may be in legacy format.\n" +
+                "New versions of @pixi/particle-emitter require 'behaviors' instead of 'alpha', 'speed', etc.\n" +
+                "Convert your old config or use pixi-particles@4 if you must keep the old format.\n\n" +
+                "Docs: https://github.com/pixijs/particle-emitter#emitterconfig");
+        }
+    }
+    playParticleAnim() {
+        if (!this.emitter) {
+            console.warn("Emitter not initialized. Call loadParticle first.");
+            return;
+        }
+        this.emitter.emit = true;
+    }
+    stopParticleAnim() {
+        if (!this.emitter) {
+            console.warn("Emitter not initialized. Call loadParticle first.");
+            return;
+        }
+        this.emitter.emit = false;
     }
 }
 //# sourceMappingURL=ZContainer.js.map

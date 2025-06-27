@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
-import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData, SpineData} from "./SceneData";
+import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData, SpineData, ParticleData} from "./SceneData";
 import { ZState } from "./ZState";
 import { Spine } from "@pixi-spine/all-4.0";
 
@@ -607,6 +607,28 @@ export class ZScene {
         //console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
         //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         //console.log("instanceof", asset instanceof ZTimeline);
+      }
+
+      if(type == "particle")
+      {
+        let assetBasePath = this.assetBasePath;
+        if(!assetBasePath.endsWith("/")){
+          assetBasePath += "/";
+        }
+        let particleData = childNode as ParticleData;
+        let jsonPath = particleData.jsonPath + `?t=${Date.now()}`;
+        let pngPath = particleData.pngPath + `?t=${Date.now()}`;
+        PIXI.Assets.load(pngPath)
+      .then((texture: PIXI.Texture) => {
+        console.log("Loading Particle asset:", particleData.name, jsonPath, pngPath);
+        PIXI.Assets.load(jsonPath)
+          .then((particleData: any) => {
+            mc.loadParticle(particleData, texture, particleData.name);
+          })
+          .catch((err) => {
+            console.error("Failed to load particle data:", err);
+          });
+      });
       }
 
       if(type == "spine"){

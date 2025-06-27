@@ -49,6 +49,12 @@ export interface SpineData extends BaseAssetData{
     atlasPath: string;
   };
 
+export interface ParticleData extends BaseAssetData{
+    jsonPath: string;
+    pngPath: string;
+    name: string;
+  }
+
 export interface InstanceData extends BaseAssetData {
     
     template: boolean,

@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { InstanceData } from './SceneData';
 import { OrientationData } from './SceneData';
+import { Emitter } from "@pixi/particle-emitter";
 export interface AnchorData {
     anchorType: string;
     anchorPercentage: {
@@ -83,6 +84,7 @@ export declare class ZContainer extends PIXI.Container {
     resizeable: boolean;
     name: string;
     _fitToScreen: boolean;
+    emitter: Emitter | undefined;
     get(childName: string): ZContainer | null;
     init(): void;
     setText(text: string): void;
@@ -113,5 +115,8 @@ export declare class ZContainer extends PIXI.Container {
     set scaleY(value: number);
     set pivotX(value: number);
     set pivotY(value: number);
+    loadParticle(emitterConfig: any, texture: PIXI.Texture, name: string): void;
+    playParticleAnim(): void;
+    stopParticleAnim(): void;
 }
 //# sourceMappingURL=ZContainer.d.ts.map

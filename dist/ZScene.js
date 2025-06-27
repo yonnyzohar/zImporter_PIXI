@@ -511,6 +511,26 @@ export class ZScene {
                 //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
                 //console.log("instanceof", asset instanceof ZTimeline);
             }
+            if (type == "particle") {
+                let assetBasePath = this.assetBasePath;
+                if (!assetBasePath.endsWith("/")) {
+                    assetBasePath += "/";
+                }
+                let particleData = childNode;
+                let jsonPath = particleData.jsonPath + `?t=${Date.now()}`;
+                let pngPath = particleData.pngPath + `?t=${Date.now()}`;
+                PIXI.Assets.load(pngPath)
+                    .then((texture) => {
+                    console.log("Loading Particle asset:", particleData.name, jsonPath, pngPath);
+                    PIXI.Assets.load(jsonPath)
+                        .then((particleData) => {
+                        mc.loadParticle(particleData, texture, particleData.name);
+                    })
+                        .catch((err) => {
+                        console.error("Failed to load particle data:", err);
+                    });
+                });
+            }
             if (type == "spine") {
                 let assetBasePath = this.assetBasePath;
                 if (!assetBasePath.endsWith("/")) {
