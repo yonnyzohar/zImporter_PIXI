@@ -37,6 +37,13 @@ export class ZButton extends ZContainer {
         
     }
 
+    public setText(text:string):void{
+        if(this.labelContainer)
+        {
+            this.labelContainer.setText(text);
+        }
+    }
+
     setCallback(func: () => void): void {
         this.callback = func;
     }

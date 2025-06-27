@@ -16,6 +16,7 @@ export declare class ZButton extends ZContainer {
     onDownBinded: any;
     callback: any;
     constructor(_labelStr?: string);
+    setText(text: string): void;
     setCallback(func: () => void): void;
     removeCallback(): void;
     init(): void;

@@ -26,6 +26,11 @@ export class ZButton extends ZContainer {
         this.onOverBinded = this.onOver.bind(this);
         this.onDownBinded = this.onDown.bind(this);
     }
+    setText(text) {
+        if (this.labelContainer) {
+            this.labelContainer.setText(text);
+        }
+    }
     setCallback(func) {
         this.callback = func;
     }
