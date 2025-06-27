@@ -616,8 +616,8 @@ export class ZScene {
           assetBasePath += "/";
         }
         let particleData = childNode as ParticleData;
-        let jsonPath = particleData.jsonPath + `?t=${Date.now()}`;
-        let pngPath = particleData.pngPath + `?t=${Date.now()}`;
+        let jsonPath = assetBasePath + particleData.jsonPath + `?t=${Date.now()}`;
+        let pngPath = assetBasePath + particleData.pngPath + `?t=${Date.now()}`;
         PIXI.Assets.load(pngPath)
       .then((texture: PIXI.Texture) => {
         console.log("Loading Particle asset:", particleData.name, jsonPath, pngPath);
