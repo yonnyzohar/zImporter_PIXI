@@ -55,6 +55,7 @@ export class ZButton extends ZContainer {
     enable():void
     {
         this.cursor = "pointer";
+        this.removeAllListeners();
         if(this.overState && this.upState){
             this.overState.visible = false;
             this.on('mouseout', this.onOutBinded);
@@ -72,10 +73,6 @@ export class ZButton extends ZContainer {
             this.disabledState.visible = false;
         }
 
-        if(this.disabledState)
-        {
-            this.disabledState.visible = false;
-        }
         if(this.upState)
         {
             this.upState.visible = true;
@@ -86,7 +83,7 @@ export class ZButton extends ZContainer {
             this.addChild(this.labelContainer);
             this.labelContainer.alpha = 1;
         }
-        this.removeAllListeners();
+        
         this.on('touchend', this.onClickBinded);
         this.on('click', this.onClickBinded);
         this.onOut();
@@ -95,13 +92,6 @@ export class ZButton extends ZContainer {
     disable():void
     {
         this.cursor = "default";
-        this.off('mousedown', this.onDownBinded);
-        this.off('mouseup', this.onOutBinded);
-        this.off('mouseout', this.onOutBinded);
-        this.off('mouseover', this.onOverBinded);
-        this.off('touchend', this.onClickBinded);
-        this.off('mouseupoutside', this.onClickBinded);
-        this.off('touchendoutside', this.onClickBinded);
         this.removeAllListeners();
         if(this.disabledState)
         {
