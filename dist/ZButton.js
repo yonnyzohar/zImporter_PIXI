@@ -43,6 +43,11 @@ export class ZButton extends ZContainer {
     }
     enable() {
         this.cursor = "pointer";
+        [this.upState, this.overState, this.downState].forEach((state) => {
+            if (state) {
+                state.cursor = "pointer";
+            }
+        });
         this.removeAllListeners();
         if (this.overState && this.upState) {
             this.overState.visible = false;
@@ -72,6 +77,11 @@ export class ZButton extends ZContainer {
     }
     disable() {
         this.cursor = "default";
+        [this.upState, this.overState, this.downState].forEach((state) => {
+            if (state) {
+                state.cursor = "default";
+            }
+        });
         this.removeAllListeners();
         if (this.disabledState) {
             this.disabledState.visible = true;

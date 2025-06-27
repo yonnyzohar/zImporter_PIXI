@@ -55,13 +55,17 @@ export class ZButton extends ZContainer {
     //this is called once all children of the container are loaded
     override init():void
     {
-        
         this.enable();
     }
 
     enable():void
     {
         this.cursor = "pointer";
+        [this.upState, this.overState, this.downState].forEach((state) => {
+            if (state) {
+                state.cursor = "pointer";
+            }
+        });
         this.removeAllListeners();
         if(this.overState && this.upState){
             this.overState.visible = false;
@@ -99,6 +103,11 @@ export class ZButton extends ZContainer {
     disable():void
     {
         this.cursor = "default";
+        [this.upState, this.overState, this.downState].forEach((state) => {
+            if (state) {
+                state.cursor = "default";
+            }
+        });
         this.removeAllListeners();
         if(this.disabledState)
         {
