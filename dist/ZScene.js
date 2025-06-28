@@ -189,7 +189,15 @@ export class ZScene {
      */
     async loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn) {
         let _jsonPath = assetBasePath + "ta.json?rnd=" + Math.random();
-        this.scene = await PIXI.Assets.load(_jsonPath);
+        try {
+            this.scene = await PIXI.Assets.load(_jsonPath);
+            // success: scene is loaded
+        }
+        catch (error) {
+            console.error("Failed to load asset:", _jsonPath, error);
+            // handle the missing file gracefully here
+            this.scene = null;
+        }
         this.sceneName = _jsonPath;
         if (placemenisObj.fonts.length == 0) {
             this.initScene(placemenisObj);
