@@ -51,6 +51,7 @@ export class ZState extends ZContainer {
             }
         }
         this.currentState = chosenChild;
+        chosenChild.parent.addChild(chosenChild);
         return chosenChild;
     }
 }
