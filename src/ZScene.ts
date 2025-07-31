@@ -3,10 +3,17 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
-import { InstanceData, SceneData, TemplateData ,AnimTrackData, TextData, BaseAssetData,SpriteData, SpineData, ParticleData} from "./SceneData";
+import { InstanceData, SceneData, TemplateData, AnimTrackData, TextData, BaseAssetData, SpriteData, SpineData, ParticleData, TextInputData } from "./SceneData";
 import { ZState } from "./ZState";
 import { Spine } from "@pixi-spine/all-4.0";
+import { ZToggle } from "./ZToggle";
+import { ZSlider } from "./ZSlider";
+import { ZScroll } from "./ZScroll";
+import { ZTextInput } from "./ZTextInput";
 
+
+
+export type AssetType = "btn" |  "asset" |  "state" | "toggle" | "none" | "slider" | "scrollBar";
 
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
@@ -20,6 +27,16 @@ import { Spine } from "@pixi-spine/all-4.0";
  */
 export class ZScene {
 
+  static assetTypes: Map<AssetType, any> = new Map([
+    ["btn", ZButton],
+    ["asset", ZContainer],
+    ["state", ZState],
+    ["toggle", ZToggle],
+    ["slider", ZSlider],
+    ["scrollBar", ZScroll]
+  ]);
+
+
   //the base path for assets used in the scene, set during loading.
   private assetBasePath: string = "";
   /**
@@ -29,7 +46,7 @@ export class ZScene {
   /**
    * The root container for all scene display objects.
    */
-  private _sceneStage:ZContainer = new ZContainer();
+  private _sceneStage: ZContainer = new ZContainer();
   /**
    * The data describing the scene's structure, assets, and templates.
    */
@@ -65,7 +82,7 @@ export class ZScene {
    * Constructs a new ZScene instance.
    * @param _sceneId - The unique identifier for the scene.
    */
-  constructor(_sceneId:string) {
+  constructor(_sceneId: string) {
     this.sceneId = _sceneId;
     this.setOrientation();
     ZScene.Map.set(_sceneId, this);
@@ -97,21 +114,18 @@ export class ZScene {
     this.resize(window.innerWidth, window.innerHeight);
     let stageAssets = this.data.stage;
     let children = stageAssets!.children;
-    if(children)
-    {
-        for(let i = 0; i < children.length; i++)
-        {
-            let child = children[i] as InstanceData;
-            let tempName = child.name;
-            let mc:ZContainer | undefined = this.spawn(tempName);
-            if(mc)
-            {
-                mc.setInstanceData(child, this.orientation);
-                this.addToResizeMap(mc);
-                this._sceneStage.addChild(mc);
-                (this._sceneStage as any)[mc.name] = mc;
-            }
+    if (children) {
+      for (let i = 0; i < children.length; i++) {
+        let child = children[i] as InstanceData;
+        let tempName = child.name;
+        let mc: ZContainer | undefined = this.spawn(tempName);
+        if (mc) {
+          mc.setInstanceData(child, this.orientation);
+          this.addToResizeMap(mc);
+          this._sceneStage.addChild(mc);
+          (this._sceneStage as any)[mc.name] = mc;
         }
+      }
     }
     globalStage.addChild(this._sceneStage);
     this.resize(window.innerWidth, window.innerHeight);
@@ -121,8 +135,7 @@ export class ZScene {
    * Adds a container to the resize map, so it will be resized with the scene.
    * @param mc - The container to add.
    */
-  public addToResizeMap(mc: ZContainer): void
-  {
+  public addToResizeMap(mc: ZContainer): void {
     this.resizeMap.set(mc, true);
   }
 
@@ -131,8 +144,7 @@ export class ZScene {
    * Removes a container from the resize map.
    * @param mc - The container to remove.
    */
-  public removeFromResizeMap(mc: ZContainer): void
-  {
+  public removeFromResizeMap(mc: ZContainer): void {
     this.resizeMap.delete(mc);
   }
 
@@ -141,35 +153,33 @@ export class ZScene {
    * @param width - The new width.
    * @param height - The new height.
    */
-  public resize(width: number, height: number): void 
-  {
-      if (this.data && this.data.resolution) {
-        
-        this.setOrientation();
-        let baseWidth = this.data.resolution.x;
-        let baseHeight = this.data.resolution.y;
-        if(this.orientation === "portrait")
-        {
-          baseWidth = this.data.resolution.y;
-          baseHeight = this.data.resolution.x;
+  public resize(width: number, height: number): void {
+    if (this.data && this.data.resolution) {
 
-        }
+      this.setOrientation();
+      let baseWidth = this.data.resolution.x;
+      let baseHeight = this.data.resolution.y;
+      if (this.orientation === "portrait") {
+        baseWidth = this.data.resolution.y;
+        baseHeight = this.data.resolution.x;
 
-        const scaleX = width / baseWidth;
-        const scaleY = height / baseHeight;
-        const scale = Math.min(scaleX, scaleY); // uniform scale to fit
-        //console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
+      }
 
-        this._sceneStage.scale.x = scale;
-        this._sceneStage.scale.y = scale;
+      const scaleX = width / baseWidth;
+      const scaleY = height / baseHeight;
+      const scale = Math.min(scaleX, scaleY); // uniform scale to fit
+      //console.log("resize", width, height, baseWidth, baseHeight, scaleX, scaleY, scale);
 
-        // Center the stage
-        this._sceneStage.x = (width - baseWidth * scale) / 2;
-        this._sceneStage.y = (height - baseHeight * scale) / 2;
+      this._sceneStage.scale.x = scale;
+      this._sceneStage.scale.y = scale;
 
-        for (const [mc, _] of this.resizeMap) {
-          mc.resize(width, height, this.orientation);
-        }
+      // Center the stage
+      this._sceneStage.x = (width - baseWidth * scale) / 2;
+      this._sceneStage.y = (height - baseHeight * scale) / 2;
+
+      for (const [mc, _] of this.resizeMap) {
+        mc.resize(width, height, this.orientation);
+      }
     }
   }
 
@@ -200,7 +210,7 @@ export class ZScene {
       });
   }
 
-  
+
   /**
    * Destroys the scene and its assets, freeing resources.
    */
@@ -364,6 +374,17 @@ export class ZScene {
     return frames;
   }
 
+  static getAssetType(value: string): any {
+    if (this.assetTypes.has(value as AssetType)) {
+      return this.assetTypes.get(value as AssetType);
+    }
+    return null;
+  }
+
+  static isAssetType(value: string): value is AssetType {
+    return this.assetTypes.has(value as AssetType);
+  }
+
   /**
    * Spawns a new container or timeline for a given template name.
    * @param tempName - The template name.
@@ -375,40 +396,23 @@ export class ZScene {
     if (!baseNode) {
       return;
     }
-    var mc:ZContainer;
+    var mc: ZContainer;
     var frames = this.getChildrenFrames(tempName);
 
     if (Object.keys(frames).length > 0) {
       mc = new ZTimeline();
       this.createAsset(mc, baseNode);
       (mc as ZTimeline).setFrames(frames);
-      if(this.data.cuePoints && this.data.cuePoints[tempName])
-      {
+      if (this.data.cuePoints && this.data.cuePoints[tempName]) {
         (mc as ZTimeline).setCuePoints(this.data.cuePoints[tempName]);
       }
       (mc as ZTimeline).gotoAndStop(0);
     } else {
-      if(baseNode.type == "btn")
-      {
-        mc = new ZButton();
-      }
-      else
-      {
-        if(baseNode.type == "state")
-        {
-          mc = new ZState();
-        }
-        else
-        {
-          mc = new ZContainer();
-        }
-        
-      }
-      
+      mc = new (ZScene.getAssetType(baseNode.type) || ZContainer)();
       this.createAsset(mc, baseNode);
       mc.init();
     }
-    
+
     //mc.name = baseNode.instanceName;
 
     return mc;
@@ -454,9 +458,20 @@ export class ZScene {
       ////console.log(child);
 
       var _name = childNode.name;
-      
+
       var type = childNode.type;
       var asset;
+
+      if (type == "inputField" ) {
+        let inputData = childNode as TextInputData;
+        asset = new ZTextInput(inputData);
+        asset.name = _name;
+        (mc as any)[_name] = asset;
+        mc.addChild(asset);
+        //asset.setInstanceData(inputData, this.orientation);
+        this.applyFilters(childNode, asset);
+
+      }
 
       if (type == "bmpTextField" || type == "textField") {
         let textInstanceNode = childNode as any as TextData;
@@ -483,10 +498,10 @@ export class ZScene {
             align: "center",
           });
 
-          if(textInstanceNode.textAnchorX && textInstanceNode.textAnchorY){
-            tf.anchor.set(textInstanceNode.textAnchorX,textInstanceNode.textAnchorY);
+          if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined ) {
+            tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
           }
-          
+
 
           if (textInstanceNode.size) {
             tf.style.fontSize = textInstanceNode.size;
@@ -523,7 +538,7 @@ export class ZScene {
           }
 
           if (textInstanceNode.fontWeight) {
-            tf.style.fontWeight = textInstanceNode.fontWeight as PIXI.TextStyleFontWeight ;
+            tf.style.fontWeight = textInstanceNode.fontWeight as PIXI.TextStyleFontWeight;
           }
 
           tf.name = _name;
@@ -556,25 +571,9 @@ export class ZScene {
         img.width = _w;
         img.height = _h;
       }
-      if (type == "btn") {
-        var instanceData = childNode as InstanceData;
 
-        asset = new ZButton();
-        asset.name = instanceData.instanceName;
-        
-        if (!asset.name) {
-          return;
-        }
-
-        //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
-        (mc as any)[asset.name] = asset;
-        asset.setInstanceData(instanceData, this.orientation);
-        mc.addChild(asset);
-        this.addToResizeMap(asset);
-        
-      }
-      
-      if (type == "asset" || type == "state") {
+      if (ZScene.isAssetType(type)) 
+      {
         var instanceData = childNode as InstanceData;
         //this will tell me fi this asses template has children with frames
         var frames = this.getChildrenFrames(childNode.name);
@@ -582,19 +581,12 @@ export class ZScene {
         if (Object.keys(frames).length > 0) {
           asset = new ZTimeline();
           asset.setFrames(frames);
-          if(this.data.cuePoints && this.data.cuePoints[childNode.name])
-          {
+          if (this.data.cuePoints && this.data.cuePoints[childNode.name]) {
             (asset as ZTimeline).setCuePoints(this.data.cuePoints[childNode.name]);
           }
-        } else {
-          if (type == "state") {
-            asset = new ZState();
-          }
-          else
-          {
-            asset = new ZContainer();
-          }
-          
+        } 
+        else {
+          asset = new (ZScene.getAssetType(type) || ZContainer)();
         }
         //console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
         //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
@@ -610,38 +602,37 @@ export class ZScene {
         mc.addChild(asset);
         this.addToResizeMap(asset);
 
-        
+
         //console.log("after addition", instanceData.instanceName); // Should print "ZTimeline"
         //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
         //console.log("instanceof", asset instanceof ZTimeline);
       }
 
-      if(type == "particle")
-      {
+      if (type == "particle") {
         let assetBasePath = this.assetBasePath;
-        if(!assetBasePath.endsWith("/")){
+        if (!assetBasePath.endsWith("/")) {
           assetBasePath += "/";
         }
         let particleData = childNode as ParticleData;
         let jsonPath = assetBasePath + particleData.jsonPath + `?t=${Date.now()}`;
-        let pngPath = assetBasePath + particleData.pngPath + `?t=${Date.now()}`;
-        PIXI.Assets.load(pngPath)
-      .then((texture: PIXI.Texture) => {
-        console.log("Loading Particle asset:", particleData.name, jsonPath, pngPath);
-        PIXI.Assets.load(jsonPath)
-          .then((particleData: any) => {
-            mc.loadParticle(particleData, texture, particleData.name);
-          })
-          .catch((err) => {
-            console.error("Failed to load particle data:", err);
+        let pngPaths = assetBasePath + particleData.pngPaths + `?t=${Date.now()}`;
+        PIXI.Assets.load(pngPaths)
+          .then((texture: PIXI.Texture) => {
+            console.log("Loading Particle asset:", particleData.name, jsonPath, pngPaths);
+            PIXI.Assets.load(jsonPath)
+              .then((particleData: any) => {
+                mc.loadParticle(particleData, texture, particleData.name);
+              })
+              .catch((err) => {
+                console.error("Failed to load particle data:", err);
+              });
           });
-      });
       }
 
-      if(type == "spine"){
+      if (type == "spine") {
 
         let assetBasePath = this.assetBasePath;
-        if(!assetBasePath.endsWith("/")){
+        if (!assetBasePath.endsWith("/")) {
           assetBasePath += "/";
         }
         let spineData = childNode as SpineData;
@@ -682,28 +673,24 @@ export class ZScene {
    * @param tf - The PIXI container to apply filters to.
    */
   applyFilters(obj: any, tf: PIXI.Container) {
-    if(obj.filters)
-      {
-        for(var k in obj.filters)
-        {
-          let filter = obj.filters[k];
-          if(filter.type == "dropShadow")
-          {
-            let dropShadowFilter = new DropShadowFilter();
-            dropShadowFilter.alpha = filter.alpha;
-            dropShadowFilter.blur = filter.blur;
-            dropShadowFilter.color = filter.color;
-            dropShadowFilter.distance = filter.distance;
-            dropShadowFilter.resolution = filter.resolution;
-            dropShadowFilter.rotation = filter.rotation;
-            if(!tf.filters)
-            {
-              tf.filters = [];
-            }
-            tf.filters.push(dropShadowFilter);
+    if (obj.filters) {
+      for (var k in obj.filters) {
+        let filter = obj.filters[k];
+        if (filter.type == "dropShadow") {
+          let dropShadowFilter = new DropShadowFilter();
+          dropShadowFilter.alpha = filter.alpha;
+          dropShadowFilter.blur = filter.blur;
+          dropShadowFilter.color = filter.color;
+          dropShadowFilter.distance = filter.distance;
+          dropShadowFilter.resolution = filter.resolution;
+          dropShadowFilter.rotation = filter.rotation;
+          if (!tf.filters) {
+            tf.filters = [];
           }
+          tf.filters.push(dropShadowFilter);
         }
       }
+    }
   }
 
   /**

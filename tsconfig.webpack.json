@@ -3,8 +3,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ES2015",
-    "outDir": "./dist-umd",
+    "outDir": "./dist",
     "sourceMap": false
   },
-  "exclude": ["node_modules", "dist", "dist-umd"]
+  "exclude": ["node_modules", "dist", "dist"]
 }

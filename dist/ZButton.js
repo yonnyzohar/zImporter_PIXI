@@ -4,6 +4,16 @@ import { ZContainer } from "./ZContainer";
  * Handles different visual states (up, over, down, disabled) and user interactions.
  * Supports label display and animated feedback on click.
  */
+export const RemoveClickListener = (container) => {
+    container.removeAllListeners('click');
+    container.removeAllListeners('tap');
+};
+export const AttachClickListener = (container, callback) => {
+    container.interactive = true;
+    container.interactiveChildren = true;
+    container.on('click', callback);
+    container.on('tap', callback);
+};
 export class ZButton extends ZContainer {
     labelContainer;
     overState;
@@ -11,24 +21,57 @@ export class ZButton extends ZContainer {
     downState;
     upState;
     //methods
-    onClickBinded;
+    onPointerDownBinded;
+    onPointerUpBinded;
     onOutBinded;
     onOverBinded;
     onDownBinded;
     callback;
-    constructor(_labelStr = "") {
-        super();
+    longPressCallback;
+    longPressTimer = null;
+    LONG_PRESS_DURATION = 500; // in ms
+    longPressFired = false;
+    init(_labelStr = "") {
+        super.init();
         ////console.log("Button!");
         this.interactive = true;
         this.interactiveChildren = true;
-        this.onClickBinded = this.onClicked.bind(this);
+        this.onPointerDownBinded = this.onPointerDown.bind(this);
+        this.onPointerUpBinded = this.onPointerUp.bind(this);
         this.onOutBinded = this.onOut.bind(this);
         this.onOverBinded = this.onOver.bind(this);
         this.onDownBinded = this.onDown.bind(this);
+        this.enable();
+        this.onOut();
+        this.on('mousedown', this.onPointerDownBinded);
+        this.on('touchstart', this.onPointerDownBinded);
+        this.on('mouseup', this.onPointerUpBinded);
+        this.on('touchend', this.onPointerUpBinded);
+        this.on('touchendoutside', this.onPointerUpBinded);
+        this.on('mouseupoutside', this.onPointerUpBinded);
     }
-    setText(text) {
+    onPointerDown() {
+        this.longPressFired = false;
+        this.longPressTimer = setTimeout(() => {
+            this.longPressFired = true;
+            if (this.longPressCallback) {
+                this.longPressCallback();
+            }
+        }, this.LONG_PRESS_DURATION);
+    }
+    ;
+    onPointerUp() {
+        clearTimeout(this.longPressTimer);
+        this.longPressTimer = null;
+        if (!this.longPressFired) {
+            this.onClicked();
+        }
+    }
+    ;
+    setLabel(name) {
         if (this.labelContainer) {
-            this.labelContainer.setText(text);
+            this.labelContainer.visible = true;
+            this.labelContainer.setText(name);
         }
     }
     setCallback(func) {
@@ -37,9 +80,16 @@ export class ZButton extends ZContainer {
     removeCallback() {
         this.callback = undefined;
     }
-    //this is called once all children of the container are loaded
-    init() {
-        this.enable();
+    setLongPressCallback(func) {
+        this.longPressCallback = func;
+    }
+    removeLongPressCallback() {
+        this.longPressCallback = undefined;
+    }
+    onClicked() {
+        if (this.callback) {
+            this.callback();
+        }
     }
     enable() {
         this.cursor = "pointer";
@@ -53,11 +103,17 @@ export class ZButton extends ZContainer {
             this.overState.visible = false;
             this.on('mouseout', this.onOutBinded);
             this.on('mouseover', this.onOverBinded);
-            this.overState.visible = false;
+            this.on('touchendoutside', this.onOutBinded);
+            this.on('touchend', this.onOutBinded);
+            this.on('touchendoutside', this.onOutBinded);
         }
         if (this.downState && this.upState) {
             this.on('mousedown', this.onDownBinded);
+            this.on('touchstart', this.onDownBinded);
             this.on('mouseup', this.onOutBinded);
+            this.on('touchendoutside', this.onOutBinded);
+            this.on('touchend', this.onOutBinded);
+            this.on('touchendoutside', this.onOutBinded);
             this.downState.visible = false;
         }
         if (this.disabledState) {
@@ -71,9 +127,6 @@ export class ZButton extends ZContainer {
             this.addChild(this.labelContainer);
             this.labelContainer.alpha = 1;
         }
-        this.on('touchend', this.onClickBinded);
-        this.on('click', this.onClickBinded);
-        this.onOut();
     }
     disable() {
         this.cursor = "default";
@@ -99,10 +152,10 @@ export class ZButton extends ZContainer {
         if (this.disabledState) {
             this.disabledState.visible = false;
         }
-        if (this.upState) {
+        if (this.upState && this.downState) {
             this.upState.visible = false;
         }
-        if (this.downState) {
+        if (this.downState && this.upState) {
             this.downState.visible = true;
             this.addChild(this.downState);
         }
@@ -130,12 +183,6 @@ export class ZButton extends ZContainer {
         }
         if (this.labelContainer) {
             this.addChild(this.labelContainer);
-        }
-    }
-    onClicked() {
-        if (this.callback) {
-            ////console.log("onClicked");
-            this.callback();
         }
     }
 }

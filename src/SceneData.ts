@@ -14,6 +14,42 @@ export enum AnchorConsts{
 }
 
 
+export interface InputBoxStyle {
+  fill: number;
+  rounded?: number;
+  stroke?: BoxStroke;
+}
+
+export interface InputParams {
+  fontFamily: string;
+    fontSize: string;
+    padding: string;  
+    width: string;
+    color: string | number;
+    fontWeight?: string;//need to do this
+    textAlign: string;//need to do this
+    textIndent?: string;
+    lineHeight?: string;
+}
+
+export interface TextInputObj {
+  input: InputParams;
+  box: {
+    default: InputBoxStyle;
+    focused: InputBoxStyle;
+    disabled: InputBoxStyle;
+  };
+};
+
+export interface BoxStroke {
+  color?: number;
+  width?: number;
+  alpha?: number;
+}
+
+
+export type SpriteType = "img" | "9slice";
+
 export interface ResolutionData {
     x: number;
     y: number;
@@ -32,8 +68,6 @@ export interface OrientationData {
     isAnchored: boolean ;
     anchorType?: AnchorConsts ;
     anchorPercentage?:{x:number, y:number};
-    width: number;
-    height: number;
 }
 
 export interface BaseAssetData{
@@ -42,37 +76,53 @@ export interface BaseAssetData{
     filters: any,
 }
 
-export interface SpineData extends BaseAssetData{
-    name: string,
-    spineJson: string;
-    spineAtlas: string;
-    atlasPath: string;
-  };
-
-export interface ParticleData extends BaseAssetData{
-    jsonPath: string;
-    pngPath: string;
-    name: string;
-  }
 
 export interface InstanceData extends BaseAssetData {
     
     template: boolean,
     instanceName: string,
-    
+    guide: boolean,
     portrait: OrientationData;
     landscape: OrientationData;
     
   }
 
+  export interface SpineData extends BaseAssetData{
+    name: string,
+    spineJson: string;
+    spineAtlas: string;
+    pngFiles: string[];
+    animations: string[];
+  };
+
+  export interface ParticleData extends BaseAssetData{
+    jsonPath: string;
+    pngPaths: string[];
+    name: string;
+  }
+
   export interface SpriteData extends BaseAssetData{
     name: string,
-    type: string,
+    type: SpriteType,
     width: number;
     height: number;
     filePath: string;
     x: number;
     y: number;
+  }
+
+  export interface NineSliceData extends SpriteData{
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  }
+
+  export interface TextInputData extends BaseAssetData {
+    x: number;
+    y: number;
+    text: string;
+    props: TextInputObj;
   }
 
   export interface TextData extends BaseAssetData {
@@ -96,10 +146,11 @@ export interface InstanceData extends BaseAssetData {
     leading?: number;
     letterSpacing?: number;
     padding?: number | number[];
-    textAnchorX:number;
-    textAnchorY:number;
+    textAnchorX: number;
+    textAnchorY: number;
     fontWeight:string;
   }
+
 
   export interface TemplateData{
     type: string,
@@ -125,10 +176,11 @@ export interface AnimTrackData {
 }
 
 export interface SceneData{
+    fps: number;
     resolution:ResolutionData;
+    cuePoints: Record<string, Record<number, string>>;
     animTracks?: Record<string, AnimTrackData[]>;
     stage:TemplateData | undefined;
     templates:Record<string, TemplateData>;
-    cuePoints: Record<string, Record<number, string>>;
     fonts:string[];
 }

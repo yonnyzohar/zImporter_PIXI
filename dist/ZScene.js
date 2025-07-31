@@ -5,6 +5,10 @@ import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
 import { ZState } from "./ZState";
 import { Spine } from "@pixi-spine/all-4.0";
+import { ZToggle } from "./ZToggle";
+import { ZSlider } from "./ZSlider";
+import { ZScroll } from "./ZScroll";
+import { ZTextInput } from "./ZTextInput";
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
  * Handles loading, resizing, and instantiation of scene elements using PIXI.js.
@@ -16,6 +20,14 @@ import { Spine } from "@pixi-spine/all-4.0";
  * - Integrates with custom containers such as `ZContainer`, `ZButton`, `ZState`, and `ZTimeline`.
  */
 export class ZScene {
+    static assetTypes = new Map([
+        ["btn", ZButton],
+        ["asset", ZContainer],
+        ["state", ZState],
+        ["toggle", ZToggle],
+        ["slider", ZSlider],
+        ["scrollBar", ZScroll]
+    ]);
     //the base path for assets used in the scene, set during loading.
     assetBasePath = "";
     /**
@@ -303,6 +315,15 @@ export class ZScene {
         }
         return frames;
     }
+    static getAssetType(value) {
+        if (this.assetTypes.has(value)) {
+            return this.assetTypes.get(value);
+        }
+        return null;
+    }
+    static isAssetType(value) {
+        return this.assetTypes.has(value);
+    }
     /**
      * Spawns a new container or timeline for a given template name.
      * @param tempName - The template name.
@@ -326,17 +347,7 @@ export class ZScene {
             mc.gotoAndStop(0);
         }
         else {
-            if (baseNode.type == "btn") {
-                mc = new ZButton();
-            }
-            else {
-                if (baseNode.type == "state") {
-                    mc = new ZState();
-                }
-                else {
-                    mc = new ZContainer();
-                }
-            }
+            mc = new (ZScene.getAssetType(baseNode.type) || ZContainer)();
             this.createAsset(mc, baseNode);
             mc.init();
         }
@@ -381,6 +392,15 @@ export class ZScene {
             var _name = childNode.name;
             var type = childNode.type;
             var asset;
+            if (type == "inputField") {
+                let inputData = childNode;
+                asset = new ZTextInput(inputData);
+                asset.name = _name;
+                mc[_name] = asset;
+                mc.addChild(asset);
+                //asset.setInstanceData(inputData, this.orientation);
+                this.applyFilters(childNode, asset);
+            }
             if (type == "bmpTextField" || type == "textField") {
                 let textInstanceNode = childNode;
                 if (PIXI.BitmapFont.available[textInstanceNode.fontName]) {
@@ -404,7 +424,7 @@ export class ZScene {
                         fill: textInstanceNode.color,
                         align: "center",
                     });
-                    if (textInstanceNode.textAnchorX && textInstanceNode.textAnchorY) {
+                    if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
                         tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
                     }
                     if (textInstanceNode.size) {
@@ -471,20 +491,7 @@ export class ZScene {
                 img.width = _w;
                 img.height = _h;
             }
-            if (type == "btn") {
-                var instanceData = childNode;
-                asset = new ZButton();
-                asset.name = instanceData.instanceName;
-                if (!asset.name) {
-                    return;
-                }
-                //setting the child as a propery of the parent will allow it to alter it's transform in a  ZTimeline
-                mc[asset.name] = asset;
-                asset.setInstanceData(instanceData, this.orientation);
-                mc.addChild(asset);
-                this.addToResizeMap(asset);
-            }
-            if (type == "asset" || type == "state") {
+            if (ZScene.isAssetType(type)) {
                 var instanceData = childNode;
                 //this will tell me fi this asses template has children with frames
                 var frames = this.getChildrenFrames(childNode.name);
@@ -496,12 +503,7 @@ export class ZScene {
                     }
                 }
                 else {
-                    if (type == "state") {
-                        asset = new ZState();
-                    }
-                    else {
-                        asset = new ZContainer();
-                    }
+                    asset = new (ZScene.getAssetType(type) || ZContainer)();
                 }
                 //console.log("creation", instanceData.instanceName); // Should print "ZTimeline"
                 //console.log("constructor", asset.constructor.name); // Should print "ZTimeline"
@@ -526,10 +528,10 @@ export class ZScene {
                 }
                 let particleData = childNode;
                 let jsonPath = assetBasePath + particleData.jsonPath + `?t=${Date.now()}`;
-                let pngPath = assetBasePath + particleData.pngPath + `?t=${Date.now()}`;
-                PIXI.Assets.load(pngPath)
+                let pngPaths = assetBasePath + particleData.pngPaths + `?t=${Date.now()}`;
+                PIXI.Assets.load(pngPaths)
                     .then((texture) => {
-                    console.log("Loading Particle asset:", particleData.name, jsonPath, pngPath);
+                    console.log("Loading Particle asset:", particleData.name, jsonPath, pngPaths);
                     PIXI.Assets.load(jsonPath)
                         .then((particleData) => {
                         mc.loadParticle(particleData, texture, particleData.name);

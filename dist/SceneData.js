@@ -12,4 +12,5 @@ export var AnchorConsts;
     AnchorConsts["CENTER"] = "center";
 })(AnchorConsts || (AnchorConsts = {}));
 ;
+;
 //# sourceMappingURL=SceneData.js.map

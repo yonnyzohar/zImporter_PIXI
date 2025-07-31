@@ -17,7 +17,8 @@ import { ZTimeline } from "./ZTimeline";
  *    If the state is a `ZTimeline`, it will be played or stopped accordingly.
  */
 export class ZState extends ZContainer{
-    private currentState:ZContainer | null = null;
+    
+    protected currentState:ZContainer | null = null;
     //this is called once all children of the container are loaded
     public init():void{
         this.setState("idle");
@@ -31,6 +32,10 @@ export class ZState extends ZContainer{
     public hasState(str:string):boolean
     {
         return this.getChildByName(str) !== null;
+    }
+
+    public getAllStateNames() {
+        return this.children.map((child) => child.name);
     }
 
     public setState(str:string):ZContainer | null

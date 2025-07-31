@@ -14,10 +14,11 @@ import { ZContainer } from "./ZContainer";
  *    If the state is a `ZTimeline`, it will be played or stopped accordingly.
  */
 export declare class ZState extends ZContainer {
-    private currentState;
+    protected currentState: ZContainer | null;
     init(): void;
     getCurrentState(): ZContainer | null;
     hasState(str: string): boolean;
+    getAllStateNames(): (string | null)[];
     setState(str: string): ZContainer | null;
 }
 //# sourceMappingURL=ZState.d.ts.map

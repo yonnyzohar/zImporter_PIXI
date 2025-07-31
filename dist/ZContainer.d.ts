@@ -85,6 +85,9 @@ export declare class ZContainer extends PIXI.Container {
     name: string;
     _fitToScreen: boolean;
     emitter: Emitter | undefined;
+    originalTextWidth?: number;
+    originalFontSize?: number;
+    fixedBoxSize?: boolean;
     get(childName: string): ZContainer | null;
     init(): void;
     setText(text: string): void;

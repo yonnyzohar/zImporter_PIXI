@@ -76,6 +76,9 @@ export class ZContainer extends PIXI.Container {
     name = "";
     _fitToScreen = false;
     emitter;
+    originalTextWidth;
+    originalFontSize;
+    fixedBoxSize;
     get(childName) {
         const queue = [];
         if (this.children && this.children.length > 0) {
@@ -104,35 +107,40 @@ export class ZContainer extends PIXI.Container {
     init() {
     }
     setText(text) {
-        let textChild = null;
-        if (this["label"]) {
-            textChild = this["label"];
-        }
-        if (!textChild) {
-            textChild = this.getChildByName("label");
-        }
-        if (!textChild) {
-            let children = this.children;
-            for (let i = 0; i < children.length; i++) {
-                let child = children[i];
-                if (child instanceof PIXI.Text) {
-                    textChild = child;
-                    break;
-                }
-            }
-        }
+        let textChild = this.getTextField();
         if (textChild) {
             textChild.text = text;
+            let style = textChild.style;
+            if (style) {
+                /*
+                if (tf instanceof TextInput) {
+                    return;
+                }*/
+                style.fontSize = this.originalFontSize ?? style.fontSize;
+                textChild.style = style;
+                //if fixedBoxSize is true it means we need to adjust the font size to fit the text in the box
+                if (this.fixedBoxSize) {
+                    let maxWidth = this.originalTextWidth;
+                    if (maxWidth !== undefined && maxWidth > 0) {
+                        while (textChild.width > maxWidth) {
+                            style = new PIXI.TextStyle({
+                                ...style,
+                                fontSize: style.fontSize - 1,
+                            });
+                            textChild.style = style;
+                        }
+                    }
+                }
+                if (style.align === "center") {
+                    textChild.pivot.x = textChild.width / 2;
+                    textChild.pivot.y = textChild.height / 2;
+                }
+            }
         }
     }
     getTextField() {
         let textChild = null;
-        if (this["label"]) {
-            textChild = this["label"];
-        }
-        if (!textChild) {
-            textChild = this.getChildByName("label");
-        }
+        textChild = this.getChildByName("label");
         if (!textChild) {
             let children = this.children;
             for (let i = 0; i < children.length; i++) {
@@ -244,7 +252,6 @@ export class ZContainer extends PIXI.Container {
     set width(value) {
         super.width = value;
         if (this.currentTransform) {
-            this.currentTransform.width = value;
             this.currentTransform.scaleX = this.scale.x;
         }
     }
@@ -257,7 +264,6 @@ export class ZContainer extends PIXI.Container {
     set height(value) {
         super.height = value;
         if (this.currentTransform) {
-            this.currentTransform.height = value;
             this.currentTransform.scaleY = this.scale.y;
         }
     }

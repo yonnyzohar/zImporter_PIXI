@@ -5,6 +5,10 @@ export { ZScene } from './ZScene';
 export { ZSceneStack } from './ZSceneStack';
 export { ZTimeline } from './ZTimeline';
 export { ZUpdatables } from './ZUpdatables';
-export { CuePointsManager } from './CuePointsManager';
 export { ZState } from './ZState';
+export { ZToggle } from './ZToggle';
+export { ZScroll } from './ZScroll';
+export { ZSlider } from './ZSlider';
+export { ZCuePointsManager } from './ZCuePointsManager';
+export { ZTextInput } from './ZTextInput';
 //# sourceMappingURL=index.d.ts.map

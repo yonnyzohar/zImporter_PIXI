@@ -1,4 +1,4 @@
-import { CuePointsManager } from "./CuePointsManager";
+import { ZCuePointsManager } from "./ZCuePointsManager";
 import { ZContainer } from "./ZContainer";
 import { ZUpdatables } from "./ZUpdatables";
 /**
@@ -91,7 +91,7 @@ export class ZTimeline extends ZContainer {
         this.gotoAndStop(this.currentFrame);
         if (this.cuePoints && this.cuePoints[this.currentFrame] !== undefined) {
             //emit the cue point event
-            CuePointsManager.triggerCuePoint(this.cuePoints[this.currentFrame], this);
+            ZCuePointsManager.triggerCuePoint(this.cuePoints[this.currentFrame], this);
         }
         this.currentFrame++;
         if (this.currentFrame > this.totalFrames) {

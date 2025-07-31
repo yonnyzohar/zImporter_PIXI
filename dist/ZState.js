@@ -27,6 +27,9 @@ export class ZState extends ZContainer {
     hasState(str) {
         return this.getChildByName(str) !== null;
     }
+    getAllStateNames() {
+        return this.children.map((child) => child.name);
+    }
     setState(str) {
         let chosenChild = this.getChildByName(str);
         if (!chosenChild) {

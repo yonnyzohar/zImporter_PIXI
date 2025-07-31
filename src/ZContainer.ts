@@ -107,6 +107,9 @@ export class ZContainer extends PIXI.Container{
     name: string = "";
     _fitToScreen: boolean = false;
     emitter: Emitter | undefined;
+    originalTextWidth?: number;
+    originalFontSize?: number;
+    fixedBoxSize?: boolean;
     
     public get(childName: string): ZContainer | null {
         const queue: ZContainer[] = [];
@@ -145,60 +148,55 @@ export class ZContainer extends PIXI.Container{
 
     public setText(text:string):void
     {
-        let textChild:PIXI.Text | null = null;
-        if((this as any)["label"])
-        {
-            textChild = (this as any)["label"] as PIXI.Text;
-        }
-        if(!textChild)
-        {
-            textChild = this.getChildByName("label") as PIXI.Text;
-        }
-        if(!textChild)
-        {
-            let children = this.children;
-            for(let i = 0; i < children.length; i++)
-            {
-                let child = children[i];
-                if(child instanceof PIXI.Text)
-                {
-                    textChild = child;
-                    break;
+        let textChild: PIXI.Text | null = this.getTextField();
+        if (textChild) {
+            textChild.text = text;
+
+            let style = textChild.style;
+            if (style) {
+                /*
+                if (tf instanceof TextInput) {
+                    return;
+                }*/
+                style.fontSize = this.originalFontSize ?? style.fontSize;
+                textChild.style = style;
+                //if fixedBoxSize is true it means we need to adjust the font size to fit the text in the box
+                if (this.fixedBoxSize) {
+                    let maxWidth = this.originalTextWidth;
+                    if (maxWidth !== undefined && maxWidth > 0) {
+                        while (textChild.width > maxWidth) {
+                            style = new PIXI.TextStyle({
+                                ...style,
+                                fontSize: (style.fontSize as number) - 1,
+                            });
+                            textChild.style = style;
+                        }
+                    }
+                }
+                if (style.align === "center") {
+                    textChild.pivot.x = textChild.width / 2;
+                    textChild.pivot.y = textChild.height / 2;
                 }
             }
-        }
-
-        if(textChild)
-        {
-            textChild.text = text;
         }
         
     }
 
     public getTextField():PIXI.Text | null
     {
-        let textChild:PIXI.Text | null = null;
-        if((this as any)["label"])
-        {
-            textChild = (this as any)["label"] as PIXI.Text;
-        }
-        if(!textChild)
-        {
-            textChild = this.getChildByName("label") as PIXI.Text;
-        }
-        if(!textChild)
-        {
+        let textChild: PIXI.Text | null = null;
+        textChild = this.getChildByName("label") as PIXI.Text;
+        if (!textChild) {
             let children = this.children;
-            for(let i = 0; i < children.length; i++)
-            {
+            for (let i = 0; i < children.length; i++) {
                 let child = children[i];
-                if(child instanceof PIXI.Text)
-                {
+                if (child instanceof PIXI.Text) {
                     textChild = child;
                     break;
                 }
             }
         }
+        
         return textChild;
     }
 
@@ -321,7 +319,6 @@ export class ZContainer extends PIXI.Container{
     public set width(value: number) {
         super.width = value;
         if (this.currentTransform) {
-            this.currentTransform.width = value;
             this.currentTransform.scaleX = this.scale.x;
         }
     }
@@ -336,7 +333,6 @@ export class ZContainer extends PIXI.Container{
     public set height(value: number) {
         super.height = value;
         if (this.currentTransform) {
-            this.currentTransform.height = value;
             this.currentTransform.scaleY = this.scale.y;
         }
     }

@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { ZContainer } from "./ZContainer";
 import { SceneData, TemplateData, AnimTrackData } from "./SceneData";
+export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar";
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
  * Handles loading, resizing, and instantiation of scene elements using PIXI.js.
@@ -12,6 +13,7 @@ import { SceneData, TemplateData, AnimTrackData } from "./SceneData";
  * - Integrates with custom containers such as `ZContainer`, `ZButton`, `ZState`, and `ZTimeline`.
  */
 export declare class ZScene {
+    static assetTypes: Map<AssetType, any>;
     private assetBasePath;
     /**
      * The loaded PIXI spritesheet for the scene, or null if not loaded.
@@ -128,6 +130,8 @@ export declare class ZScene {
      * @returns A record mapping child instance names to their animation tracks.
      */
     getChildrenFrames(_templateName: string): Record<string, AnimTrackData[]>;
+    static getAssetType(value: string): any;
+    static isAssetType(value: string): value is AssetType;
     /**
      * Spawns a new container or timeline for a given template name.
      * @param tempName - The template name.

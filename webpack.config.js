@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './src/index.ts', // adjust to your main file
   output: {
-    path: path.resolve(__dirname, 'dist-umd'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'zimporter-pixi.min.js',
     library: 'zimporter',
     libraryTarget: 'umd',

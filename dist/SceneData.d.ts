@@ -11,6 +11,36 @@ export declare enum AnchorConsts {
     BOTTOM = "btm",
     CENTER = "center"
 }
+export interface InputBoxStyle {
+    fill: number;
+    rounded?: number;
+    stroke?: BoxStroke;
+}
+export interface InputParams {
+    fontFamily: string;
+    fontSize: string;
+    padding: string;
+    width: string;
+    color: string | number;
+    fontWeight?: string;
+    textAlign: string;
+    textIndent?: string;
+    lineHeight?: string;
+}
+export interface TextInputObj {
+    input: InputParams;
+    box: {
+        default: InputBoxStyle;
+        focused: InputBoxStyle;
+        disabled: InputBoxStyle;
+    };
+}
+export interface BoxStroke {
+    color?: number;
+    width?: number;
+    alpha?: number;
+}
+export type SpriteType = "img" | "9slice";
 export interface ResolutionData {
     x: number;
     y: number;
@@ -31,39 +61,51 @@ export interface OrientationData {
         x: number;
         y: number;
     };
-    width: number;
-    height: number;
 }
 export interface BaseAssetData {
     type: string;
     name: string;
     filters: any;
 }
+export interface InstanceData extends BaseAssetData {
+    template: boolean;
+    instanceName: string;
+    guide: boolean;
+    portrait: OrientationData;
+    landscape: OrientationData;
+}
 export interface SpineData extends BaseAssetData {
     name: string;
     spineJson: string;
     spineAtlas: string;
-    atlasPath: string;
+    pngFiles: string[];
+    animations: string[];
 }
 export interface ParticleData extends BaseAssetData {
     jsonPath: string;
-    pngPath: string;
+    pngPaths: string[];
     name: string;
-}
-export interface InstanceData extends BaseAssetData {
-    template: boolean;
-    instanceName: string;
-    portrait: OrientationData;
-    landscape: OrientationData;
 }
 export interface SpriteData extends BaseAssetData {
     name: string;
-    type: string;
+    type: SpriteType;
     width: number;
     height: number;
     filePath: string;
     x: number;
     y: number;
+}
+export interface NineSliceData extends SpriteData {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+}
+export interface TextInputData extends BaseAssetData {
+    x: number;
+    y: number;
+    text: string;
+    props: TextInputObj;
 }
 export interface TextData extends BaseAssetData {
     x: number;
@@ -112,11 +154,12 @@ export interface AnimTrackData {
     easing?: string;
 }
 export interface SceneData {
+    fps: number;
     resolution: ResolutionData;
+    cuePoints: Record<string, Record<number, string>>;
     animTracks?: Record<string, AnimTrackData[]>;
     stage: TemplateData | undefined;
     templates: Record<string, TemplateData>;
-    cuePoints: Record<string, Record<number, string>>;
     fonts: string[];
 }
 //# sourceMappingURL=SceneData.d.ts.map
