@@ -12,7 +12,6 @@ export const RemoveClickListener = (container: ZContainer): void => {
     container.removeAllListeners('tap');
 };
 
-
 export const AttachClickListener = (container: ZContainer, callback: () => void): void => {
     container.interactive = true;
     container.interactiveChildren = true;
