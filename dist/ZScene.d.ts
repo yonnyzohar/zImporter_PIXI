@@ -79,6 +79,10 @@ export declare class ZScene {
      * @param mc - The container to remove.
      */
     removeFromResizeMap(mc: ZContainer): void;
+    getInnerDimensions(): {
+        width: number;
+        height: number;
+    };
     /**
      * Resizes the scene and all registered containers to fit the given dimensions.
      * @param width - The new width.

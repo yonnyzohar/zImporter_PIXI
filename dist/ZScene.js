@@ -128,6 +128,17 @@ export class ZScene {
     removeFromResizeMap(mc) {
         this.resizeMap.delete(mc);
     }
+    getInnerDimensions() {
+        if (this.data && this.data.resolution) {
+        }
+        let baseWidth = this.data.resolution.x;
+        let baseHeight = this.data.resolution.y;
+        if (this.orientation === "portrait") {
+            baseWidth = this.data.resolution.y;
+            baseHeight = this.data.resolution.x;
+        }
+        return { width: baseWidth, height: baseHeight };
+    }
     /**
      * Resizes the scene and all registered containers to fit the given dimensions.
      * @param width - The new width.
