@@ -103,6 +103,8 @@ export interface SpriteData extends BaseAssetData {
     filePath: string;
     x: number;
     y: number;
+    pivotX: number;
+    pivotY: number;
 }
 export interface NineSliceData extends SpriteData {
     top: number;
@@ -174,5 +176,6 @@ export interface SceneData {
     stage: TemplateData | undefined;
     templates: Record<string, TemplateData>;
     fonts: string[];
+    atlas: boolean;
 }
 //# sourceMappingURL=SceneData.d.ts.map

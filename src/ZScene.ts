@@ -287,16 +287,21 @@ export class ZScene {
     _loadCompleteFnctn: Function
   ) {
     let _jsonPath: string = assetBasePath + "ta.json?rnd=" + Math.random();
-    try {
+    let isAtlas = placemenisObj.atlas;
+    if (isAtlas === null || isAtlas === undefined) {
+      isAtlas = true; //default to true for backward compatibility
+    }
+    if (isAtlas) {
       this.scene = await PIXI.Assets.load(_jsonPath);
-      // success: scene is loaded
-    } catch (error) {
-      console.error("Failed to load asset:", _jsonPath, error);
+    }
+    else {
       let imagesObj = this.createImagesObject(assetBasePath, placemenisObj);
       // handle the missing file gracefully here
       this.scene = await PIXI.Assets.load(imagesObj);
       (this.scene as any).textures = this.scene;//ugly hack
     }
+
+
     this.sceneName = _jsonPath;
     if (placemenisObj.fonts.length == 0) {
       this.initScene(placemenisObj);
@@ -597,10 +602,13 @@ export class ZScene {
 
       if (type == "img") {
         let spriteData = childNode as SpriteData;
-        var _w: number = (spriteData.width);
-        var _h: number = (spriteData.height);
-        var _x: number = spriteData.x;
-        var _y: number = spriteData.y;
+        let _w: number = (spriteData.width);
+        let _h: number = (spriteData.height);
+        let _x: number = spriteData.x || 0;
+        let _y: number = spriteData.y || 0;
+        let pivotX: number = spriteData.pivotX || 0;
+        let pivotY: number = spriteData.pivotY || 0;
+
         var texName = _name;
 
         texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
@@ -615,15 +623,18 @@ export class ZScene {
         img.y = _y;
         img.width = _w;
         img.height = _h;
+        img.pivot.set(pivotX, pivotY);
       }
 
       if (type == "9slice") {
         let nineSliceData = childNode as NineSliceData;
-        var _w: number = (nineSliceData.width);
-        var _h: number = (nineSliceData.height);
-        var _x: number = nineSliceData.x;
-        var _y: number = nineSliceData.y;
-        var texName = _name;
+        let _w: number = (nineSliceData.width);
+        let _h: number = (nineSliceData.height);
+        let _x: number = nineSliceData.x || 0;
+        let _y: number = nineSliceData.y || 0;
+        let pivotX: number = nineSliceData.pivotX || 0;
+        let pivotY: number = nineSliceData.pivotY || 0;
+        let texName = _name;
 
         texName = texName.endsWith("_9S") ? texName.slice(0, -3) : texName;
         var nineSlice: ZNineSlice | null = new ZNineSlice(
@@ -638,6 +649,7 @@ export class ZScene {
         this.addToResizeMap(nineSlice);
         nineSlice.x = _x;
         nineSlice.y = _y;
+        nineSlice.pivot.set(pivotX, pivotY);
       }
 
       if (ZScene.isAssetType(type)) {
