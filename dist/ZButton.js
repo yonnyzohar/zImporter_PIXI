@@ -111,10 +111,8 @@ export class ZButton extends ZContainer {
         this.topLabelContainer2 = this.labelContainer2;
         // Detect single vs multi label
         if (this.topLabelContainer) {
-            if (this.topLabelContainer2)
-                this.topLabelContainer2.visible = false;
-            this.topLabelContainer.visible = false;
             this.labelState = "single";
+            this.topLabelContainer.parent.addChild(this.topLabelContainer);
         }
         else if (this.overState && this.disabledState && this.downState && this.upState) {
             if (this.overLabelContainer && this.disabledLabelContainer && this.downLabelContainer && this.upLabelContainer) {
@@ -137,6 +135,7 @@ export class ZButton extends ZContainer {
         if (this.labelState === "single" && this.topLabelContainer) {
             this.topLabelContainer.visible = true;
             this.topLabelContainer.setText(name);
+            this.topLabelContainer.parent.addChild(this.topLabelContainer);
         }
         else if (this.labelState === "multi") {
             if (this.overLabelContainer) {
@@ -219,28 +218,47 @@ export class ZButton extends ZContainer {
         this.cursor = "pointer";
         [this.upState, this.overState, this.downState].forEach(state => state && (state.cursor = "pointer"));
         this.removeAllListeners();
-        if (this.overState && this.upState) {
-            this.overState.visible = false;
-            this.on('mouseout', () => this.onOut());
-            this.on('mouseover', () => this.onOver());
+        let overState = this.overState;
+        let downState = this.downState;
+        let upState = this.upState;
+        let disabledState = this.disabledState;
+        let topLabelContainer = this.topLabelContainer;
+        let topLabelContainer2 = this.topLabelContainer2;
+        let labelState = this.labelState;
+        const onOut = () => this.onOut();
+        const onOver = () => this.onOver();
+        const onDown = () => this.onDown();
+        if (overState && upState) {
+            overState.visible = false;
+            this.on('mouseout', onOut);
+            this.on('mouseover', onOver);
+            this.on('touchendoutside', onOut);
+            this.on('touchend', onOut);
+            this.on('touchendoutside', onOut);
+            overState.visible = false;
         }
-        if (this.downState && this.upState) {
-            this.on('mousedown', () => this.onDown());
-            this.on('touchstart', () => this.onDown());
-            this.downState.visible = false;
+        if (downState && upState) {
+            this.on('mousedown', onDown);
+            this.on('touchstart', onDown);
+            this.on('mouseup', onOut);
+            this.on('touchendoutside', onOut);
+            this.on('touchend', onOut);
+            this.on('touchendoutside', onOut);
+            downState.visible = false;
         }
-        if (this.disabledState)
-            this.disabledState.visible = false;
-        if (this.upState) {
-            this.upState.visible = true;
-            this.addChild(this.upState);
+        if (disabledState) {
+            disabledState.visible = false;
         }
-        if (this.labelState === "single" && this.topLabelContainer) {
-            this.addChild(this.topLabelContainer);
-            this.topLabelContainer.alpha = 1;
-            if (this.topLabelContainer2) {
-                this.addChild(this.topLabelContainer2);
-                this.topLabelContainer2.alpha = 1;
+        if (upState) {
+            upState.visible = true;
+            this.addChild(upState);
+        }
+        if (labelState === "single" && topLabelContainer) {
+            this.addChild(topLabelContainer);
+            topLabelContainer.alpha = 1;
+            if (topLabelContainer2) {
+                this.addChild(topLabelContainer2);
+                topLabelContainer2.alpha = 1;
             }
         }
         this.onOut();

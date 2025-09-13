@@ -40,36 +40,41 @@ export class ZScroll extends ZContainer {
     }
     ;
     calculateScrollBar() {
-        this.removeEventListeners();
+        if (!this.scrollBar || !this.scrollContent) {
+            return;
+        }
         let scrollBarHeight = this.scrollBar.height;
         let contentHeight = this.scrollContent.height;
         // Clean up old mask & scroll area before rebuilding
-        if (this.msk) {
-            this.msk.removeAllListeners();
-            this.msk.parent.removeChild(this.msk);
-            this.msk.destroy({ children: true });
-            this.msk = null;
-        }
-        if (this.scrollArea) {
-            this.scrollArea.removeAllListeners();
-            this.scrollArea.parent.removeChild(this.scrollArea);
-            this.scrollArea.destroy({ children: true });
-            this.scrollArea = null;
-        }
         if (contentHeight <= scrollBarHeight) {
+            console.log("Content fits, no scroll needed.");
             this.scrollBar.visible = false;
             this.scrollContent.y = 0;
             return;
         }
         this.scrollBar.visible = true;
         let w = this.scrollBar.x - this.scrollContent.x;
+        console.log("Calculated scroll width:", w);
+        if (this.msk) {
+            this.msk.removeAllListeners();
+            this.msk.removeFromParent();
+            this.msk = null;
+        }
         this.msk = new Graphics();
-        this.msk.beginFill(0x000000, 0.5);
+        this.msk.name = "mask";
+        this.msk.beginFill(0x000000, 1);
         this.msk.drawRect(0, 0, w, scrollBarHeight);
         this.msk.endFill();
         this.scrollContent.mask = this.msk;
         this.addChild(this.msk);
+        console.log("Mask dimensions:", w, scrollBarHeight);
+        if (this.scrollArea) {
+            this.scrollArea.removeAllListeners();
+            this.scrollArea.removeFromParent();
+            this.scrollArea = null;
+        }
         this.scrollArea = new Graphics();
+        this.scrollArea.name = "scrollArea";
         this.scrollArea.beginFill(0x000000, 0.001); // invisible but interactive
         this.scrollArea.drawRect(0, 0, w, scrollBarHeight);
         this.scrollArea.endFill();
@@ -110,10 +115,17 @@ export class ZScroll extends ZContainer {
                 child.on("ontouchendoutside", (event) => {
                     scrollArea.emit("ontouchendoutside", event);
                 });
+                child.on("pointermove", (event) => {
+                    scrollArea.emit("pointermove", event);
+                });
+                child.on("ontouchmove", (event) => {
+                    scrollArea.emit("ontouchmove", event);
+                });
             }
         }
     }
     addEventListeners() {
+        this.removeEventListeners();
         if (this.scrollArea) {
             this.scrollArea.on('pointerdown', this.onPointerDownBinded);
             this.scrollArea.on('pointermove', this.onPointerMoveBinded);
