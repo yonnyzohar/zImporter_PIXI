@@ -16,21 +16,23 @@ import { ZTimeline } from "./ZTimeline";
  * - `setState(str: string)`: Sets the current state to the child with the given name, hiding all others.
  *    If the state is a `ZTimeline`, it will be played or stopped accordingly.
  */
-export class ZState extends ZContainer{
-    
-    protected currentState:ZContainer | null = null;
+export class ZState extends ZContainer {
+
+    protected currentState: ZContainer | null = null;
     //this is called once all children of the container are loaded
-    public init():void{
+    public init(): void {
         this.setState("idle");
     }
 
-    public getCurrentState():ZContainer | null
-    {
+    public getCurrentState(): ZContainer | null {
         return this.currentState;
     }
 
-    public hasState(str:string):boolean
-    {
+    public getType(): string {
+        return "ZState";
+    }
+
+    public hasState(str: string): boolean {
         return this.getChildByName(str) !== null;
     }
 
@@ -38,32 +40,25 @@ export class ZState extends ZContainer{
         return this.children.map((child) => child.name);
     }
 
-    public setState(str:string):ZContainer | null
-    {
-        let chosenChild:ZContainer = this.getChildByName(str) as ZContainer;
-        if(!chosenChild)
-        {
+    public setState(str: string): ZContainer | null {
+        let chosenChild: ZContainer = this.getChildByName(str) as ZContainer;
+        if (!chosenChild) {
             chosenChild = this.getChildByName("idle") as ZContainer;
-            if(!chosenChild)
-            {
+            if (!chosenChild) {
                 chosenChild = this.getChildAt(0) as ZContainer;
             }
         }
-        for(let i = 0; i < this.children.length; i++)
-        {
+        for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             child.visible = false;
-            if(child instanceof ZTimeline)
-            {
+            if (child instanceof ZTimeline) {
                 let t = child as ZTimeline;
                 t.stop();
             }
         }
-        if(chosenChild)
-        {
+        if (chosenChild) {
             chosenChild.visible = true;
-            if(chosenChild instanceof ZTimeline)
-            {
+            if (chosenChild instanceof ZTimeline) {
                 let t = chosenChild as ZTimeline;
                 t.play();
             }

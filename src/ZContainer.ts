@@ -175,6 +175,40 @@ export class ZContainer extends PIXI.Container {
 
     }
 
+    public getType(): string {
+        return "ZContainer";
+    }
+
+    public getAllOfType(type: string): ZContainer[] {
+        const queue: ZContainer[] = [];
+        const result: ZContainer[] = [];
+        if (this.children && this.children.length > 0) {
+            for (let child of this.children) {
+                if ((child as any).getType) {
+                    queue.push(child as ZContainer);
+                }
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            let _t = current.getType();
+            if (_t === type) {
+                result.push(current);
+            }
+
+            if (current.children && current.children.length > 0) {
+                for (let child of current.children) {
+                    if ((child as any).getType) {
+                        queue.push(child as ZContainer);
+                    }
+                }
+            }
+        }
+
+        return result as ZContainer[];
+    }
+
     public setText(text: string): void {
         let textChild: PIXI.Text | null = this.getTextField();
         if (textChild) {

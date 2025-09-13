@@ -25,4 +25,8 @@ export class ZToggle extends ZState {
         this.callback = undefined;
     }
 
+    public getType(): string {
+        return "ZToggle";
+    }
+
 }

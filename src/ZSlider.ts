@@ -9,7 +9,7 @@ export class ZSlider extends ZContainer {
     // Slider specific properties and methods can be added here
 
     dragging = false;
-    sliderWidth:number | undefined = 0;
+    sliderWidth: number | undefined = 0;
     callback?: (t: number) => void;
     onDragStartBinded: any;
     onDragEndBinded: any;
@@ -33,6 +33,10 @@ export class ZSlider extends ZContainer {
         handle
             .on('pointerdown', this.onDragStartBinded).on('touchstart', this.onDragStartBinded)
             .cursor = 'pointer';
+    }
+
+    public getType(): string {
+        return "ZSlider";
     }
 
     setHandlePosition(t: number) {
@@ -62,9 +66,11 @@ export class ZSlider extends ZContainer {
         handle.on("touchend", this.onDragEndBinded);
         handle.on("touchendoutside", this.onDragEndBinded);
         handle.on("touchmove", this.onDragBinded);
+        window.addEventListener('pointerup', this.onDragEndBinded);
+        window.addEventListener('touchend', this.onDragEndBinded);
     };
 
-    onDragEnd(e: DragEvent){
+    onDragEnd(e: DragEvent) {
         this.dragging = false;
         let handle = (this as any).handle;
         handle.off("pointermove", this.onDragBinded);
@@ -73,9 +79,11 @@ export class ZSlider extends ZContainer {
         handle.off("touchend", this.onDragEndBinded);
         handle.off("touchendoutside", this.onDragEndBinded);
         handle.off("touchmove", this.onDragBinded);
+        window.removeEventListener('pointerup', this.onDragEndBinded);
+        window.removeEventListener('touchend', this.onDragEndBinded);
     };
 
-    onDrag(e: DragEvent): void{
+    onDrag(e: DragEvent): void {
         const global = e.data?.global;
         if (!global) return;
 
@@ -93,5 +101,5 @@ export class ZSlider extends ZContainer {
         e.stopPropagation();
     };
 
-    
+
 }
