@@ -328,20 +328,21 @@ export class ZContainer extends PIXI.Container {
     //this assumes that the asset pivot is topLeft
     executeFitToScreen() {
         if (this.parent) {
-            this.pivot.x = 0;
-            this.pivot.y = 0;
+            this.pivotX = 0;
+            this.pivotY = 0;
+
             let pos = this.parent.toLocal(new PIXI.Point(0, 0));
             this.x = pos.x;
             this.y = pos.y;
 
 
             if (window.innerWidth > window.innerHeight) {
-                let rightPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, window.innerHeight));
+                let rightPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, 0));
                 this.width = rightPoint.x - pos.x;
                 this.scaleY = this.scaleX;
             }
             else {
-                let btmPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, window.innerHeight));
+                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
                 this.height = btmPoint.y - pos.y;
                 this.scaleX = this.scaleY;
             }
