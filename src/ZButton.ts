@@ -144,17 +144,21 @@ export class ZButton extends ZContainer {
         // Detect single vs multi label
         if (this.topLabelContainer) {
             this.labelState = "single";
+            this.upState.parent.addChild(this.upState);
             this.topLabelContainer.parent.addChild(this.topLabelContainer);
         } else if (this.overState && this.disabledState && this.downState && this.upState) {
             if (this.overLabelContainer && this.disabledLabelContainer && this.downLabelContainer && this.upLabelContainer) {
                 this.labelState = "multi";
 
                 // hide all by default
-                [this.overLabelContainer, this.disabledLabelContainer, this.downLabelContainer, this.upLabelContainer].forEach(l => (l.visible = false));
-                if (this.overLabelContainer2) this.overLabelContainer2.visible = false;
-                if (this.disabledLabelContainer2) this.disabledLabelContainer2.visible = false;
-                if (this.downLabelContainer2) this.downLabelContainer2.visible = false;
-                if (this.upLabelContainer2) this.upLabelContainer2.visible = false;
+                //[this.overLabelContainer, this.disabledLabelContainer, this.downLabelContainer, this.upLabelContainer].forEach(l => (l.visible = false));
+                //if (this.overLabelContainer2) this.overLabelContainer2.visible = false;
+                //if (this.disabledLabelContainer2) this.disabledLabelContainer2.visible = false;
+                //if (this.downLabelContainer2) this.downLabelContainer2.visible = false;
+                //if (this.upLabelContainer2) this.upLabelContainer2.visible = false;
+                this.upState.parent.addChild(this.upState);
+                if (this.upLabelContainer) this.upState.parent.addChild(this.upLabelContainer);
+                if (this.upLabelContainer2) this.upState.parent.addChild(this.upLabelContainer2);
             }
         }
 
