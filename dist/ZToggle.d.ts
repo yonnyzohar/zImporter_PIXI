@@ -4,5 +4,6 @@ export declare class ZToggle extends ZState {
     init(): void;
     setCallback(func: (t: boolean) => void): void;
     removeCallback(): void;
+    getType(): string;
 }
 //# sourceMappingURL=ZToggle.d.ts.map

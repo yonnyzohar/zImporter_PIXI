@@ -17,6 +17,7 @@ export declare class ZState extends ZContainer {
     protected currentState: ZContainer | null;
     init(): void;
     getCurrentState(): ZContainer | null;
+    getType(): string;
     hasState(str: string): boolean;
     getAllStateNames(): (string | null)[];
     setState(str: string): ZContainer | null;

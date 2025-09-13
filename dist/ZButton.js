@@ -1,18 +1,70 @@
 import { ZContainer } from "./ZContainer";
-/**
- * Represents a customizable button component extending ZContainer.
- * Handles different visual states (up, over, down, disabled) and user interactions.
- * Supports label display and animated feedback on click.
- */
 export const RemoveClickListener = (container) => {
-    container.removeAllListeners('click');
-    container.removeAllListeners('tap');
+    container.removeAllListeners('mouseup');
+    container.removeAllListeners('touchend');
+    container.removeAllListeners('touchendoutside');
+    container.removeAllListeners('mouseupoutside');
+    container.removeAllListeners('mousedown');
+    container.removeAllListeners('touchstart');
 };
-export const AttachClickListener = (container, callback) => {
+export const AttachClickListener = (container, pressCallback, longPressCallback) => {
     container.interactive = true;
     container.interactiveChildren = true;
-    container.on('click', callback);
-    container.on('tap', callback);
+    if (pressCallback)
+        container.pressCallback = pressCallback;
+    if (longPressCallback)
+        container.longPressCallback = longPressCallback;
+    let longPressTimer = null;
+    const LONG_PRESS_DURATION = 500;
+    const MAX_DRAG_DISTANCE = 20;
+    let longPressFired = false;
+    let startPos = null;
+    const getPointerPos = (event) => {
+        if (event.data && event.data.global)
+            return { x: event.data.global.x, y: event.data.global.y };
+        if (event.global)
+            return { x: event.global.x, y: event.global.y };
+        return null;
+    };
+    const onPointerDown = (event) => {
+        longPressFired = false;
+        startPos = getPointerPos(event);
+        longPressTimer = setTimeout(() => {
+            longPressFired = true;
+            if (container.longPressCallback) {
+                container.longPressCallback();
+            }
+        }, LONG_PRESS_DURATION);
+        container.on('mouseup', onPointerUp);
+        container.on('touchend', onPointerUp);
+        container.on('touchendoutside', onPointerUp);
+        container.on('mouseupoutside', onPointerUp);
+    };
+    const onPointerUp = (event) => {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        let isDrag = false;
+        const endPos = getPointerPos(event);
+        if (startPos && endPos) {
+            const dx = endPos.x - startPos.x;
+            const dy = endPos.y - startPos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > MAX_DRAG_DISTANCE)
+                isDrag = true;
+        }
+        startPos = null;
+        if (!longPressFired && !isDrag) {
+            if (container.pressCallback) {
+                container.pressCallback();
+            }
+        }
+        container.off('mouseup', onPointerUp);
+        container.off('touchend', onPointerUp);
+        container.off('touchendoutside', onPointerUp);
+        container.off('mouseupoutside', onPointerUp);
+    };
+    container.on('mousedown', onPointerDown);
+    container.on('touchstart', onPointerDown);
 };
 export class ZButton extends ZContainer {
     topLabelContainer2;
@@ -29,28 +81,16 @@ export class ZButton extends ZContainer {
     disabledState;
     disabledLabelContainer;
     disabledLabelContainer2;
-    //methods
-    onPointerDownBinded;
-    onPointerUpBinded;
-    onOutBinded;
-    onOverBinded;
-    onDownBinded;
     callback;
     longPressCallback;
-    longPressTimer = null;
-    LONG_PRESS_DURATION = 500; // in ms
-    longPressFired = false;
     labelState = "none";
+    getType() {
+        return "ZButton";
+    }
     init(_labelStr = "") {
         super.init();
-        ////console.log("Button!");
         this.interactive = true;
         this.interactiveChildren = true;
-        this.onPointerDownBinded = this.onPointerDown.bind(this);
-        this.onPointerUpBinded = this.onPointerUp.bind(this);
-        this.onOutBinded = this.onOut.bind(this);
-        this.onOverBinded = this.onOver.bind(this);
-        this.onDownBinded = this.onDown.bind(this);
         if (this.overState) {
             this.overLabelContainer = this.overState?.getChildByName("labelContainer");
             this.overLabelContainer2 = this.overState?.getChildByName("labelContainer2");
@@ -69,56 +109,36 @@ export class ZButton extends ZContainer {
         }
         this.topLabelContainer = this.labelContainer;
         this.topLabelContainer2 = this.labelContainer2;
-        //is this a button with a single label for all states or a label per state?
+        // Detect single vs multi label
         if (this.topLabelContainer) {
-            if (this.topLabelContainer2) {
+            if (this.topLabelContainer2)
                 this.topLabelContainer2.visible = false;
-            }
             this.topLabelContainer.visible = false;
             this.labelState = "single";
         }
-        else {
-            if (this.overState && this.disabledState && this.downState && this.upState) {
-                if (this.overLabelContainer && this.disabledLabelContainer && this.downLabelContainer && this.upLabelContainer) {
-                    this.labelState = "multi";
-                }
+        else if (this.overState && this.disabledState && this.downState && this.upState) {
+            if (this.overLabelContainer && this.disabledLabelContainer && this.downLabelContainer && this.upLabelContainer) {
+                this.labelState = "multi";
+                // hide all by default
+                [this.overLabelContainer, this.disabledLabelContainer, this.downLabelContainer, this.upLabelContainer].forEach(l => (l.visible = false));
+                if (this.overLabelContainer2)
+                    this.overLabelContainer2.visible = false;
+                if (this.disabledLabelContainer2)
+                    this.disabledLabelContainer2.visible = false;
+                if (this.downLabelContainer2)
+                    this.downLabelContainer2.visible = false;
+                if (this.upLabelContainer2)
+                    this.upLabelContainer2.visible = false;
             }
         }
         this.enable();
-        this.onOut();
-        this.on('mousedown', this.onPointerDownBinded);
-        this.on('touchstart', this.onPointerDownBinded);
-        this.on('mouseup', this.onPointerUpBinded);
-        this.on('touchend', this.onPointerUpBinded);
-        this.on('touchendoutside', this.onPointerUpBinded);
-        this.on('mouseupoutside', this.onPointerUpBinded);
     }
-    onPointerDown() {
-        this.longPressFired = false;
-        this.longPressTimer = setTimeout(() => {
-            this.longPressFired = true;
-            if (this.longPressCallback) {
-                this.longPressCallback();
-            }
-        }, this.LONG_PRESS_DURATION);
-    }
-    ;
-    onPointerUp() {
-        clearTimeout(this.longPressTimer);
-        this.longPressTimer = null;
-        if (!this.longPressFired) {
-            this.onClicked();
-        }
-    }
-    ;
     setLabel(name) {
-        if (this.labelState === "single") {
-            if (this.topLabelContainer) {
-                this.topLabelContainer.visible = true;
-                this.topLabelContainer.setText(name);
-            }
+        if (this.labelState === "single" && this.topLabelContainer) {
+            this.topLabelContainer.visible = true;
+            this.topLabelContainer.setText(name);
         }
-        if (this.labelState === "multi") {
+        else if (this.labelState === "multi") {
             if (this.overLabelContainer) {
                 this.overLabelContainer.visible = true;
                 this.overLabelContainer.setText(name);
@@ -138,13 +158,11 @@ export class ZButton extends ZContainer {
         }
     }
     setLabel2(name) {
-        if (this.labelState === "single") {
-            if (this.topLabelContainer2) {
-                this.topLabelContainer2.visible = true;
-                this.topLabelContainer2.setText(name);
-            }
+        if (this.labelState === "single" && this.topLabelContainer2) {
+            this.topLabelContainer2.visible = true;
+            this.topLabelContainer2.setText(name);
         }
-        if (this.labelState === "multi") {
+        else if (this.labelState === "multi") {
             if (this.overLabelContainer2) {
                 this.overLabelContainer2.visible = true;
                 this.overLabelContainer2.setText(name);
@@ -163,74 +181,75 @@ export class ZButton extends ZContainer {
             }
         }
     }
-    ;
+    setFixedTextSize(fixed) {
+        const containers = [
+            this.topLabelContainer, this.topLabelContainer2,
+            this.overLabelContainer, this.overLabelContainer2,
+            this.disabledLabelContainer, this.disabledLabelContainer2,
+            this.downLabelContainer, this.downLabelContainer2,
+            this.upLabelContainer, this.upLabelContainer2
+        ].filter(Boolean);
+        containers.forEach(c => {
+            if (c.setFixedBoxSize) {
+                c.setFixedBoxSize(fixed);
+            }
+        });
+    }
     setCallback(func) {
         this.callback = func;
+        AttachClickListener(this, () => this.onClicked(), this.longPressCallback);
     }
     removeCallback() {
         this.callback = undefined;
+        RemoveClickListener(this);
     }
     setLongPressCallback(func) {
         this.longPressCallback = func;
+        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, func);
     }
     removeLongPressCallback() {
         this.longPressCallback = undefined;
+        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, undefined);
     }
     onClicked() {
-        if (this.callback) {
+        if (this.callback)
             this.callback();
-        }
     }
     enable() {
         this.cursor = "pointer";
-        [this.upState, this.overState, this.downState].forEach((state) => {
-            if (state) {
-                state.cursor = "pointer";
-            }
-        });
+        [this.upState, this.overState, this.downState].forEach(state => state && (state.cursor = "pointer"));
         this.removeAllListeners();
         if (this.overState && this.upState) {
             this.overState.visible = false;
-            this.on('mouseout', this.onOutBinded);
-            this.on('mouseover', this.onOverBinded);
-            this.on('touchendoutside', this.onOutBinded);
-            this.on('touchend', this.onOutBinded);
-            this.on('touchendoutside', this.onOutBinded);
+            this.on('mouseout', () => this.onOut());
+            this.on('mouseover', () => this.onOver());
         }
         if (this.downState && this.upState) {
-            this.on('mousedown', this.onDownBinded);
-            this.on('touchstart', this.onDownBinded);
-            this.on('mouseup', this.onOutBinded);
-            this.on('touchendoutside', this.onOutBinded);
-            this.on('touchend', this.onOutBinded);
-            this.on('touchendoutside', this.onOutBinded);
+            this.on('mousedown', () => this.onDown());
+            this.on('touchstart', () => this.onDown());
             this.downState.visible = false;
         }
-        if (this.disabledState) {
+        if (this.disabledState)
             this.disabledState.visible = false;
-        }
         if (this.upState) {
             this.upState.visible = true;
             this.addChild(this.upState);
-            if (this.labelState === "single" && this.topLabelContainer) {
-                this.addChild(this.topLabelContainer);
-                this.topLabelContainer.visible = true;
-                this.topLabelContainer.alpha = 1;
-                if (this.topLabelContainer2) {
-                    this.addChild(this.topLabelContainer2);
-                    this.topLabelContainer2.visible = true;
-                    this.topLabelContainer2.alpha = 1;
-                }
+        }
+        if (this.labelState === "single" && this.topLabelContainer) {
+            this.addChild(this.topLabelContainer);
+            this.topLabelContainer.alpha = 1;
+            if (this.topLabelContainer2) {
+                this.addChild(this.topLabelContainer2);
+                this.topLabelContainer2.alpha = 1;
             }
         }
+        this.onOut();
+        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, this.longPressCallback);
     }
     disable() {
         this.cursor = "default";
-        [this.upState, this.overState, this.downState].forEach((state) => {
-            if (state) {
-                state.cursor = "default";
-            }
-        });
+        this.interactive = false;
+        [this.upState, this.overState, this.downState].forEach(state => state && (state.cursor = "default"));
         this.removeAllListeners();
         if (this.disabledState) {
             this.disabledState.visible = true;
@@ -246,16 +265,13 @@ export class ZButton extends ZContainer {
         }
     }
     onDown() {
-        if (this.overState) {
+        if (this.overState)
             this.overState.visible = false;
-        }
-        if (this.disabledState) {
+        if (this.disabledState)
             this.disabledState.visible = false;
-        }
-        if (this.upState && this.downState) {
+        if (this.upState && this.downState)
             this.upState.visible = false;
-        }
-        if (this.downState && this.upState) {
+        if (this.downState) {
             this.downState.visible = true;
             this.addChild(this.downState);
         }
@@ -269,9 +285,8 @@ export class ZButton extends ZContainer {
         }
     }
     onOut() {
-        if (this.overState) {
+        if (this.overState)
             this.overState.visible = false;
-        }
         if (this.upState) {
             this.upState.visible = true;
             this.addChild(this.upState);
@@ -284,7 +299,6 @@ export class ZButton extends ZContainer {
                 this.topLabelContainer2.alpha = 1;
             }
         }
-        ////console.log("onOut");
     }
     onOver() {
         if (this.overState) {

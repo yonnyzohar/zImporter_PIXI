@@ -91,6 +91,8 @@ export declare class ZContainer extends PIXI.Container {
     get(childName: string): ZContainer | null;
     getAll(childName: string): ZContainer[];
     init(): void;
+    getType(): string;
+    getAllOfType(type: string): ZContainer[];
     setText(text: string): void;
     getTextField(): PIXI.Text | null;
     setInstanceData(data: InstanceData, orientation: string): void;

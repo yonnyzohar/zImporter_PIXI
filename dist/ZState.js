@@ -24,6 +24,9 @@ export class ZState extends ZContainer {
     getCurrentState() {
         return this.currentState;
     }
+    getType() {
+        return "ZState";
+    }
     hasState(str) {
         return this.getChildByName(str) !== null;
     }

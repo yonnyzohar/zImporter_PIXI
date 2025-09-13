@@ -11,6 +11,7 @@ export declare class ZSlider extends ZContainer {
     onDragEndBinded: any;
     onDragBinded: any;
     init(): void;
+    getType(): string;
     setHandlePosition(t: number): void;
     setCallback(callback: (t: number) => void): void;
     removeCallback(): void;

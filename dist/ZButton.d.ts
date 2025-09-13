@@ -1,11 +1,6 @@
 import { ZContainer } from "./ZContainer";
-/**
- * Represents a customizable button component extending ZContainer.
- * Handles different visual states (up, over, down, disabled) and user interactions.
- * Supports label display and animated feedback on click.
- */
 export declare const RemoveClickListener: (container: ZContainer) => void;
-export declare const AttachClickListener: (container: ZContainer, callback: () => void) => void;
+export declare const AttachClickListener: (container: ZContainer, pressCallback?: () => void, longPressCallback?: () => void) => void;
 export declare class ZButton extends ZContainer {
     topLabelContainer2: ZContainer;
     topLabelContainer: ZContainer;
@@ -21,22 +16,14 @@ export declare class ZButton extends ZContainer {
     disabledState: ZContainer;
     disabledLabelContainer: ZContainer;
     disabledLabelContainer2: ZContainer;
-    onPointerDownBinded: any;
-    onPointerUpBinded: any;
-    onOutBinded: any;
-    onOverBinded: any;
-    onDownBinded: any;
     callback?: () => void;
     longPressCallback?: () => void;
-    longPressTimer: any;
-    LONG_PRESS_DURATION: number;
-    longPressFired: boolean;
     private labelState;
+    getType(): string;
     init(_labelStr?: string): void;
-    onPointerDown(): void;
-    onPointerUp(): void;
     setLabel(name: string): void;
     setLabel2(name: string): void;
+    setFixedTextSize(fixed: boolean): void;
     setCallback(func: () => void): void;
     removeCallback(): void;
     setLongPressCallback(func: () => void): void;

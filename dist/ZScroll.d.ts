@@ -1,6 +1,5 @@
-import { Graphics } from "pixi.js";
+import { Graphics, FederatedPointerEvent, Point } from "pixi.js";
 import { ZContainer } from "./ZContainer";
-import { FederatedPointerEvent, Point } from "pixi.js";
 interface DragEvent extends FederatedPointerEvent {
     global: Point;
 }
@@ -10,6 +9,7 @@ export declare class ZScroll extends ZContainer {
     dragStartY: number;
     beedStartY: number;
     isDragging: boolean;
+    isBeedDragging: boolean;
     beed: ZContainer;
     scrollBar: ZContainer;
     scrollContent: ZContainer;
@@ -18,15 +18,21 @@ export declare class ZScroll extends ZContainer {
     private onPointerDownBinded;
     private onPointerMoveBinded;
     private onPointerUpBinded;
+    private onBeedDownBinded;
+    private onBeedUpBinded;
     private onWheelBinded;
     init(): void;
+    getType(): string;
     private calculateScrollBar;
+    private enableChildPassThrough;
     addEventListeners(): void;
     removeEventListeners(): void;
     onPointerDown(event: DragEvent): void;
-    onWheel(event: WheelEvent): void;
+    onBeedDown(event: DragEvent): void;
     onPointerMove(event: DragEvent): void;
     onPointerUp(): void;
+    onBeedUp(): void;
+    onWheel(event: WheelEvent): void;
     applyTransform(): void;
 }
 export {};

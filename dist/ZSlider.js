@@ -23,6 +23,9 @@ export class ZSlider extends ZContainer {
             .on('pointerdown', this.onDragStartBinded).on('touchstart', this.onDragStartBinded)
             .cursor = 'pointer';
     }
+    getType() {
+        return "ZSlider";
+    }
     setHandlePosition(t) {
         let handle = this.handle;
         handle.x = t * this.sliderWidth;
@@ -47,6 +50,8 @@ export class ZSlider extends ZContainer {
         handle.on("touchend", this.onDragEndBinded);
         handle.on("touchendoutside", this.onDragEndBinded);
         handle.on("touchmove", this.onDragBinded);
+        window.addEventListener('pointerup', this.onDragEndBinded);
+        window.addEventListener('touchend', this.onDragEndBinded);
     }
     ;
     onDragEnd(e) {
@@ -58,6 +63,8 @@ export class ZSlider extends ZContainer {
         handle.off("touchend", this.onDragEndBinded);
         handle.off("touchendoutside", this.onDragEndBinded);
         handle.off("touchmove", this.onDragBinded);
+        window.removeEventListener('pointerup', this.onDragEndBinded);
+        window.removeEventListener('touchend', this.onDragEndBinded);
     }
     ;
     onDrag(e) {

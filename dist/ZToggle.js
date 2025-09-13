@@ -18,5 +18,8 @@ export class ZToggle extends ZState {
     removeCallback() {
         this.callback = undefined;
     }
+    getType() {
+        return "ZToggle";
+    }
 }
 //# sourceMappingURL=ZToggle.js.map
