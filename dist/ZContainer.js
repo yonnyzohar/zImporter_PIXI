@@ -272,15 +272,15 @@ export class ZContainer extends PIXI.Container {
             let pos = this.parent.toLocal(new PIXI.Point(0, 0));
             this.x = pos.x;
             this.y = pos.y;
-            if (this.width > this.height) {
-                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
-                this.height = btmPoint.y - pos.y;
-                this.scaleX = this.scaleY;
-            }
-            else {
+            if (window.innerWidth > window.innerHeight) {
                 let rightPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, 0));
                 this.width = rightPoint.x - pos.x;
                 this.scaleY = this.scaleX;
+            }
+            else {
+                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
+                this.height = btmPoint.y - pos.y;
+                this.scaleX = this.scaleY;
             }
             let midScreen = this.parent.toLocal(new PIXI.Point(window.innerWidth / 2, window.innerHeight / 2));
             this.x = midScreen.x - this.width / 2;
