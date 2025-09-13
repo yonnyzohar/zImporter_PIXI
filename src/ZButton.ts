@@ -157,8 +157,8 @@ export class ZButton extends ZContainer {
                 //if (this.downLabelContainer2) this.downLabelContainer2.visible = false;
                 //if (this.upLabelContainer2) this.upLabelContainer2.visible = false;
                 this.upState.parent.addChild(this.upState);
-                if (this.upLabelContainer) this.upState.parent.addChild(this.upLabelContainer);
-                if (this.upLabelContainer2) this.upState.parent.addChild(this.upLabelContainer2);
+                if (this.upLabelContainer) this.upState.addChild(this.upLabelContainer);
+                if (this.upLabelContainer2) this.upState.addChild(this.upLabelContainer2);
             }
         }
 
