@@ -235,10 +235,6 @@ export class ZContainer extends PIXI.Container {
                         }
                     }
                 }
-                if (style.align === "center") {
-                    textChild.pivot.x = textChild.width / 2;
-                    textChild.pivot.y = textChild.height / 2;
-                }
             }
         }
 

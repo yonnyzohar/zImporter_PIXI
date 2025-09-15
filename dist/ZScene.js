@@ -465,6 +465,9 @@ export class ZScene {
                     if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
                         tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
                     }
+                    if (textInstanceNode.pivotX !== undefined && textInstanceNode.pivotY !== undefined) {
+                        tf.pivot.set(textInstanceNode.pivotX, textInstanceNode.pivotY);
+                    }
                     if (textInstanceNode.size) {
                         tf.style.fontSize = textInstanceNode.size;
                     }

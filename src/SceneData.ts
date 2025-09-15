@@ -167,6 +167,8 @@ export interface TextData extends BaseAssetData {
   padding?: number | number[];
   textAnchorX: number;
   textAnchorY: number;
+  pivotX: number;
+  pivotY: number;
   fontWeight: string;
 }
 
