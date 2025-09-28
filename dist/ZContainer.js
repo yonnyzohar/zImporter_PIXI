@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Emitter } from "@pixi/particle-emitter";
+import { ZNineSlice } from './ZNineSlice';
 /**
  * A custom container class extending `PIXI.Container` that supports orientation-based transforms,
  * anchoring, and instance data management for responsive layouts.
@@ -262,25 +263,36 @@ export class ZContainer extends PIXI.Container {
     }
     //this assumes that the asset pivot is topLeft
     executeFitToScreen() {
+        let children = this.children;
+        if (children.length === 0)
+            return;
         if (this.parent) {
             this.pivotX = 0;
             this.pivotY = 0;
             let pos = this.parent.toLocal(new PIXI.Point(0, 0));
             this.x = pos.x;
             this.y = pos.y;
-            if (window.innerWidth > window.innerHeight) {
-                let rightPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, 0));
-                this.width = rightPoint.x - pos.x;
-                this.scaleY = this.scaleX;
+            if (children[0] instanceof ZNineSlice) {
+                let nineSlice = children[0];
+                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
+                nineSlice.width = btmPoint.x - pos.x;
+                nineSlice.height = btmPoint.y - pos.y;
             }
             else {
-                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
-                this.height = btmPoint.y - pos.y;
-                this.scaleX = this.scaleY;
+                if (window.innerWidth > window.innerHeight) {
+                    let rightPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, 0));
+                    this.width = rightPoint.x - pos.x;
+                    this.scaleY = this.scaleX;
+                }
+                else {
+                    let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
+                    this.height = btmPoint.y - pos.y;
+                    this.scaleX = this.scaleY;
+                }
+                let midScreen = this.parent.toLocal(new PIXI.Point(window.innerWidth / 2, window.innerHeight / 2));
+                this.x = midScreen.x - this.width / 2;
+                this.y = midScreen.y - this.height / 2;
             }
-            let midScreen = this.parent.toLocal(new PIXI.Point(window.innerWidth / 2, window.innerHeight / 2));
-            this.x = midScreen.x - this.width / 2;
-            this.y = midScreen.y - this.height / 2;
         }
     }
     applyAnchor() {
