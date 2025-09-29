@@ -274,7 +274,7 @@ export class ZContainer extends PIXI.Container {
             this.y = pos.y;
             if (children[0] instanceof ZNineSlice) {
                 let nineSlice = children[0];
-                let btmPoint = this.parent.toLocal(new PIXI.Point(0, window.innerHeight));
+                let btmPoint = this.parent.toLocal(new PIXI.Point(window.innerWidth, window.innerHeight));
                 nineSlice.width = btmPoint.x - pos.x;
                 nineSlice.height = btmPoint.y - pos.y;
             }
