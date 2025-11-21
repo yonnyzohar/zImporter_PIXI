@@ -99,7 +99,6 @@ export declare class ZScene {
      * Destroys the scene and its assets, freeing resources.
      */
     destroy(): Promise<void>;
-    private createImagesObject;
     /**
      * Loads the scene's assets and fonts, then initializes the scene.
      * @param assetBasePath - The base path for assets.
@@ -113,6 +112,7 @@ export declare class ZScene {
      * @returns The created sprite, or null if not found.
      */
     createFrame(itemName: string): PIXI.Sprite | null;
+    private createImagesObject;
     /**
      * Gets the number of frames that match a given prefix in the spritesheet data.
      * @param _framePrefix - The prefix to search for.

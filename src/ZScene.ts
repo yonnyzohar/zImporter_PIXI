@@ -126,7 +126,7 @@ export class ZScene {
         let tempName = child.name;
         let mc: ZContainer | undefined = this.spawn(tempName);
         if (mc) {
-          mc.setInstanceData(child, this.orientation);
+          mc.setInstanceData(child as InstanceData, this.orientation);
           this.addToResizeMap(mc);
           this._sceneStage.addChild(mc);
           (this._sceneStage as any)[mc.name] = mc;
@@ -252,28 +252,7 @@ export class ZScene {
   }
 
 
-  private createImagesObject(assetBasePath: string, obj: SceneData): { alias: string; src: string }[] {
-    let images: { alias: string; src: string }[] = [];
-    let record: any = {};
-    let templates: Record<string, TemplateData> = obj.templates;
-    for (let template in templates) {
-      let children = templates[template].children;
-      for (let child in children) {
-        let childObj: BaseAssetData = children[child];
-        if (childObj.type == "img" || childObj.type == "9slice") {
-          let imgData: SpriteData = <SpriteData>childObj;
-          if (!record[imgData.name]) {
-            record[imgData.name] = true;
-            let texName: string = imgData.name.endsWith("_9S") ? imgData.name.slice(0, -3) : imgData.name;
-            texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
-            images.push({ alias: texName, src: assetBasePath + imgData.filePath });
-          }
 
-        }
-      }
-    }
-    return images;
-  }
 
   /**
    * Loads the scene's assets and fonts, then initializes the scene.
@@ -292,7 +271,14 @@ export class ZScene {
       isAtlas = true; //default to true for backward compatibility
     }
     if (isAtlas) {
-      this.scene = await PIXI.Assets.load(_jsonPath);
+      try {
+        this.scene = await PIXI.Assets.load(_jsonPath);
+      }
+      catch (err) {
+
+        console.error("Error loading spritesheet:", err);
+      }
+
     }
     else {
       let imagesObj = this.createImagesObject(assetBasePath, placemenisObj);
@@ -345,6 +331,29 @@ export class ZScene {
     }
 
     return img;
+  }
+
+  private createImagesObject(assetBasePath: string, obj: SceneData): { alias: string; src: string }[] {
+    let images: { alias: string; src: string }[] = [];
+    let record: any = {};
+    let templates: Record<string, TemplateData> = obj.templates;
+    for (let template in templates) {
+      let children = templates[template].children;
+      for (let child in children) {
+        let childObj: BaseAssetData = children[child];
+        if (childObj.type == "img" || childObj.type == "9slice") {
+          let imgData: SpriteData = <SpriteData>childObj;
+          if (!record[imgData.name]) {
+            record[imgData.name] = true;
+            let texName: string = imgData.name.endsWith("_9S") ? imgData.name.slice(0, -3) : imgData.name;
+            texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
+            images.push({ alias: texName, src: assetBasePath + imgData.filePath });
+          }
+
+        }
+      }
+    }
+    return images;
   }
 
   /**

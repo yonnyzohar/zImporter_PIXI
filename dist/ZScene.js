@@ -206,27 +206,6 @@ export class ZScene {
         // Now unload the asset from the asset manager
         await PIXI.Assets.unload(this.sceneName);
     }
-    createImagesObject(assetBasePath, obj) {
-        let images = [];
-        let record = {};
-        let templates = obj.templates;
-        for (let template in templates) {
-            let children = templates[template].children;
-            for (let child in children) {
-                let childObj = children[child];
-                if (childObj.type == "img" || childObj.type == "9slice") {
-                    let imgData = childObj;
-                    if (!record[imgData.name]) {
-                        record[imgData.name] = true;
-                        let texName = imgData.name.endsWith("_9S") ? imgData.name.slice(0, -3) : imgData.name;
-                        texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
-                        images.push({ alias: texName, src: assetBasePath + imgData.filePath });
-                    }
-                }
-            }
-        }
-        return images;
-    }
     /**
      * Loads the scene's assets and fonts, then initializes the scene.
      * @param assetBasePath - The base path for assets.
@@ -240,7 +219,12 @@ export class ZScene {
             isAtlas = true; //default to true for backward compatibility
         }
         if (isAtlas) {
-            this.scene = await PIXI.Assets.load(_jsonPath);
+            try {
+                this.scene = await PIXI.Assets.load(_jsonPath);
+            }
+            catch (err) {
+                console.error("Error loading spritesheet:", err);
+            }
         }
         else {
             let imagesObj = this.createImagesObject(assetBasePath, placemenisObj);
@@ -283,6 +267,27 @@ export class ZScene {
             //console.log("COULD NOT FIND " + itemName);
         }
         return img;
+    }
+    createImagesObject(assetBasePath, obj) {
+        let images = [];
+        let record = {};
+        let templates = obj.templates;
+        for (let template in templates) {
+            let children = templates[template].children;
+            for (let child in children) {
+                let childObj = children[child];
+                if (childObj.type == "img" || childObj.type == "9slice") {
+                    let imgData = childObj;
+                    if (!record[imgData.name]) {
+                        record[imgData.name] = true;
+                        let texName = imgData.name.endsWith("_9S") ? imgData.name.slice(0, -3) : imgData.name;
+                        texName = texName.endsWith("_IMG") ? texName.slice(0, -4) : texName;
+                        images.push({ alias: texName, src: assetBasePath + imgData.filePath });
+                    }
+                }
+            }
+        }
+        return images;
     }
     /**
      * Gets the number of frames that match a given prefix in the spritesheet data.
