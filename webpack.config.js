@@ -27,22 +27,7 @@ module.exports = {
       },
     ],
   },
-  externals: {
-    'pixi.js': 'PIXI',
-    'gsap': 'gsap',
-    'reflect-metadata': 'Reflect',
-    'class-transformer': 'classTransformer',
-    'class-validator': 'classValidator',
-    '@pixi-spine/all-4.0': 'PIXI.spine',
-    '@pixi-spine/base': 'PIXI.spine',
-    '@pixi-spine/loader-base': 'PIXI.spine',
-    '@pixi-spine/loader-uni': 'PIXI.spine',
-    '@pixi-spine/runtime-3.7': 'PIXI.spine',
-    '@pixi-spine/runtime-3.8': 'PIXI.spine',
-    '@pixi-spine/runtime-4.1': 'PIXI.spine',
-    '@pixi/filter-drop-shadow': 'PIXI.filters',
-    '@pixi/particle-emitter': 'PIXI.particles'
-  },
+  // All dependencies will be bundled. No externals.
   optimization: {
     minimize: true,
     minimizer: [
