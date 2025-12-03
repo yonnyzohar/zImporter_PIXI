@@ -659,6 +659,24 @@ export class ZScene {
                     }
                     tf.filters.push(dropShadowFilter);
                 }
+                if (filter.type === "blur") {
+                    let blurFilter = new PIXI.BlurFilter();
+                    blurFilter.blur = filter.blur;
+                    if (!tf.filters) {
+                        tf.filters = [];
+                    }
+                    tf.filters.push(blurFilter);
+                }
+                if (filter.type === "colorMatrix") {
+                    let colorMatrixFilter = new PIXI.ColorMatrixFilter();
+                    if (filter.matrix) {
+                        colorMatrixFilter.matrix = filter.matrix;
+                    }
+                    if (!tf.filters) {
+                        tf.filters = [];
+                    }
+                    tf.filters.push(colorMatrixFilter);
+                }
             }
         }
     }
