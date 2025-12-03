@@ -149,13 +149,6 @@ export class ZButton extends ZContainer {
         } else if (this.overState && this.disabledState && this.downState && this.upState) {
             if (this.overLabelContainer && this.disabledLabelContainer && this.downLabelContainer && this.upLabelContainer) {
                 this.labelState = "multi";
-
-                // hide all by default
-                //[this.overLabelContainer, this.disabledLabelContainer, this.downLabelContainer, this.upLabelContainer].forEach(l => (l.visible = false));
-                //if (this.overLabelContainer2) this.overLabelContainer2.visible = false;
-                //if (this.disabledLabelContainer2) this.disabledLabelContainer2.visible = false;
-                //if (this.downLabelContainer2) this.downLabelContainer2.visible = false;
-                //if (this.upLabelContainer2) this.upLabelContainer2.visible = false;
                 this.upState.parent.addChild(this.upState);
                 if (this.upLabelContainer) this.upState.addChild(this.upLabelContainer);
                 if (this.upLabelContainer2) this.upState.addChild(this.upLabelContainer2);
@@ -238,7 +231,6 @@ export class ZButton extends ZContainer {
         let overState = this.overState;
         let downState = this.downState;
         let upState = this.upState;
-        let disabledState = this.disabledState;
         let topLabelContainer = this.topLabelContainer;
         let topLabelContainer2 = this.topLabelContainer2;
         let labelState = this.labelState;
@@ -248,13 +240,11 @@ export class ZButton extends ZContainer {
         const onDown = () => this.onDown();
 
         if (overState && upState) {
-            overState.visible = false;
             this.on('mouseout', onOut);
             this.on('mouseover', onOver);
             this.on('touchendoutside', onOut);
             this.on('touchend', onOut);
             this.on('touchendoutside', onOut);
-            overState.visible = false;
         }
         if (downState && upState) {
             this.on('mousedown', onDown);
@@ -263,13 +253,10 @@ export class ZButton extends ZContainer {
             this.on('touchendoutside', onOut);
             this.on('touchend', onOut);
             this.on('touchendoutside', onOut);
-            downState.visible = false;
-        }
-        if (disabledState) {
-            disabledState.visible = false;
         }
 
         if (upState) {
+            this.hideAllStates();
             upState.visible = true;
             this.addChild(upState);
         }
@@ -293,6 +280,7 @@ export class ZButton extends ZContainer {
         this.removeAllListeners();
 
         if (this.disabledState) {
+            this.hideAllStates();
             this.disabledState.visible = true;
             this.addChild(this.disabledState);
         }
@@ -307,11 +295,16 @@ export class ZButton extends ZContainer {
         }
     }
 
-    onDown() {
+    hideAllStates() {
         if (this.overState) this.overState.visible = false;
+        if (this.downState) this.downState.visible = false;
+        if (this.upState) this.upState.visible = false;
         if (this.disabledState) this.disabledState.visible = false;
-        if (this.upState && this.downState) this.upState.visible = false;
+    }
+
+    onDown() {
         if (this.downState) {
+            this.hideAllStates();
             this.downState.visible = true;
             this.addChild(this.downState);
         }
@@ -326,8 +319,9 @@ export class ZButton extends ZContainer {
     }
 
     onOut() {
-        if (this.overState) this.overState.visible = false;
+
         if (this.upState) {
+            this.hideAllStates();
             this.upState.visible = true;
             this.addChild(this.upState);
         }
@@ -343,6 +337,7 @@ export class ZButton extends ZContainer {
 
     onOver() {
         if (this.overState) {
+            this.hideAllStates();
             this.overState.visible = true;
             this.addChild(this.overState);
         }

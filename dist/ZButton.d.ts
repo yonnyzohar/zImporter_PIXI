@@ -31,6 +31,7 @@ export declare class ZButton extends ZContainer {
     onClicked(): void;
     enable(): void;
     disable(): void;
+    hideAllStates(): void;
     onDown(): void;
     onOut(): void;
     onOver(): void;
