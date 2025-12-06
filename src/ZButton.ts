@@ -83,6 +83,17 @@ export const AttachClickListener = (
 
 type LabelState = "single" | "multi" | "none";
 
+
+export const AddHoverListener = (container: ZContainer, hoverCallback: (...args: any[]) => void, outCallback: (...args: any[]) => void): void => {
+    container.on('mouseover', hoverCallback);
+    container.on('mouseout', outCallback);
+};
+
+export const RemoveHoverListener = (container: ZContainer): void => {
+    container.removeAllListeners('mouseover');
+    container.removeAllListeners('mouseout');
+};
+
 export class ZButton extends ZContainer {
     topLabelContainer2: ZContainer;
     topLabelContainer: ZContainer;
@@ -158,43 +169,60 @@ export class ZButton extends ZContainer {
         this.enable();
     }
 
+
     setLabel(name: string): void {
-        if (this.labelState === "single" && this.topLabelContainer) {
-            this.topLabelContainer.visible = true;
-            this.topLabelContainer.setText(name);
-            this.topLabelContainer.parent.addChild(this.topLabelContainer);
+        if (this.labelState === "single") {
+            const labelContainers = this.getAll("labelContainer") as ZContainer[];
+            labelContainers.forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         } else if (this.labelState === "multi") {
-            if (this.overLabelContainer) { this.overLabelContainer.visible = true; this.overLabelContainer.setText(name); }
-            if (this.disabledLabelContainer) { this.disabledLabelContainer.visible = true; this.disabledLabelContainer.setText(name); }
-            if (this.downLabelContainer) { this.downLabelContainer.visible = true; this.downLabelContainer.setText(name); }
-            if (this.upLabelContainer) { this.upLabelContainer.visible = true; this.upLabelContainer.setText(name); }
+            const overLabels = this.overState ? this.overState.getAll("labelContainer") as ZContainer[] : [];
+            const disabledLabels = this.disabledState ? this.disabledState.getAll("labelContainer") as ZContainer[] : [];
+            const downLabels = this.downState ? this.downState.getAll("labelContainer") as ZContainer[] : [];
+            const upLabels = this.upState ? this.upState.getAll("labelContainer") as ZContainer[] : [];
+            [...overLabels, ...disabledLabels, ...downLabels, ...upLabels].forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
     }
 
     setLabel2(name: string): void {
-        if (this.labelState === "single" && this.topLabelContainer2) {
-            this.topLabelContainer2.visible = true;
-            this.topLabelContainer2.setText(name);
+        if (this.labelState === "single") {
+            const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
+            labelContainers2.forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         } else if (this.labelState === "multi") {
-            if (this.overLabelContainer2) { this.overLabelContainer2.visible = true; this.overLabelContainer2.setText(name); }
-            if (this.disabledLabelContainer2) { this.disabledLabelContainer2.visible = true; this.disabledLabelContainer2.setText(name); }
-            if (this.downLabelContainer2) { this.downLabelContainer2.visible = true; this.downLabelContainer2.setText(name); }
-            if (this.upLabelContainer2) { this.upLabelContainer2.visible = true; this.upLabelContainer2.setText(name); }
+            const overLabels2 = this.overState ? this.overState.getAll("labelContainer2") as ZContainer[] : [];
+            const disabledLabels2 = this.disabledState ? this.disabledState.getAll("labelContainer2") as ZContainer[] : [];
+            const downLabels2 = this.downState ? this.downState.getAll("labelContainer2") as ZContainer[] : [];
+            const upLabels2 = this.upState ? this.upState.getAll("labelContainer2") as ZContainer[] : [];
+            [...overLabels2, ...disabledLabels2, ...downLabels2, ...upLabels2].forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
     }
 
     setFixedTextSize(fixed: boolean): void {
-        const containers: ZContainer[] = [
-            this.topLabelContainer, this.topLabelContainer2,
-            this.overLabelContainer, this.overLabelContainer2,
-            this.disabledLabelContainer, this.disabledLabelContainer2,
-            this.downLabelContainer, this.downLabelContainer2,
-            this.upLabelContainer, this.upLabelContainer2
-        ].filter(Boolean) as ZContainer[];
+        const labelContainers = this.getAll("labelContainer") as ZContainer[];
+        const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
+        labelContainers.forEach(container => container.setFixedBoxSize(fixed));
+        labelContainers2.forEach(container => container.setFixedBoxSize(fixed));
+    }
 
-        containers.forEach(c => {
-            if ((c as any).setFixedBoxSize) {
-                (c as any).setFixedBoxSize(fixed);
+    makeSingleLine(): void {
+        const labelContainers = this.getAll("labelContainer") as ZContainer[];
+        const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
+        labelContainers2.forEach(label => label.visible = false);
+        labelContainers.forEach(label => {
+            const parent = label.parent as ZContainer;
+            if (parent) {
+                label.y = (parent.height) / 2;
             }
         });
     }
