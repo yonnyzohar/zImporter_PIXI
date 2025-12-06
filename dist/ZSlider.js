@@ -66,6 +66,7 @@ export class ZSlider extends ZContainer {
     }
     onDrag(e) {
         let clientX;
+        let track = this.track;
         if ('data' in e && e.data?.global) {
             // PIXI FederatedPointerEvent
             const local = this.toLocal(e.data.global);
@@ -73,21 +74,26 @@ export class ZSlider extends ZContainer {
         }
         else if ('clientX' in e) {
             // PointerEvent
-            const rect = this.getBounds();
+            const rect = track.getBounds();
             clientX = e.clientX - rect.x;
         }
         else if ('touches' in e && e.touches.length > 0) {
             // TouchEvent
-            const rect = this.getBounds();
+            const rect = track.getBounds();
             clientX = e.touches[0].clientX - rect.x;
         }
         if (typeof clientX !== 'number')
             return;
-        // Clamp clientX before assigning to handle.x
-        clientX = Math.max(0, Math.min(clientX, this.sliderWidth));
         let handle = this.handle;
+        // Clamp so that the handle's left edge stays within [0, sliderWidth]
+        const minX = 0;
+        const maxX = this.sliderWidth;
+        // The position where the mouse is, relative to the left edge of the slider
+        // We want the left edge of the handle to be at clientX, so set handle.x = clientX + handle.pivot.x
+        clientX = Math.max(minX, Math.min(clientX, maxX));
         handle.x = clientX;
-        const t = handle.x / this.sliderWidth;
+        // For the callback, t should be (handle.x - handle.pivot.x) / sliderWidth
+        const t = (handle.x - handle.pivot.x) / this.sliderWidth;
         if (this.callback) {
             this.callback(t);
         }
