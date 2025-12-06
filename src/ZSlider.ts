@@ -99,11 +99,10 @@ export class ZSlider extends ZContainer {
         }
         if (typeof clientX !== 'number') return;
 
+        // Clamp clientX before assigning to handle.x
+        clientX = Math.max(0, Math.min(clientX, this.sliderWidth!));
         let handle = (this as any).handle;
         handle.x = clientX;
-
-        if (handle.x < 0) handle.x = 0;
-        if (handle.x > this.sliderWidth!) handle.x = this.sliderWidth;
 
         const t = handle.x / this.sliderWidth!;
         if (this.callback) {
