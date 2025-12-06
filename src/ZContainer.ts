@@ -177,22 +177,22 @@ export class ZContainer extends PIXI.Container {
 
     //this is called once all children of the container are loaded
     public init(): void {
-        let tf: Text | TextInput = getTextField();
-         if (tf) {
-             if (tf instanceof TextInput) {
-                 return;
-             }
-             madHatContainer.setFixedBoxSize(false);
-             madHatContainer.originalTextWidth = tf.width;
-             madHatContainer.originalTextHeight = tf.height;
-             madHatContainer.originalFontSize = typeof tf.style.fontSize === 'number'
-                 ? tf.style.fontSize
-                 : tf.style.fontSize !== undefined
-                     ? parseFloat(tf.style.fontSize)
-                     : undefined;
-         }
+        let tf: PIXI.Text | TextInput | null = this.getTextField();
+        if (tf) {
+            if (tf instanceof TextInput) {
+                return;
+            }
+            this.setFixedBoxSize(false);
+            this.originalTextWidth = tf!.width;
+            this.originalTextHeight = tf!.height;
+            this.originalFontSize = typeof tf.style.fontSize === 'number'
+                ? tf.style.fontSize
+                : tf.style.fontSize !== undefined
+                    ? parseFloat(tf.style.fontSize)
+                    : undefined;
+        }
     }
-     
+
     public getType(): string {
         return "ZContainer";
     }
@@ -284,13 +284,13 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
-    getTextField(): Text | TextInput | null {
-        let textChild: Text | TextInput = madHatContainer.getChildByName("label") as Text | TextInput;
+    getTextField(): PIXI.Text | TextInput | null {
+        let textChild: PIXI.Text | TextInput = this.getChildByName("label") as PIXI.Text | TextInput;
         if (!textChild) {
-            let children = madHatContainer.children;
+            let children = this.children;
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
-                if (child instanceof Text || child instanceof TextInput) {
+                if (child instanceof PIXI.Text || child instanceof TextInput) {
                     textChild = child;
                     break;
                 }
@@ -300,7 +300,7 @@ export class ZContainer extends PIXI.Container {
         return textChild;
     }
 
-    
+
 
     public setInstanceData(data: InstanceData, orientation: string): void {
         this.portrait = data.portrait;
