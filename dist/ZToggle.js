@@ -2,6 +2,7 @@ import { AttachClickListener } from "./ZButton";
 import { ZState } from "./ZState";
 export class ZToggle extends ZState {
     callback;
+    toggleCallback;
     init() {
         this.cursor = "pointer";
         AttachClickListener(this, () => {
@@ -9,14 +10,44 @@ export class ZToggle extends ZState {
             if (this.callback) {
                 this.callback(this.currentState.name === "onState");
             }
+            if (this.toggleCallback) {
+                this.toggleCallback(this.currentState.name === "onState");
+            }
         });
         this.setState("offState");
     }
     setCallback(func) {
-        this.callback = func;
+        this.toggleCallback = func;
     }
     removeCallback() {
-        this.callback = undefined;
+        this.toggleCallback = undefined;
+    }
+    setIsClickable(val) {
+        this.interactive = val;
+        this.cursor = val ? "pointer" : "default";
+    }
+    isOn() {
+        return this.currentState.name === "onState";
+    }
+    toggle(state, sendCallback = true) {
+        this.setState(state ? "onState" : "offState");
+        if (this.toggleCallback && sendCallback) {
+            this.toggleCallback(state);
+        }
+    }
+    enable() {
+        this.interactive = true;
+        this.cursor = "pointer";
+    }
+    disable() {
+        this.interactive = false;
+        this.cursor = "default";
+    }
+    setLabelOnAllStates(label, str) {
+        let containers = this.getAll(label);
+        for (let container of containers) {
+            container.setText(str);
+        }
     }
     getType() {
         return "ZToggle";

@@ -1,6 +1,8 @@
 import { ZContainer } from "./ZContainer";
 export declare const RemoveClickListener: (container: ZContainer) => void;
 export declare const AttachClickListener: (container: ZContainer, pressCallback?: () => void, longPressCallback?: () => void) => void;
+export declare const AddHoverListener: (container: ZContainer, hoverCallback: (...args: any[]) => void, outCallback: (...args: any[]) => void) => void;
+export declare const RemoveHoverListener: (container: ZContainer) => void;
 export declare class ZButton extends ZContainer {
     topLabelContainer2: ZContainer;
     topLabelContainer: ZContainer;
@@ -24,6 +26,7 @@ export declare class ZButton extends ZContainer {
     setLabel(name: string): void;
     setLabel2(name: string): void;
     setFixedTextSize(fixed: boolean): void;
+    makeSingleLine(): void;
     setCallback(func: () => void): void;
     removeCallback(): void;
     setLongPressCallback(func: () => void): void;

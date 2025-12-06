@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Emitter } from "@pixi/particle-emitter";
 import { ZNineSlice } from './ZNineSlice';
+import TextInput from './text-input';
 /**
  * A custom container class extending `PIXI.Container` that supports orientation-based transforms,
  * anchoring, and instance data management for responsive layouts.
@@ -78,8 +79,10 @@ export class ZContainer extends PIXI.Container {
     _fitToScreen = false;
     emitter;
     originalTextWidth;
+    originalTextHeight;
     originalFontSize;
     fixedBoxSize;
+    _props;
     get(childName) {
         const queue = [];
         if (this.children && this.children.length > 0) {
@@ -135,6 +138,9 @@ export class ZContainer extends PIXI.Container {
     getType() {
         return "ZContainer";
     }
+    setFixedBoxSize(value) {
+        this.fixedBoxSize = value;
+    }
     getAllOfType(type) {
         const queue = [];
         const result = [];
@@ -164,39 +170,58 @@ export class ZContainer extends PIXI.Container {
     setText(text) {
         let textChild = this.getTextField();
         if (textChild) {
+            if (textChild instanceof PIXI.Text) {
+                textChild.resolution = 2;
+            }
             textChild.text = text;
+            if (textChild instanceof TextInput) {
+                return;
+            }
             let style = textChild.style;
             if (style) {
-                /*
-                if (tf instanceof TextInput) {
-                    return;
-                }*/
                 style.fontSize = this.originalFontSize ?? style.fontSize;
                 textChild.style = style;
-                //if fixedBoxSize is true it means we need to adjust the font size to fit the text in the box
-                if (this.fixedBoxSize) {
-                    let maxWidth = this.originalTextWidth;
-                    if (maxWidth !== undefined && maxWidth > 0) {
-                        while (textChild.width > maxWidth) {
-                            style = new PIXI.TextStyle({
-                                ...style,
-                                fontSize: style.fontSize - 1,
-                            });
-                            textChild.style = style;
-                        }
-                    }
+                this.resizeText(textChild);
+            }
+        }
+    }
+    setTextStyle(data) {
+        let tf = this.getTextField();
+        if (tf) {
+            if (tf instanceof TextInput) {
+                return;
+            }
+            tf.style = { ...tf.style, ...data };
+            this.resizeText(tf);
+        }
+    }
+    getProps() {
+        return this._props;
+    }
+    resizeText(textChild) {
+        if (this.fixedBoxSize) {
+            let style = textChild.style;
+            let maxWidth = this.originalTextWidth;
+            let maxHeight = this.originalTextHeight;
+            if ((maxWidth !== undefined && maxWidth > 0) || (maxHeight !== undefined && maxHeight > 0)) {
+                while ((maxWidth !== undefined && textChild.width > maxWidth) ||
+                    (maxHeight !== undefined && textChild.height > maxHeight)) {
+                    style = new PIXI.TextStyle({
+                        ...style,
+                        fontSize: style.fontSize - 1,
+                    });
+                    textChild.style = style;
                 }
             }
         }
     }
     getTextField() {
-        let textChild = null;
-        textChild = this.getChildByName("label");
+        let textChild = this.getChildByName("label");
         if (!textChild) {
             let children = this.children;
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
-                if (child instanceof PIXI.Text) {
+                if (child instanceof PIXI.Text || (typeof TextInput !== 'undefined' && child instanceof TextInput)) {
                     textChild = child;
                     break;
                 }
@@ -210,14 +235,24 @@ export class ZContainer extends PIXI.Container {
         this.currentTransform = orientation === "portrait" ? this.portrait : this.landscape;
         this.applyTransform();
         this.name = data.instanceName || "";
+        this._props = data;
         if (data.attrs) {
             if (data.attrs.fitToScreen !== undefined) {
                 this.fitToScreen = data.attrs.fitToScreen;
             }
         }
-        //this.name = data.instanceName;
-        //this.anChorData = data.portrait.isAnchored ? {anchorType: data.portrait.anchorType, anchorPercentage: data.portrait.anchorPercentage} : null;
-        //this.applyAnchor();
+        // Text field original size setup
+        let tf = this.getTextField();
+        if (tf && tf instanceof PIXI.Text) {
+            this.setFixedBoxSize(false);
+            this.originalTextWidth = tf.width;
+            this.originalTextHeight = tf.height;
+            this.originalFontSize = typeof tf.style.fontSize === 'number'
+                ? tf.style.fontSize
+                : tf.style.fontSize !== undefined
+                    ? parseFloat(tf.style.fontSize)
+                    : undefined;
+        }
     }
     set fitToScreen(value) {
         this._fitToScreen = value;

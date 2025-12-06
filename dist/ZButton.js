@@ -66,6 +66,14 @@ export const AttachClickListener = (container, pressCallback, longPressCallback)
     container.on('mousedown', onPointerDown);
     container.on('touchstart', onPointerDown);
 };
+export const AddHoverListener = (container, hoverCallback, outCallback) => {
+    container.on('mouseover', hoverCallback);
+    container.on('mouseout', outCallback);
+};
+export const RemoveHoverListener = (container) => {
+    container.removeAllListeners('mouseover');
+    container.removeAllListeners('mouseout');
+};
 export class ZButton extends ZContainer {
     topLabelContainer2;
     topLabelContainer;
@@ -128,65 +136,57 @@ export class ZButton extends ZContainer {
         this.enable();
     }
     setLabel(name) {
-        if (this.labelState === "single" && this.topLabelContainer) {
-            this.topLabelContainer.visible = true;
-            this.topLabelContainer.setText(name);
-            this.topLabelContainer.parent.addChild(this.topLabelContainer);
+        if (this.labelState === "single") {
+            const labelContainers = this.getAll("labelContainer");
+            labelContainers.forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
         else if (this.labelState === "multi") {
-            if (this.overLabelContainer) {
-                this.overLabelContainer.visible = true;
-                this.overLabelContainer.setText(name);
-            }
-            if (this.disabledLabelContainer) {
-                this.disabledLabelContainer.visible = true;
-                this.disabledLabelContainer.setText(name);
-            }
-            if (this.downLabelContainer) {
-                this.downLabelContainer.visible = true;
-                this.downLabelContainer.setText(name);
-            }
-            if (this.upLabelContainer) {
-                this.upLabelContainer.visible = true;
-                this.upLabelContainer.setText(name);
-            }
+            const overLabels = this.overState ? this.overState.getAll("labelContainer") : [];
+            const disabledLabels = this.disabledState ? this.disabledState.getAll("labelContainer") : [];
+            const downLabels = this.downState ? this.downState.getAll("labelContainer") : [];
+            const upLabels = this.upState ? this.upState.getAll("labelContainer") : [];
+            [...overLabels, ...disabledLabels, ...downLabels, ...upLabels].forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
     }
     setLabel2(name) {
-        if (this.labelState === "single" && this.topLabelContainer2) {
-            this.topLabelContainer2.visible = true;
-            this.topLabelContainer2.setText(name);
+        if (this.labelState === "single") {
+            const labelContainers2 = this.getAll("labelContainer2");
+            labelContainers2.forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
         else if (this.labelState === "multi") {
-            if (this.overLabelContainer2) {
-                this.overLabelContainer2.visible = true;
-                this.overLabelContainer2.setText(name);
-            }
-            if (this.disabledLabelContainer2) {
-                this.disabledLabelContainer2.visible = true;
-                this.disabledLabelContainer2.setText(name);
-            }
-            if (this.downLabelContainer2) {
-                this.downLabelContainer2.visible = true;
-                this.downLabelContainer2.setText(name);
-            }
-            if (this.upLabelContainer2) {
-                this.upLabelContainer2.visible = true;
-                this.upLabelContainer2.setText(name);
-            }
+            const overLabels2 = this.overState ? this.overState.getAll("labelContainer2") : [];
+            const disabledLabels2 = this.disabledState ? this.disabledState.getAll("labelContainer2") : [];
+            const downLabels2 = this.downState ? this.downState.getAll("labelContainer2") : [];
+            const upLabels2 = this.upState ? this.upState.getAll("labelContainer2") : [];
+            [...overLabels2, ...disabledLabels2, ...downLabels2, ...upLabels2].forEach(label => {
+                label.visible = true;
+                label.setText(name);
+            });
         }
     }
     setFixedTextSize(fixed) {
-        const containers = [
-            this.topLabelContainer, this.topLabelContainer2,
-            this.overLabelContainer, this.overLabelContainer2,
-            this.disabledLabelContainer, this.disabledLabelContainer2,
-            this.downLabelContainer, this.downLabelContainer2,
-            this.upLabelContainer, this.upLabelContainer2
-        ].filter(Boolean);
-        containers.forEach(c => {
-            if (c.setFixedBoxSize) {
-                c.setFixedBoxSize(fixed);
+        const labelContainers = this.getAll("labelContainer");
+        const labelContainers2 = this.getAll("labelContainer2");
+        labelContainers.forEach(container => container.setFixedBoxSize(fixed));
+        labelContainers2.forEach(container => container.setFixedBoxSize(fixed));
+    }
+    makeSingleLine() {
+        const labelContainers = this.getAll("labelContainer");
+        const labelContainers2 = this.getAll("labelContainer2");
+        labelContainers2.forEach(label => label.visible = false);
+        labelContainers.forEach(label => {
+            const parent = label.parent;
+            if (parent) {
+                label.y = (parent.height) / 2;
             }
         });
     }

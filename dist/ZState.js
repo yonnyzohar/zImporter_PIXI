@@ -24,41 +24,44 @@ export class ZState extends ZContainer {
     getCurrentState() {
         return this.currentState;
     }
-    getType() {
-        return "ZState";
-    }
     hasState(str) {
         return this.getChildByName(str) !== null;
-    }
-    getAllStateNames() {
-        return this.children.map((child) => child.name);
     }
     setState(str) {
         let chosenChild = this.getChildByName(str);
         if (!chosenChild) {
             chosenChild = this.getChildByName("idle");
-            if (!chosenChild) {
+            if (!chosenChild && this.children.length > 0) {
                 chosenChild = this.getChildAt(0);
             }
         }
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
-            child.visible = false;
-            if (child instanceof ZTimeline) {
-                let t = child;
-                t.stop();
+        if (this.children) {
+            for (let i = 0; i < this.children.length; i++) {
+                let child = this.children[i];
+                child.visible = false;
+                if (child instanceof ZTimeline) {
+                    let t = child;
+                    t.stop();
+                }
             }
         }
         if (chosenChild) {
             chosenChild.visible = true;
+            this.currentState = chosenChild;
+            chosenChild.parent.addChild(chosenChild);
             if (chosenChild instanceof ZTimeline) {
                 let t = chosenChild;
                 t.play();
             }
+            return chosenChild;
         }
-        this.currentState = chosenChild;
-        chosenChild.parent.addChild(chosenChild);
-        return chosenChild;
+        return null;
+    }
+    getAllStateNames() {
+        return this.children.map((child) => child.name);
+    }
+    getType() {
+        return "ZState";
     }
 }
 //# sourceMappingURL=ZState.js.map

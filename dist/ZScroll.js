@@ -12,6 +12,7 @@ export class ZScroll extends ZContainer {
     scrollContent;
     msk = null;
     scrollArea = null;
+    scrollingEnabled = true;
     onPointerDownBinded;
     onPointerMoveBinded;
     onPointerUpBinded;
@@ -46,6 +47,18 @@ export class ZScroll extends ZContainer {
         let scrollBarHeight = this.scrollBar.height;
         let contentHeight = this.scrollContent.height;
         // Clean up old mask & scroll area before rebuilding
+        if (this.msk) {
+            this.msk.removeAllListeners();
+            this.msk.removeFromParent();
+            this.msk.destroy({ children: true });
+            this.msk = null;
+        }
+        if (this.scrollArea) {
+            this.scrollArea.removeAllListeners();
+            this.scrollArea.removeFromParent();
+            this.scrollArea.destroy({ children: true });
+            this.scrollArea = null;
+        }
         if (contentHeight <= scrollBarHeight) {
             console.log("Content fits, no scroll needed.");
             this.scrollBar.visible = false;
@@ -55,27 +68,17 @@ export class ZScroll extends ZContainer {
         this.scrollBar.visible = true;
         let w = this.scrollBar.x - this.scrollContent.x;
         console.log("Calculated scroll width:", w);
-        if (this.msk) {
-            this.msk.removeAllListeners();
-            this.msk.removeFromParent();
-            this.msk = null;
-        }
         this.msk = new Graphics();
         this.msk.name = "mask";
-        this.msk.beginFill(0x000000, 1);
+        this.msk.beginFill(0x000000, 0.5); // match MadHatScrollComponent alpha
         this.msk.drawRect(0, 0, w, scrollBarHeight);
         this.msk.endFill();
         this.scrollContent.mask = this.msk;
         this.addChild(this.msk);
         console.log("Mask dimensions:", w, scrollBarHeight);
-        if (this.scrollArea) {
-            this.scrollArea.removeAllListeners();
-            this.scrollArea.removeFromParent();
-            this.scrollArea = null;
-        }
         this.scrollArea = new Graphics();
         this.scrollArea.name = "scrollArea";
-        this.scrollArea.beginFill(0x000000, 0.001); // invisible but interactive
+        this.scrollArea.beginFill(0x000000, 0.5); // match MadHatScrollComponent alpha
         this.scrollArea.drawRect(0, 0, w, scrollBarHeight);
         this.scrollArea.endFill();
         this.addChildAt(this.scrollArea, 0);
@@ -153,6 +156,9 @@ export class ZScroll extends ZContainer {
         this.beed?.removeAllListeners();
         document.body.removeEventListener('wheel', this.onWheelBinded);
     }
+    removeListeners() {
+        this.removeEventListeners();
+    }
     onPointerDown(event) {
         this.isDragging = true;
         this.scrollBarHeight = this.scrollBar.height;
@@ -188,6 +194,9 @@ export class ZScroll extends ZContainer {
         this.isBeedDragging = false;
     }
     onWheel(event) {
+        if (!this.scrollingEnabled) {
+            return;
+        }
         let delta = -event.deltaY * 0.5;
         this.scrollBarHeight = this.scrollBar.height;
         this.beed.y -= delta;

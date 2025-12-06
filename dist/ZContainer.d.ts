@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import { InstanceData } from './SceneData';
 import { OrientationData } from './SceneData';
 import { Emitter } from "@pixi/particle-emitter";
+import TextInput from './text-input';
 export interface AnchorData {
     anchorType: string;
     anchorPercentage: {
@@ -86,15 +87,21 @@ export declare class ZContainer extends PIXI.Container {
     _fitToScreen: boolean;
     emitter: Emitter | undefined;
     originalTextWidth?: number;
+    originalTextHeight?: number;
     originalFontSize?: number;
     fixedBoxSize?: boolean;
+    _props?: any;
     get(childName: string): ZContainer | null;
     getAll(childName: string): ZContainer[];
     init(): void;
     getType(): string;
+    setFixedBoxSize(value: boolean): void;
     getAllOfType(type: string): ZContainer[];
     setText(text: string): void;
-    getTextField(): PIXI.Text | null;
+    setTextStyle(data: Partial<PIXI.TextStyle>): void;
+    getProps(): any;
+    private resizeText;
+    getTextField(): PIXI.Text | TextInput | null;
     setInstanceData(data: InstanceData, orientation: string): void;
     set fitToScreen(value: boolean);
     get fitToScreen(): boolean;

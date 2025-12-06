@@ -15,6 +15,7 @@ export declare class ZScroll extends ZContainer {
     scrollContent: ZContainer;
     msk: Graphics | null;
     scrollArea: Graphics | null;
+    scrollingEnabled: boolean;
     private onPointerDownBinded;
     private onPointerMoveBinded;
     private onPointerUpBinded;
@@ -27,6 +28,7 @@ export declare class ZScroll extends ZContainer {
     private enableChildPassThrough;
     addEventListeners(): void;
     removeEventListeners(): void;
+    removeListeners(): void;
     onPointerDown(event: DragEvent): void;
     onBeedDown(event: DragEvent): void;
     onPointerMove(event: DragEvent): void;
