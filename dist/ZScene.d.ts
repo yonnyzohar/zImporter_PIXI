@@ -89,6 +89,8 @@ export declare class ZScene {
      * @param height - The new height.
      */
     resize(width: number, height: number): void;
+    get sceneWidth(): number;
+    get sceneHeight(): number;
     /**
      * Loads the scene's placement and asset data asynchronously.
      * @param assetBasePath - The base path for assets.

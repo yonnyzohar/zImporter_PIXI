@@ -167,6 +167,20 @@ export class ZScene {
             }
         }
     }
+    get sceneWidth() {
+        let baseWidth = this.data.resolution.x;
+        if (this.orientation === "portrait") {
+            baseWidth = this.data.resolution.y;
+        }
+        return baseWidth;
+    }
+    get sceneHeight() {
+        let baseHeight = this.data.resolution.y;
+        if (this.orientation === "portrait") {
+            baseHeight = this.data.resolution.x;
+        }
+        return baseHeight;
+    }
     /**
      * Loads the scene's placement and asset data asynchronously.
      * @param assetBasePath - The base path for assets.
