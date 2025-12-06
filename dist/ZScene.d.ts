@@ -68,7 +68,7 @@ export declare class ZScene {
      * Loads and initializes the scene's stage, adding its children to the global stage.
      * @param globalStage - The main PIXI.Container to which the scene will be added.
      */
-    loadStage(globalStage: PIXI.Container): void;
+    loadStage(globalStage: PIXI.Container, loadChildren?: boolean): void;
     /**
      * Adds a container to the resize map, so it will be resized with the scene.
      * @param mc - The container to add.

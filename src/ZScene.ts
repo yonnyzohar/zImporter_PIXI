@@ -116,11 +116,11 @@ export class ZScene {
    * Loads and initializes the scene's stage, adding its children to the global stage.
    * @param globalStage - The main PIXI.Container to which the scene will be added.
    */
-  loadStage(globalStage: PIXI.Container): void {
+  loadStage(globalStage: PIXI.Container, loadChildren: boolean = true): void {
     this.resize(window.innerWidth, window.innerHeight);
     let stageAssets = this.data.stage;
     let children = stageAssets!.children;
-    if (children) {
+    if (children && loadChildren) {
       for (let i = 0; i < children.length; i++) {
         let child = children[i] as InstanceData;
         let tempName = child.name;
