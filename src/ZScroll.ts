@@ -17,6 +17,7 @@ export class ZScroll extends ZContainer {
     scrollContent: ZContainer;
     msk: Graphics | null = null;
     scrollArea: Graphics | null = null;
+    scrollingEnabled: boolean = true;
 
     private onPointerDownBinded: any;
     private onPointerMoveBinded: any;
@@ -230,6 +231,9 @@ export class ZScroll extends ZContainer {
     }
 
     onWheel(event: WheelEvent) {
+        if (!this.scrollingEnabled) {
+            return;
+        }
         let delta = -event.deltaY * 0.5;
         this.scrollBarHeight = this.scrollBar.height;
         this.beed.y -= delta;

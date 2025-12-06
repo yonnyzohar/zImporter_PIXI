@@ -17,8 +17,8 @@ import { ZTimeline } from "./ZTimeline";
  *    If the state is a `ZTimeline`, it will be played or stopped accordingly.
  */
 export class ZState extends ZContainer {
+    public currentState: ZContainer | null = null;
 
-    protected currentState: ZContainer | null = null;
     //this is called once all children of the container are loaded
     public init(): void {
         this.setState("idle");
@@ -28,43 +28,46 @@ export class ZState extends ZContainer {
         return this.currentState;
     }
 
-    public getType(): string {
-        return "ZState";
-    }
-
     public hasState(str: string): boolean {
         return this.getChildByName(str) !== null;
     }
 
-    public getAllStateNames() {
-        return this.children.map((child) => child.name);
-    }
-
     public setState(str: string): ZContainer | null {
-        let chosenChild: ZContainer = this.getChildByName(str) as ZContainer;
+        let chosenChild = this.getChildByName(str) as ZContainer;
         if (!chosenChild) {
             chosenChild = this.getChildByName("idle") as ZContainer;
-            if (!chosenChild) {
+            if (!chosenChild && this.children.length > 0) {
                 chosenChild = this.getChildAt(0) as ZContainer;
             }
         }
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
-            child.visible = false;
-            if (child instanceof ZTimeline) {
-                let t = child as ZTimeline;
-                t.stop();
+        if (this.children) {
+            for (let i = 0; i < this.children.length; i++) {
+                let child = this.children[i];
+                child.visible = false;
+                if (child instanceof ZTimeline) {
+                    let t = child as ZTimeline;
+                    t.stop();
+                }
             }
         }
         if (chosenChild) {
             chosenChild.visible = true;
+            this.currentState = chosenChild;
+            chosenChild.parent.addChild(chosenChild);
             if (chosenChild instanceof ZTimeline) {
                 let t = chosenChild as ZTimeline;
                 t.play();
             }
+            return chosenChild;
         }
-        this.currentState = chosenChild;
-        chosenChild.parent.addChild(chosenChild);
-        return chosenChild;
+        return null;
+    }
+
+    public getAllStateNames(): (string | null)[] {
+        return this.children.map((child) => child.name);
+    }
+
+    public getType(): string {
+        return "ZState";
     }
 }
