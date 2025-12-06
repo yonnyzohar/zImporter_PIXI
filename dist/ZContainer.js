@@ -134,7 +134,7 @@ export class ZContainer extends PIXI.Container {
     }
     //this is called once all children of the container are loaded
     init() {
-        let tf = getTextField();
+        let tf = this.getTextField();
         if (tf) {
             if (tf instanceof TextInput) {
                 return;
@@ -230,12 +230,12 @@ export class ZContainer extends PIXI.Container {
         }
     }
     getTextField() {
-        let textChild = madHatContainer.getChildByName("label");
+        let textChild = this.getChildByName("label");
         if (!textChild) {
-            let children = madHatContainer.children;
+            let children = this.children;
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
-                if (child instanceof Text || child instanceof TextInput) {
+                if (child instanceof PIXI.Text || child instanceof TextInput) {
                     textChild = child;
                     break;
                 }
