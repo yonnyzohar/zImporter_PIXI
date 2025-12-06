@@ -60,6 +60,18 @@ export class ZScroll extends ZContainer {
         let contentHeight = this.scrollContent.height;
 
         // Clean up old mask & scroll area before rebuilding
+        if (this.msk) {
+            this.msk.removeAllListeners();
+            this.msk.removeFromParent();
+            this.msk.destroy({ children: true });
+            this.msk = null;
+        }
+        if (this.scrollArea) {
+            this.scrollArea.removeAllListeners();
+            this.scrollArea.removeFromParent();
+            this.scrollArea.destroy({ children: true });
+            this.scrollArea = null;
+        }
 
         if (contentHeight <= scrollBarHeight) {
             console.log("Content fits, no scroll needed.");
@@ -71,14 +83,9 @@ export class ZScroll extends ZContainer {
         this.scrollBar.visible = true;
         let w = this.scrollBar.x - this.scrollContent.x;
         console.log("Calculated scroll width:", w);
-        if (this.msk) {
-            this.msk.removeAllListeners();
-            this.msk.removeFromParent();
-            this.msk = null;
-        }
         this.msk = new Graphics();
         this.msk.name = "mask";
-        this.msk.beginFill(0x000000, 1);
+        this.msk.beginFill(0x000000, 0.5); // match MadHatScrollComponent alpha
         this.msk.drawRect(0, 0, w, scrollBarHeight);
         this.msk.endFill();
 
@@ -86,16 +93,9 @@ export class ZScroll extends ZContainer {
         this.addChild(this.msk);
         console.log("Mask dimensions:", w, scrollBarHeight);
 
-
-        if (this.scrollArea) {
-            this.scrollArea.removeAllListeners();
-            this.scrollArea.removeFromParent();
-            this.scrollArea = null;
-        }
-
         this.scrollArea = new Graphics();
         this.scrollArea.name = "scrollArea";
-        this.scrollArea.beginFill(0x000000, 0.001); // invisible but interactive
+        this.scrollArea.beginFill(0x000000, 0.5); // match MadHatScrollComponent alpha
         this.scrollArea.drawRect(0, 0, w, scrollBarHeight);
         this.scrollArea.endFill();
         this.addChildAt(this.scrollArea, 0);
@@ -106,7 +106,6 @@ export class ZScroll extends ZContainer {
 
         this.addEventListeners();
         this.enableChildPassThrough();
-
     }
 
     private enableChildPassThrough(): void {
@@ -177,10 +176,15 @@ export class ZScroll extends ZContainer {
         document.body.addEventListener('wheel', this.onWheelBinded);
     }
 
+
     removeEventListeners(): void {
         this.scrollArea?.removeAllListeners();
         this.beed?.removeAllListeners();
         document.body.removeEventListener('wheel', this.onWheelBinded);
+    }
+
+    public removeListeners(): void {
+        this.removeEventListeners();
     }
 
     onPointerDown(event: DragEvent) {
