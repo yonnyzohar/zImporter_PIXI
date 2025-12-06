@@ -59,37 +59,48 @@ export class ZSlider extends ZContainer {
     onDragStart(e: DragEvent) {
         this.dragging = true;
         let handle = (this as any).handle;
-        handle.on("pointermove", this.onDragBinded);
-        // Or better: app.stage.on("pointermove", onDrag);
         handle.on("pointerup", this.onDragEndBinded);
         handle.on("pointerupoutside", this.onDragEndBinded);
         handle.on("touchend", this.onDragEndBinded);
         handle.on("touchendoutside", this.onDragEndBinded);
-        handle.on("touchmove", this.onDragBinded);
         window.addEventListener('pointerup', this.onDragEndBinded);
         window.addEventListener('touchend', this.onDragEndBinded);
-    };
+        window.addEventListener('pointermove', this.onDragBinded);
+        window.addEventListener('touchmove', this.onDragBinded);
+    }
 
     onDragEnd(e: DragEvent) {
         this.dragging = false;
         let handle = (this as any).handle;
-        handle.off("pointermove", this.onDragBinded);
         handle.off("pointerup", this.onDragEndBinded);
         handle.off("pointerupoutside", this.onDragEndBinded);
         handle.off("touchend", this.onDragEndBinded);
         handle.off("touchendoutside", this.onDragEndBinded);
-        handle.off("touchmove", this.onDragBinded);
         window.removeEventListener('pointerup', this.onDragEndBinded);
         window.removeEventListener('touchend', this.onDragEndBinded);
-    };
+        window.removeEventListener('pointermove', this.onDragBinded);
+        window.removeEventListener('touchmove', this.onDragBinded);
+    }
 
-    onDrag(e: DragEvent): void {
-        const global = e.data?.global;
-        if (!global) return;
+    onDrag(e: DragEvent | PointerEvent | TouchEvent): void {
+        let clientX: number | undefined;
+        if ('data' in e && e.data?.global) {
+            // PIXI FederatedPointerEvent
+            const local = this.toLocal(e.data.global);
+            clientX = local.x;
+        } else if ('clientX' in e) {
+            // PointerEvent
+            const rect = this.getBounds();
+            clientX = (e as PointerEvent).clientX - rect.x;
+        } else if ('touches' in e && (e as TouchEvent).touches.length > 0) {
+            // TouchEvent
+            const rect = this.getBounds();
+            clientX = (e as TouchEvent).touches[0].clientX - rect.x;
+        }
+        if (typeof clientX !== 'number') return;
 
-        const local = this.toLocal(global);
         let handle = (this as any).handle;
-        handle.x = local.x;
+        handle.x = clientX;
 
         if (handle.x < 0) handle.x = 0;
         if (handle.x > this.sliderWidth!) handle.x = this.sliderWidth;
@@ -98,8 +109,10 @@ export class ZSlider extends ZContainer {
         if (this.callback) {
             this.callback(t);
         }
-        e.stopPropagation();
-    };
+        if ('stopPropagation' in e && typeof e.stopPropagation === 'function') {
+            e.stopPropagation();
+        }
+    }
 
 
 }

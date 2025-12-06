@@ -17,7 +17,7 @@ export declare class ZSlider extends ZContainer {
     removeCallback(): void;
     onDragStart(e: DragEvent): void;
     onDragEnd(e: DragEvent): void;
-    onDrag(e: DragEvent): void;
+    onDrag(e: DragEvent | PointerEvent | TouchEvent): void;
 }
 export {};
 //# sourceMappingURL=ZSlider.d.ts.map
