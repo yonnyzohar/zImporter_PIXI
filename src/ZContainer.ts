@@ -177,9 +177,22 @@ export class ZContainer extends PIXI.Container {
 
     //this is called once all children of the container are loaded
     public init(): void {
-
+        let tf: Text | TextInput = getTextField();
+         if (tf) {
+             if (tf instanceof TextInput) {
+                 return;
+             }
+             madHatContainer.setFixedBoxSize(false);
+             madHatContainer.originalTextWidth = tf.width;
+             madHatContainer.originalTextHeight = tf.height;
+             madHatContainer.originalFontSize = typeof tf.style.fontSize === 'number'
+                 ? tf.style.fontSize
+                 : tf.style.fontSize !== undefined
+                     ? parseFloat(tf.style.fontSize)
+                     : undefined;
+         }
     }
-
+     
     public getType(): string {
         return "ZContainer";
     }
@@ -271,20 +284,23 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
-    public getTextField(): PIXI.Text | TextInput | null {
-        let textChild: PIXI.Text | TextInput | null = this.getChildByName("label") as PIXI.Text | TextInput;
+    getTextField(): Text | TextInput | null {
+        let textChild: Text | TextInput = madHatContainer.getChildByName("label") as Text | TextInput;
         if (!textChild) {
-            let children = this.children;
+            let children = madHatContainer.children;
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
-                if (child instanceof PIXI.Text || (typeof TextInput !== 'undefined' && child instanceof TextInput)) {
+                if (child instanceof Text || child instanceof TextInput) {
                     textChild = child;
                     break;
                 }
             }
         }
+
         return textChild;
     }
+
+    
 
     public setInstanceData(data: InstanceData, orientation: string): void {
         this.portrait = data.portrait;
