@@ -101,6 +101,10 @@ export class ZSlider extends ZContainer {
 
         // Clamp clientX before assigning to handle.x
         clientX = Math.max(0, Math.min(clientX, this.sliderWidth!));
+        if (clientX < 0) {
+            clientX = 0;
+        }
+
         let handle = (this as any).handle;
         handle.x = clientX;
 
