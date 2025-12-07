@@ -83,31 +83,28 @@ export class ZSlider extends ZContainer {
     }
 
     onDrag(e: DragEvent | PointerEvent | TouchEvent): void {
-        let clientX: number | undefined;
-        let track = (this as any).track;
+        let globalPoint: Point | undefined;
         if ('data' in e && e.data?.global) {
             // PIXI FederatedPointerEvent
-            const local = this.toLocal(e.data.global);
-            clientX = local.x;
+            globalPoint = e.data.global;
         } else if ('clientX' in e) {
             // PointerEvent
-            const rect = track.getBounds();
-            clientX = (e as PointerEvent).clientX - rect.x;
+            globalPoint = new Point((e as PointerEvent).clientX, (e as PointerEvent).clientY);
         } else if ('touches' in e && (e as TouchEvent).touches.length > 0) {
             // TouchEvent
-            const rect = track.getBounds();
-            clientX = (e as TouchEvent).touches[0].clientX - rect.x;
+            globalPoint = new Point((e as TouchEvent).touches[0].clientX, (e as TouchEvent).touches[0].clientY);
         }
-        if (typeof clientX !== 'number') return;
+        if (!globalPoint) return;
 
         let handle = (this as any).handle;
+        let track = (this as any).track;
+        // Convert the global pointer position to the handle's parent local coordinates
+        const local = handle.parent.toLocal(globalPoint);
         // Clamp so that the handle's left edge stays within [0, sliderWidth]
         const minX = 0;
         const maxX = this.sliderWidth!;
-        // The position where the mouse is, relative to the left edge of the slider
-        // We want the left edge of the handle to be at clientX, so set handle.x = clientX + handle.pivot.x
-        clientX = Math.max(minX, Math.min(clientX, maxX));
-        handle.x = clientX;
+        let clampedX = Math.max(minX, Math.min(local.x, maxX));
+        handle.x = clampedX;
 
         // For the callback, t should be (handle.x - handle.pivot.x) / sliderWidth
         const t = (handle.x - handle.pivot.x) / this.sliderWidth!;
