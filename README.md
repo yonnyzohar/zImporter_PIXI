@@ -6,7 +6,9 @@ The `zImporter` is a TypeScript package designed to import and manage graphical 
 
 * Import and manage scenes and graphical hierarchies from **zStudio**
 * Works with **PixiJS** to display and interact with imported assets
-* Provides a flexible and easy-to-use API for handling assets and scenes
+* Provides a flexible and easy-to-use API for handling assets and scenes.
+
+* Download zStudios to get started: https://zstudiosltd.com/
 
 ## Installation
 
