@@ -487,8 +487,15 @@ export class ZScene {
                     const tf = new PIXI.BitmapText(textInstanceNode.text || "", {
                         fontName: textInstanceNode.uniqueFontName, // This must match the "face" attribute in the .fnt file
                         fontSize: textInstanceNode.size, // Adjust as needed,
-                        letterSpacing: textInstanceNode.letterSpacing || 0 // Adjust the letter spacing between characters
+                        letterSpacing: textInstanceNode.letterSpacing || 0, // Adjust the letter spacing between characters
+                        align: textInstanceNode.align || "left" // Text alignment: "left", "center", or "right"
                     });
+                    if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
+                        tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
+                    }
+                    if (textInstanceNode.pivotX !== undefined && textInstanceNode.pivotY !== undefined) {
+                        tf.pivot.set(textInstanceNode.pivotX, textInstanceNode.pivotY);
+                    }
                     tf.name = _name;
                     mc[_name] = tf;
                     mc.addChild(tf);
@@ -505,8 +512,6 @@ export class ZScene {
                     };
                     if (textInstanceNode.size) {
                         style.fontSize = textInstanceNode.size;
-                    }
-                    if (textInstanceNode.color) {
                     }
                     if (textInstanceNode.color || textInstanceNode.fillType == "solid") {
                         style.fill = textInstanceNode.color;
