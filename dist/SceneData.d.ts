@@ -158,6 +158,11 @@ export interface TextData extends BaseAssetData {
     fontWeight: string;
     uniqueFontName?: string;
     fillType: FillType;
+    dropShadow?: boolean;
+    dropShadowAngle?: number;
+    dropShadowBlur?: number;
+    dropShadowColor?: string | number;
+    dropShadowDistance?: number;
     gradientData?: BitmapTextGradientData;
 }
 export interface TemplateData {

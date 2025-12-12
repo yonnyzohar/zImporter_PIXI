@@ -550,6 +550,13 @@ export class ZScene {
                     if (textInstanceNode.fontWeight) {
                         style.fontWeight = textInstanceNode.fontWeight;
                     }
+                    if (textInstanceNode.dropShadow) {
+                        style.dropShadow = textInstanceNode.dropShadow;
+                        style.dropShadowAngle = textInstanceNode.dropShadowAngle;
+                        style.dropShadowBlur = textInstanceNode.dropShadowBlur;
+                        style.dropShadowColor = textInstanceNode.dropShadowColor;
+                        style.dropShadowDistance = textInstanceNode.dropShadowDistance;
+                    }
                     const tf = new PIXI.Text(textInstanceNode.text + "", style);
                     if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
                         tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
