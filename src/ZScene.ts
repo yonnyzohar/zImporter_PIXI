@@ -312,23 +312,43 @@ export class ZScene {
       return;
     }
     for (let i = 0; i < placemenisObj.fonts.length; i++) {
-      let path: string = placemenisObj.fonts[i];
-      let url: string = assetBasePath + path + ".fnt";
-      fetch(url)
-        .then((response) => response.text())
-        .then((data) => {
-          const fontData = new PIXI.BitmapFontData();
-          PIXI.BitmapFont.install(
-            data,
-            new PIXI.Texture(this.scene!.baseTexture)
-          ); // Install the font data
-          //console.log("Parsed font data:", fontData);
-          if (i === placemenisObj.fonts.length - 1) {
-            this.initScene(placemenisObj);
-            _loadCompleteFnctn();
-          }
-        })
-        .catch((error) => console.error("Error loading .fnt:", error));
+      let fontName: string = placemenisObj.fonts[i];
+      let fntUrl: string = assetBasePath + fontName + ".fnt";
+      let pngUrl: string = assetBasePath + fontName + ".png";
+
+      // Fetch the .fnt file as XML string
+      let xmlString: string;
+      try {
+        const response = await fetch(fntUrl);
+        if (!response.ok) throw new Error(`Failed to fetch font XML: ${response.statusText}`);
+        xmlString = await response.text();
+      } catch (err) {
+        console.error("Error fetching font XML:", err);
+        continue;
+      }
+
+      // Load the .png as a PIXI.Texture
+      let texture: PIXI.Texture;
+      try {
+        texture = await PIXI.Assets.load(pngUrl);
+      } catch (err) {
+        console.error("Error loading font texture:", err);
+        continue;
+      }
+
+      // Manually install font if not registered
+      if (!PIXI.BitmapFont.available[fontName]) {
+        try {
+          PIXI.BitmapFont.install(xmlString, texture);
+        } catch (err) {
+          console.error("Error installing bitmap font:", err);
+        }
+      }
+
+      if (i === placemenisObj.fonts.length - 1) {
+        this.initScene(placemenisObj);
+        _loadCompleteFnctn();
+      }
     }
   }
 
@@ -549,11 +569,11 @@ export class ZScene {
 
       }
 
-      if (type == "bmpTextField" || type == "textField") {
+      if (type == "bitmapText" || type == "textField") {
         let textInstanceNode = childNode as any as TextData;
-        if (PIXI.BitmapFont.available[textInstanceNode.fontName as string]) {
+        if (textInstanceNode.uniqueFontName && PIXI.BitmapFont.available[textInstanceNode.uniqueFontName as string]) {
           const tf = new PIXI.BitmapText(textInstanceNode.text || "", {
-            fontName: textInstanceNode.fontName as string, // This must match the "face" attribute in the .fnt file
+            fontName: textInstanceNode.uniqueFontName as string, // This must match the "face" attribute in the .fnt file
             fontSize: textInstanceNode.size as number,       // Adjust as needed,
             letterSpacing: textInstanceNode.letterSpacing || 0               // Adjust the letter spacing between characters
           });
