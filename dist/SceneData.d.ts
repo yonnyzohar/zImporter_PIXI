@@ -122,6 +122,12 @@ export interface TextInputData extends BaseAssetData {
     text: string;
     props: TextInputObj;
 }
+export declare class BitmapTextGradientData {
+    colors: Array<number>;
+    percentages: Array<number>;
+    fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL | PIXI.TEXT_GRADIENT.LINEAR_HORIZONTAL;
+}
+export type FillType = "solid" | "gradient";
 export interface TextData extends BaseAssetData {
     x: number;
     y: number;
@@ -130,10 +136,12 @@ export interface TextData extends BaseAssetData {
     height: number;
     alpha: number;
     size: number | string;
-    color: PIXI.TextStyleFill;
+    color?: PIXI.TextStyleFill;
     align: string;
+    lineJoin: PIXI.TextStyleLineJoin;
     text: string;
     fontName: string | string[];
+    lineHeight?: number;
     z: number;
     stroke?: string | number;
     strokeThickness?: number;
@@ -148,6 +156,9 @@ export interface TextData extends BaseAssetData {
     pivotX: number;
     pivotY: number;
     fontWeight: string;
+    uniqueFontName?: string;
+    fillType: FillType;
+    gradientData?: BitmapTextGradientData;
 }
 export interface TemplateData {
     type: string;

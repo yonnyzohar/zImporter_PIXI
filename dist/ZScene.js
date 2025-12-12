@@ -475,53 +475,59 @@ export class ZScene {
                 }
                 else {
                     //if ()
-                    const tf = new PIXI.Text(textInstanceNode.text + "", {
+                    let style = {
                         fontFamily: textInstanceNode.fontName,
                         fontSize: textInstanceNode.size,
-                        fill: textInstanceNode.color,
                         align: "center",
-                    });
+                    };
+                    if (textInstanceNode.size) {
+                        style.fontSize = textInstanceNode.size;
+                    }
+                    if (textInstanceNode.color) {
+                    }
+                    if (textInstanceNode.color || textInstanceNode.fillType == "solid") {
+                        style.fill = textInstanceNode.color;
+                    }
+                    if (textInstanceNode.fillType == "gradient" && textInstanceNode.gradientData) {
+                        style.fill = [textInstanceNode.gradientData.colors[0], textInstanceNode.gradientData.colors[1]];
+                        style.fillGradientStops = [textInstanceNode.gradientData.percentages[0], textInstanceNode.gradientData.percentages[1]];
+                    }
+                    if (textInstanceNode.align) {
+                        style.align = textInstanceNode.align;
+                    }
+                    if (textInstanceNode.stroke) {
+                        style.stroke = textInstanceNode.stroke;
+                    }
+                    if (textInstanceNode.strokeThickness) {
+                        style.strokeThickness = textInstanceNode.strokeThickness;
+                    }
+                    if (textInstanceNode.wordWrap) {
+                        style.wordWrap = textInstanceNode.wordWrap;
+                    }
+                    if (textInstanceNode.wordWrapWidth) {
+                        style.wordWrapWidth = textInstanceNode.wordWrapWidth;
+                    }
+                    if (textInstanceNode.breakWords) {
+                        style.breakWords = textInstanceNode.breakWords;
+                    }
+                    if (textInstanceNode.leading) {
+                        style.leading = textInstanceNode.leading;
+                    }
+                    if (textInstanceNode.letterSpacing) {
+                        style.letterSpacing = textInstanceNode.letterSpacing;
+                    }
+                    if (textInstanceNode.padding) {
+                        style.padding = textInstanceNode.padding;
+                    }
+                    if (textInstanceNode.fontWeight) {
+                        style.fontWeight = textInstanceNode.fontWeight;
+                    }
+                    const tf = new PIXI.Text(textInstanceNode.text + "", style);
                     if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
                         tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
                     }
                     if (textInstanceNode.pivotX !== undefined && textInstanceNode.pivotY !== undefined) {
                         tf.pivot.set(textInstanceNode.pivotX, textInstanceNode.pivotY);
-                    }
-                    if (textInstanceNode.size) {
-                        tf.style.fontSize = textInstanceNode.size;
-                    }
-                    if (textInstanceNode.color) {
-                        tf.style.fill = textInstanceNode.color;
-                    }
-                    if (textInstanceNode.align) {
-                        tf.style.align = textInstanceNode.align;
-                    }
-                    if (textInstanceNode.stroke) {
-                        tf.style.stroke = textInstanceNode.stroke;
-                    }
-                    if (textInstanceNode.strokeThickness) {
-                        tf.style.strokeThickness = textInstanceNode.strokeThickness;
-                    }
-                    if (textInstanceNode.wordWrap) {
-                        tf.style.wordWrap = textInstanceNode.wordWrap;
-                    }
-                    if (textInstanceNode.wordWrapWidth) {
-                        tf.style.wordWrapWidth = textInstanceNode.wordWrapWidth;
-                    }
-                    if (textInstanceNode.breakWords) {
-                        tf.style.breakWords = textInstanceNode.breakWords;
-                    }
-                    if (textInstanceNode.leading) {
-                        tf.style.leading = textInstanceNode.leading;
-                    }
-                    if (textInstanceNode.letterSpacing) {
-                        tf.style.letterSpacing = textInstanceNode.letterSpacing;
-                    }
-                    if (textInstanceNode.padding) {
-                        tf.style.padding = textInstanceNode.padding;
-                    }
-                    if (textInstanceNode.fontWeight) {
-                        tf.style.fontWeight = textInstanceNode.fontWeight;
                     }
                     tf.name = _name;
                     tf.x = textInstanceNode.x;

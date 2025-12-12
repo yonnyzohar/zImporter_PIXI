@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 export var AnchorConsts;
 (function (AnchorConsts) {
     AnchorConsts["NONE"] = "none";
@@ -13,4 +14,9 @@ export var AnchorConsts;
 })(AnchorConsts || (AnchorConsts = {}));
 ;
 ;
+export class BitmapTextGradientData {
+    colors = [];
+    percentages = [];
+    fillGradientType = PIXI.TEXT_GRADIENT.LINEAR_VERTICAL;
+}
 //# sourceMappingURL=SceneData.js.map
