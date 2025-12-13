@@ -229,22 +229,18 @@ export class ZButton extends ZContainer {
 
     setCallback(func: () => void) {
         this.callback = func;
-        AttachClickListener(this, () => this.onClicked(), this.longPressCallback);
     }
 
     removeCallback() {
         this.callback = undefined;
-        RemoveClickListener(this);
     }
 
     setLongPressCallback(func: () => void) {
         this.longPressCallback = func;
-        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, func);
     }
 
     removeLongPressCallback() {
         this.longPressCallback = undefined;
-        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, undefined);
     }
 
     onClicked() {
