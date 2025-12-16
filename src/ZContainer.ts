@@ -415,9 +415,6 @@ export class ZContainer extends PIXI.Container {
                 this.x = midScreen.x - this.width / 2;
                 this.y = midScreen.y - this.height / 2;
             }
-
-
-
         }
     }
 
@@ -466,14 +463,12 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
-
     public set y(value: number) {
         super.y = value;
         if (this.currentTransform) {
             this.currentTransform.y = value;
         }
     }
-
 
     public set rotation(value: number) {
         super.rotation = value;
@@ -503,7 +498,6 @@ export class ZContainer extends PIXI.Container {
     public get pivotY(): number {
         return super.pivot.y;
     }
-
 
     public set scaleX(value: number) {
         super.scale.x = value;
