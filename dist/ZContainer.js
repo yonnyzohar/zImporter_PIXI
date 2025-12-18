@@ -136,7 +136,7 @@ export class ZContainer extends PIXI.Container {
     init() {
         let tf = this.getTextField();
         if (tf) {
-            if (tf instanceof TextInput || tf instanceof PIXI.BitmapText) {
+            if (tf instanceof TextInput || tf instanceof PIXI.BitmapText || !tf.style) {
                 return;
             }
             this.setFixedBoxSize(false);
@@ -202,7 +202,7 @@ export class ZContainer extends PIXI.Container {
     setTextStyle(data) {
         let tf = this.getTextField();
         if (tf) {
-            if (tf instanceof TextInput || tf instanceof PIXI.BitmapText) {
+            if (tf instanceof TextInput || tf instanceof PIXI.BitmapText || !tf.style) {
                 return;
             }
             tf.style = { ...tf.style, ...data };
