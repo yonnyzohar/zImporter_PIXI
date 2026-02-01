@@ -254,8 +254,8 @@ export class ZScene {
         }
         for (let i = 0; i < placemenisObj.fonts.length; i++) {
             let fontName = placemenisObj.fonts[i];
-            let fntUrl = assetBasePath + fontName + ".fnt";
-            let pngUrl = assetBasePath + fontName + ".png";
+            let fntUrl = assetBasePath + "bitmapFonts/" + fontName + ".fnt";
+            let pngUrl = assetBasePath + "bitmapFonts/" + fontName + ".png";
             // Fetch the .fnt file as XML string
             let xmlString;
             try {
@@ -480,6 +480,29 @@ export class ZScene {
                 mc.addChild(asset);
                 //asset.setInstanceData(inputData, this.orientation);
                 this.applyFilters(childNode, asset);
+            }
+            if (type == "bitmapFontLocked") {
+                let textInstanceNode = childNode;
+                if (textInstanceNode.fontName && PIXI.BitmapFont.available[textInstanceNode.fontName]) {
+                    const tf = new PIXI.BitmapText(textInstanceNode.text || "", {
+                        fontName: textInstanceNode.fontName, // This must match the "face" attribute in the .fnt file
+                        align: textInstanceNode.align || "left" // Text alignment: "left", "center", or "right"
+                    });
+                    if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
+                        tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
+                    }
+                    if (textInstanceNode.pivotX !== undefined && textInstanceNode.pivotY !== undefined) {
+                        tf.pivot.set(textInstanceNode.pivotX, textInstanceNode.pivotY);
+                    }
+                    tf.name = _name;
+                    mc[_name] = tf;
+                    mc.addChild(tf);
+                    if (textInstanceNode.x !== undefined)
+                        tf.x = textInstanceNode.x;
+                    if (textInstanceNode.y !== undefined)
+                        tf.y = textInstanceNode.y;
+                    this.applyFilters(childNode, tf);
+                }
             }
             if (type == "bitmapText" || type == "textField") {
                 let textInstanceNode = childNode;

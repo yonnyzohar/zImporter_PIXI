@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { ZButton } from "./ZButton";
 import { ZContainer } from "./ZContainer";
 import { ZTimeline } from "./ZTimeline";
-import { InstanceData, SceneData, TemplateData, AnimTrackData, TextData, BaseAssetData, SpriteData, SpineData, ParticleData, TextInputData, NineSliceData } from "./SceneData";
+import { InstanceData, SceneData, TemplateData, AnimTrackData, TextData, BaseAssetData, SpriteData, SpineData, ParticleData, TextInputData, NineSliceData, BitmapFontLocked } from "./SceneData";
 import { ZState } from "./ZState";
 import * as PIXISpine3 from "@pixi-spine/runtime-3.8";
 import * as PIXISpine4 from "@pixi-spine/all-4.0";
@@ -313,8 +313,8 @@ export class ZScene {
     }
     for (let i = 0; i < placemenisObj.fonts.length; i++) {
       let fontName: string = placemenisObj.fonts[i];
-      let fntUrl: string = assetBasePath + fontName + ".fnt";
-      let pngUrl: string = assetBasePath + fontName + ".png";
+      let fntUrl: string = assetBasePath + "bitmapFonts/" + fontName + ".fnt";
+      let pngUrl: string = assetBasePath + "bitmapFonts/" + fontName + ".png";
 
       // Fetch the .fnt file as XML string
       let xmlString: string;
@@ -566,6 +566,32 @@ export class ZScene {
         mc.addChild(asset);
         //asset.setInstanceData(inputData, this.orientation);
         this.applyFilters(childNode, asset);
+
+      }
+
+      if (type == "bitmapFontLocked") {
+        let textInstanceNode = childNode as BitmapFontLocked;
+        if (textInstanceNode.fontName && PIXI.BitmapFont.available[textInstanceNode.fontName as string]) {
+          const tf = new PIXI.BitmapText(textInstanceNode.text || "", {
+            fontName: textInstanceNode.fontName as string, // This must match the "face" attribute in the .fnt file
+            align: (textInstanceNode.align as PIXI.TextStyleAlign) || "left"               // Text alignment: "left", "center", or "right"
+          });
+
+          if (textInstanceNode.textAnchorX !== undefined && textInstanceNode.textAnchorY !== undefined) {
+            tf.anchor.set(textInstanceNode.textAnchorX, textInstanceNode.textAnchorY);
+          }
+
+          if (textInstanceNode.pivotX !== undefined && textInstanceNode.pivotY !== undefined) {
+            tf.pivot.set(textInstanceNode.pivotX, textInstanceNode.pivotY);
+          }
+
+          tf.name = _name;
+          (mc as any)[_name] = tf;
+          mc.addChild(tf);
+          if (textInstanceNode.x !== undefined) tf.x = textInstanceNode.x;
+          if (textInstanceNode.y !== undefined) tf.y = textInstanceNode.y;
+          this.applyFilters(childNode, tf);
+        }
 
       }
 

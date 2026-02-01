@@ -165,6 +165,19 @@ export interface TextData extends BaseAssetData {
     dropShadowDistance?: number;
     gradientData?: BitmapTextGradientData;
 }
+export interface BitmapFontLocked extends BaseAssetData {
+    fntPath: string;
+    pngPath: string;
+    fontName: string;
+    x?: number;
+    y?: number;
+    text?: string;
+    align?: string;
+    textAnchorX?: number;
+    textAnchorY?: number;
+    pivotX?: number;
+    pivotY?: number;
+}
 export interface TemplateData {
     type: string;
     name: string;
