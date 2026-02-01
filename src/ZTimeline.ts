@@ -47,6 +47,11 @@ export class ZTimeline extends ZContainer {
         return this._frames;
     }
 
+    public init(): void {
+        super.init();
+        this.play();
+    }
+
     //these are all the frames of all the kids who have a timeline
     //the numframes is longest child timeline
     setFrames(value: any): void {
@@ -127,9 +132,9 @@ export class ZTimeline extends ZContainer {
             for (const k in this._frames) {
                 if (this._frames[k][this.currentFrame]) {
                     const frame = this._frames[k][this.currentFrame];
-                    
+
                     if (this[k]) {
-                        
+
                         if (frame.pivotX != undefined) {
                             this[k].pivot.x = frame.pivotX;
                         }
@@ -151,11 +156,11 @@ export class ZTimeline extends ZContainer {
                         if (frame.alpha != undefined) {
                             this[k].alpha = frame.alpha;
                         }
-                        if(frame.rotation != undefined) {
+                        if (frame.rotation != undefined) {
                             this[k].rotation = frame.rotation;
                         }
 
-                       
+
                     }
                     /**/
                 }
