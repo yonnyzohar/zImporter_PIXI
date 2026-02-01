@@ -41,6 +41,10 @@ export class ZTimeline extends ZContainer {
     getFrames() {
         return this._frames;
     }
+    init() {
+        super.init();
+        this.play();
+    }
     //these are all the frames of all the kids who have a timeline
     //the numframes is longest child timeline
     setFrames(value) {

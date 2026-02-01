@@ -28,7 +28,8 @@ export class ZScene {
         ["toggle", ZToggle],
         ["slider", ZSlider],
         ["scrollBar", ZScroll],
-        ["fullScreen", ZContainer]
+        ["fullScreen", ZContainer],
+        ["animation", ZTimeline]
     ]);
     //the base path for assets used in the scene, set during loading.
     assetBasePath = "";

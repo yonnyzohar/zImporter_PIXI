@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { ZContainer } from "./ZContainer";
 import { SceneData, TemplateData, AnimTrackData } from "./SceneData";
 import { ZNineSlice } from "./ZNineSlice";
-export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar" | "fullScreen";
+export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar" | "fullScreen" | "animation";
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
  * Handles loading, resizing, and instantiation of scene elements using PIXI.js.

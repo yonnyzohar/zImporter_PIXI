@@ -18,7 +18,7 @@ import { ZSpine } from "./ZSpine";
 
 
 
-export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar" | "fullScreen";
+export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar" | "fullScreen" | "animation";
 
 /**
  * Represents a scene in the application, managing its assets, layout, and lifecycle.
@@ -39,7 +39,8 @@ export class ZScene {
     ["toggle", ZToggle],
     ["slider", ZSlider],
     ["scrollBar", ZScroll],
-    ["fullScreen", ZContainer]
+    ["fullScreen", ZContainer],
+    ["animation", ZTimeline]
   ]);
 
 
