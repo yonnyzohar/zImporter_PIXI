@@ -30,6 +30,7 @@ export declare class ZTimeline extends ZContainer {
     constructor();
     setCuePoints(cuePoints: Record<number, string>): void;
     getFrames(): any;
+    init(): void;
     setFrames(value: any): void;
     removeStateEndEventListener(): void;
     addStateEndEventListener(func: (self: ZTimeline) => void): void;
