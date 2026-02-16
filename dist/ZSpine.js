@@ -26,6 +26,9 @@ export class ZSpine {
                 spine.skeleton.setSkinByName(spineData.skin);
                 spine.skeleton.setSlotsToSetupPose();
             }
+            if (spineData.playOnStart && spineData.playOnStart.value) {
+                spine.state.setAnimation(0, spineData.playOnStart.animation, true);
+            }
             callback(spine);
         };
         if (spineData.spineAtlas && spineData.spineAtlas !== "") {

@@ -88,6 +88,10 @@ export interface SpineData extends BaseAssetData {
     pngFiles: string[];
     animations: string[];
     skin?: string;
+    playOnStart?: {
+        value: boolean;
+        animation: string;
+    };
 }
 export interface ParticleData extends BaseAssetData {
     jsonPath: string;
