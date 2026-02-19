@@ -1,27 +1,17 @@
 {
   "name": "zimporter-pixi",
   "version": "1.0.69",
-  "description": "",
+ "description": "A TypeScript library for importing and managing zStudio scenes in PixiJS applications.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": "https://github.com/yonnyzohar/zImporter_PIXI",
+  "homepage": "https://zstudiosltd.com/",
   "scripts": {
     "build": "tsc",
     "package": "tsc && webpack --config webpack.config.js"
   },
-  "peerDependencies": {
-    "@pixi-spine/all-4.0": "^4.0.4",
-    "@pixi-spine/base": "^4.0.5",
-    "@pixi-spine/loader-base": "^4.0.5",
-    "@pixi-spine/loader-uni": "^4.0.5",
-    "@pixi-spine/runtime-3.7": "^4.0.5",
-    "@pixi-spine/runtime-3.8": "^4.0.5",
-    "@pixi-spine/runtime-4.1": "^4.0.5",
-    "@pixi/filter-drop-shadow": "^5.2.0",
-    "@pixi/particle-emitter": "^5.0.8",
-    "pixi.js": "^7.4.2"
-  },
-  "keywords": [],
-  "author": "",
+  "keywords": ["pixi", "pixijs", "zstudio", "animation", "ui", "typescript"],
+  "author": "Yonathan Zohar",
   "license": "MIT",
   "devDependencies": {
     "@types/eslint": "^9.6.1",
