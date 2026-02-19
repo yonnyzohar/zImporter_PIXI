@@ -8,7 +8,8 @@
   "homepage": "https://zstudiosltd.com/",
   "scripts": {
     "build": "tsc",
-    "package": "tsc && webpack --config webpack.config.js"
+    "package": "tsc && webpack --config webpack.config.js",
+    "docs": "typedoc"
   },
   "keywords": ["pixi", "pixijs", "zstudio", "animation", "ui", "typescript"],
   "author": "Yonathan Zohar",
