@@ -125,6 +125,7 @@ export class ZScene {
     if (children && loadChildren) {
       for (let i = 0; i < children.length; i++) {
         let child = children[i] as InstanceData;
+        if (child.guide) continue;//guides are not rendered
         let tempName = child.name;
         let mc: ZContainer | undefined = this.spawn(tempName);
         if (mc) {
@@ -577,6 +578,7 @@ export class ZScene {
     // //console.log(baseNode.name);
     for (var i = 0; i < baseNode.children.length; i++) {
       var childNode = baseNode.children[i] as BaseAssetData;
+
       ////console.log(child);
 
       var _name = childNode.name;
@@ -782,6 +784,7 @@ export class ZScene {
 
       if (ZScene.isAssetType(type)) {
         var instanceData = childNode as InstanceData;
+        if (instanceData.guide) continue;//guides are not rendered
         //this will tell me fi this asses template has children with frames
         var frames = this.getChildrenFrames(childNode.name);
 

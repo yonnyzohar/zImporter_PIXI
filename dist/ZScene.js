@@ -103,6 +103,8 @@ export class ZScene {
         if (children && loadChildren) {
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
+                if (child.guide)
+                    continue; //guides are not rendered
                 let tempName = child.name;
                 let mc = this.spawn(tempName);
                 if (mc) {
@@ -668,6 +670,8 @@ export class ZScene {
             }
             if (ZScene.isAssetType(type)) {
                 var instanceData = childNode;
+                if (instanceData.guide)
+                    continue; //guides are not rendered
                 //this will tell me fi this asses template has children with frames
                 var frames = this.getChildrenFrames(childNode.name);
                 if (Object.keys(frames).length > 0) {
