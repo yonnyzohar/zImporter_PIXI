@@ -219,9 +219,10 @@ export class ZScroll extends ZContainer {
     onPointerMove(event) {
         if (this.isDragging || this.isBeedDragging) {
             const currentY = event.data.global.y;
+            const sensitivity = 2;
             let deltaY = this.isDragging
-                ? this.dragStartY - currentY // scroll area inverts direction
-                : currentY - this.dragStartY; // beed is direct drag
+                ? (this.dragStartY - currentY) * sensitivity // scroll area inverts direction
+                : (currentY - this.dragStartY) * sensitivity; // beed is direct drag
             this.beed.y = this.beedStartY + deltaY;
             if (this.beed.y < 0)
                 this.beed.y = 0;

@@ -275,6 +275,20 @@ export declare class ZContainer extends PIXI.Container {
      */
     getVisible(): boolean;
     /**
+     * Returns the `PIXI.TextStyle` of this container's text field, or `null`
+     * if no text field exists or it is a `TextInput`.
+     * @returns The text style, or `null`.
+     */
+    getTextStyle(): PIXI.TextStyle | null;
+    /**
+     * Creates a shallow structural clone of this `ZContainer`, copying position,
+     * pivot, scale, rotation, alpha, visibility, and name. Direct children are
+     * cloned by type: `PIXI.Text`, `PIXI.BitmapText`, `PIXI.Sprite`,
+     * `PIXI.NineSlicePlane`, and any object that exposes its own `clone()` method.
+     * @returns A new `ZContainer` with cloned children.
+     */
+    clone(): ZContainer;
+    /**
      * Initialises and starts a particle emitter on this container.
      * Injects `texture` into the `textureSingle` behavior of `emitterConfig`
      * before creating the `Emitter` instance.

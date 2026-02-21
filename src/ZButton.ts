@@ -1,6 +1,8 @@
 ﻿import { gsap } from 'gsap';
+import * as PIXI from 'pixi.js';
 import { ZContainer } from "./ZContainer";
 import { InstanceData } from './SceneData';
+import TextInput from './text-input';
 
 /**
  * Removes all pointer/touch click listeners that were attached by `AttachClickListener`.
@@ -276,6 +278,50 @@ export class ZButton extends ZContainer {
                 label.y = (parent.height) / 2;
             }
         });
+    }
+
+    /**
+     * Returns the primary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer`.
+     * @returns The text field, or `null` if none is present.
+     */
+    public getLabel(): PIXI.Text | TextInput | null {
+        if (this.labelState === "single" && this.topLabelContainer) {
+            return this.topLabelContainer.getTextField();
+        } else if (this.labelState === "multi" && this.upLabelContainer) {
+            return this.upLabelContainer.getTextField();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the secondary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer2`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer2`.
+     * @returns The text field, or `null` if none is present.
+     */
+    public getLabel2(): PIXI.Text | TextInput | null {
+        if (this.labelState === "single" && this.topLabelContainer2) {
+            return this.topLabelContainer2.getTextField();
+        } else if (this.labelState === "multi" && this.upLabelContainer2) {
+            return this.upLabelContainer2.getTextField();
+        }
+        return null;
+    }
+
+    /**
+     * Returns `true` if this button has a primary label text field.
+     */
+    public hasLabel(): boolean {
+        return this.getLabel() !== null;
+    }
+
+    /**
+     * Returns `true` if this button has a secondary label text field.
+     */
+    public hasLabel2(): boolean {
+        return this.getLabel2() !== null;
     }
 
     /**

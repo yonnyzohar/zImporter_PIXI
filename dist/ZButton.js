@@ -242,6 +242,48 @@ export class ZButton extends ZContainer {
         });
     }
     /**
+     * Returns the primary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer`.
+     * @returns The text field, or `null` if none is present.
+     */
+    getLabel() {
+        if (this.labelState === "single" && this.topLabelContainer) {
+            return this.topLabelContainer.getTextField();
+        }
+        else if (this.labelState === "multi" && this.upLabelContainer) {
+            return this.upLabelContainer.getTextField();
+        }
+        return null;
+    }
+    /**
+     * Returns the secondary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer2`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer2`.
+     * @returns The text field, or `null` if none is present.
+     */
+    getLabel2() {
+        if (this.labelState === "single" && this.topLabelContainer2) {
+            return this.topLabelContainer2.getTextField();
+        }
+        else if (this.labelState === "multi" && this.upLabelContainer2) {
+            return this.upLabelContainer2.getTextField();
+        }
+        return null;
+    }
+    /**
+     * Returns `true` if this button has a primary label text field.
+     */
+    hasLabel() {
+        return this.getLabel() !== null;
+    }
+    /**
+     * Returns `true` if this button has a secondary label text field.
+     */
+    hasLabel2() {
+        return this.getLabel2() !== null;
+    }
+    /**
      * Registers a function to be called when the button is clicked.
      * @param func - The click handler.
      */

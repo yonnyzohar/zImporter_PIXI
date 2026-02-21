@@ -689,6 +689,82 @@ export class ZContainer extends PIXI.Container {
     }
 
     /**
+     * Returns the `PIXI.TextStyle` of this container's text field, or `null`
+     * if no text field exists or it is a `TextInput`.
+     * @returns The text style, or `null`.
+     */
+    public getTextStyle(): PIXI.TextStyle | null {
+        const tf = this.getTextField();
+        if (!tf || tf instanceof TextInput) return null;
+        if (tf instanceof PIXI.Text) return tf.style as PIXI.TextStyle;
+        return null;
+    }
+
+    /**
+     * Creates a shallow structural clone of this `ZContainer`, copying position,
+     * pivot, scale, rotation, alpha, visibility, and name. Direct children are
+     * cloned by type: `PIXI.Text`, `PIXI.BitmapText`, `PIXI.Sprite`,
+     * `PIXI.NineSlicePlane`, and any object that exposes its own `clone()` method.
+     * @returns A new `ZContainer` with cloned children.
+     */
+    public clone(): ZContainer {
+        const newContainer = new ZContainer();
+        newContainer.name = this.name;
+        newContainer.position.set(this.position.x, this.position.y);
+        newContainer.pivot.set(this.pivot.x, this.pivot.y);
+        newContainer.scale.set(this.scale.x, this.scale.y);
+        newContainer.rotation = this.rotation;
+        newContainer.alpha = this.alpha;
+        newContainer.visible = this.visible;
+
+        for (const child of this.children) {
+            if (child instanceof PIXI.Text) {
+                const c = new PIXI.Text(child.text, child.style);
+                c.name = child.name;
+                c.position.set(child.position.x, child.position.y);
+                c.pivot.set(child.pivot.x, child.pivot.y);
+                c.scale.set(child.scale.x, child.scale.y);
+                c.rotation = child.rotation;
+                c.alpha = child.alpha;
+                newContainer.addChild(c);
+            } else if (child instanceof PIXI.BitmapText) {
+                const c = new PIXI.BitmapText(child.text, { fontName: child.fontName, fontSize: child.fontSize });
+                c.name = child.name;
+                c.position.set(child.position.x, child.position.y);
+                c.pivot.set(child.pivot.x, child.pivot.y);
+                c.scale.set(child.scale.x, child.scale.y);
+                c.rotation = child.rotation;
+                c.alpha = child.alpha;
+                newContainer.addChild(c);
+            } else if (child instanceof PIXI.NineSlicePlane) {
+                const c = new PIXI.NineSlicePlane(child.texture, child.leftWidth, child.topHeight, child.rightWidth, child.bottomHeight);
+                c.name = child.name;
+                c.position.set(child.position.x, child.position.y);
+                c.pivot.set(child.pivot.x, child.pivot.y);
+                c.scale.set(child.scale.x, child.scale.y);
+                c.rotation = child.rotation;
+                c.alpha = child.alpha;
+                c.width = child.width;
+                c.height = child.height;
+                newContainer.addChild(c);
+            } else if (child instanceof PIXI.Sprite) {
+                const c = new PIXI.Sprite(child.texture);
+                c.name = child.name;
+                c.position.set(child.position.x, child.position.y);
+                c.pivot.set(child.pivot.x, child.pivot.y);
+                c.scale.set(child.scale.x, child.scale.y);
+                c.rotation = child.rotation;
+                c.alpha = child.alpha;
+                c.anchor.set(child.anchor.x, child.anchor.y);
+                newContainer.addChild(c);
+            } else if ((child as any).clone) {
+                newContainer.addChild((child as any).clone());
+            }
+        }
+        return newContainer;
+    }
+
+    /**
      * Initialises and starts a particle emitter on this container.
      * Injects `texture` into the `textureSingle` behavior of `emitterConfig`
      * before creating the `Emitter` instance.

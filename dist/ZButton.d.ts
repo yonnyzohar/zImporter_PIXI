@@ -1,4 +1,6 @@
+import * as PIXI from 'pixi.js';
 import { ZContainer } from "./ZContainer";
+import TextInput from './text-input';
 /**
  * Removes all pointer/touch click listeners that were attached by `AttachClickListener`.
  * @param container - The `ZContainer` to clean up listeners on.
@@ -78,6 +80,28 @@ export declare class ZButton extends ZContainer {
      * the vertical centre of its parent, effectively making the button single-line.
      */
     makeSingleLine(): void;
+    /**
+     * Returns the primary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer`.
+     * @returns The text field, or `null` if none is present.
+     */
+    getLabel(): PIXI.Text | TextInput | null;
+    /**
+     * Returns the secondary label text field for this button.
+     * In `"single"` mode, returns the field from `topLabelContainer2`;
+     * in `"multi"` mode, returns the field from the `upState`'s `labelContainer2`.
+     * @returns The text field, or `null` if none is present.
+     */
+    getLabel2(): PIXI.Text | TextInput | null;
+    /**
+     * Returns `true` if this button has a primary label text field.
+     */
+    hasLabel(): boolean;
+    /**
+     * Returns `true` if this button has a secondary label text field.
+     */
+    hasLabel2(): boolean;
     /**
      * Registers a function to be called when the button is clicked.
      * @param func - The click handler.
