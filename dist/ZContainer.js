@@ -504,9 +504,10 @@ export class ZContainer extends PIXI.Container {
      */
     set rotation(value) {
         super.rotation = value;
-        if (this.currentTransform) {
-            this.currentTransform.rotation = value;
-        }
+        if (this.portrait)
+            this.portrait.rotation = value;
+        if (this.landscape)
+            this.landscape.rotation = value;
     }
     get x() {
         return super.x;
@@ -571,9 +572,10 @@ export class ZContainer extends PIXI.Container {
      */
     setAlpha(value) {
         this.alpha = value;
-        if (this.currentTransform) {
-            this.currentTransform.alpha = value;
-        }
+        if (this.portrait)
+            this.portrait.alpha = value;
+        if (this.landscape)
+            this.landscape.alpha = value;
     }
     /**
      * Returns the current alpha (opacity) value.
@@ -588,9 +590,10 @@ export class ZContainer extends PIXI.Container {
      */
     setVisible(value) {
         this.visible = value;
-        if (this.currentTransform) {
-            this.currentTransform.visible = value;
-        }
+        if (this.portrait)
+            this.portrait.visible = value;
+        if (this.landscape)
+            this.landscape.visible = value;
     }
     /**
      * Returns whether this container is currently visible.

@@ -1,6 +1,6 @@
 {
   "entryPoints": ["src/index.ts"], // Change this to your main file or folder
-  "out": "docs",
+  "out": "/Users/yonthanzohar/yonny/zstudio-site/public/docs/pixi",
   "includeVersion": true,
   "excludePrivate": true,
   "excludeProtected": false,
