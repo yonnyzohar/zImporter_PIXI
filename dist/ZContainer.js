@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import { Emitter } from "@pixi/particle-emitter";
 import { ZNineSlice } from './ZNineSlice';
 import TextInput from './text-input';
+import * as PIXISpine3 from "@pixi-spine/runtime-3.8";
+import * as PIXISpine4 from "@pixi-spine/all-4.0";
 /**
  * A custom container class extending `PIXI.Container` that supports orientation-based transforms,
  * anchoring, and instance data management for responsive layouts.
@@ -707,6 +709,19 @@ export class ZContainer extends PIXI.Container {
                 "Convert your old config or use pixi-particles@4 if you must keep the old format.\n\n" +
                 "Docs: https://github.com/pixijs/particle-emitter#emitterconfig");
         }
+    }
+    /**
+     * Searches direct children for a Spine animation object and returns the first match.
+     * Supports both Spine 3.8 and Spine 4.0 runtime versions.
+     * @returns The first `Spine` instance found, or `undefined` if none exists.
+     */
+    getSpine() {
+        for (let child of this.children) {
+            if (child instanceof PIXISpine3.Spine || child instanceof PIXISpine4.Spine) {
+                return child;
+            }
+        }
+        return undefined;
     }
     /**
      * Starts (or resumes) the particle emitter.

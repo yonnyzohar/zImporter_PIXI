@@ -3,6 +3,8 @@ import { InstanceData } from './SceneData';
 import { OrientationData } from './SceneData';
 import { Emitter } from "@pixi/particle-emitter";
 import TextInput from './text-input';
+import * as PIXISpine3 from "@pixi-spine/runtime-3.8";
+import * as PIXISpine4 from "@pixi-spine/all-4.0";
 export interface AnchorData {
     anchorType: string;
     anchorPercentage: {
@@ -297,6 +299,12 @@ export declare class ZContainer extends PIXI.Container {
      * @param name - An identifier for this particle effect (currently unused internally).
      */
     loadParticle(emitterConfig: any, texture: PIXI.Texture, name: string): void;
+    /**
+     * Searches direct children for a Spine animation object and returns the first match.
+     * Supports both Spine 3.8 and Spine 4.0 runtime versions.
+     * @returns The first `Spine` instance found, or `undefined` if none exists.
+     */
+    getSpine(): PIXISpine3.Spine | PIXISpine4.Spine | undefined;
     /**
      * Starts (or resumes) the particle emitter.
      * Must be called after `loadParticle` has initialised the emitter.
