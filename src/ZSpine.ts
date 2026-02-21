@@ -44,19 +44,53 @@ export class ZSpine {
 
 
         if (spineData.spineAtlas && spineData.spineAtlas !== "") {
-            PIXI.Assets.load({
-                alias: spineData.name,
-                src: assetBasePath + spineData.spineJson,
-                data: {
-                    metadata: {
-                        spineAtlasFile: assetBasePath + spineData.spineAtlas,
-                    }
-                }
-            })
-                .then((texture: PIXI.Texture) => {
-                    let skeletonData: PIXISpine4.SkeletonData = PIXI.Assets.get(spineData.name).spineData;
+            try {
+                // Manually fetch both files to avoid PIXI deriving the atlas filename
+                // from the JSON filename (which breaks when names differ, e.g. windmill-ess.json + windmill-pma.atlas)
+                const atlasFullPath = assetBasePath + spineData.spineAtlas;
+                const atlasDir = atlasFullPath.substring(0, atlasFullPath.lastIndexOf('/') + 1);
+
+                const [atlasText, rawSkeletonData] = await Promise.all([
+                    fetch(atlasFullPath).then(r => {
+                        if (!r.ok) throw new Error(`Failed to fetch atlas: ${r.statusText}`);
+                        return r.text();
+                    }),
+                    fetch(assetBasePath + spineData.spineJson).then(r => {
+                        if (!r.ok) throw new Error(`Failed to fetch spine JSON: ${r.statusText}`);
+                        return r.json();
+                    })
+                ]);
+
+                const spineVersion: string = rawSkeletonData.skeleton?.spine ?? '';
+                const isVer4 = spineVersion.startsWith('4.');
+
+                if (isVer4) {
+                    const atlas = await new Promise<PIXISpine4.TextureAtlas>((resolve, reject) => {
+                        new PIXISpine4.TextureAtlas(atlasText, (path, loader) => {
+                            PIXI.Assets.load(atlasDir + path).then(loader).catch(reject);
+                        }, resolve);
+                    });
+                    const attachmentLoader = new PIXISpine4.AtlasAttachmentLoader(atlas);
+                    const parser = new PIXISpine4.SkeletonJson(attachmentLoader);
+                    const skeletonData = parser.readSkeletonData(rawSkeletonData);
+                    const texture = atlas.regions[0] ? (atlas.regions[0] as any).texture as PIXI.Texture : PIXI.Texture.EMPTY;
                     onSpineLoaded(texture, spineData, skeletonData, 4);
-                });
+                } else {
+                    const atlas = await new Promise<PIXISpine3Base.TextureAtlas>((resolve, reject) => {
+                        new PIXISpine3Base.TextureAtlas(atlasText, (path, loader) => {
+                            PIXI.Assets.load(atlasDir + path).then(loader).catch(reject);
+                        }, resolve);
+                    });
+                    const attachmentLoader = new PIXISpine3.AtlasAttachmentLoader(atlas);
+                    const parser = new PIXISpine3.SkeletonJson(attachmentLoader);
+                    const skeletonData = parser.readSkeletonData(rawSkeletonData);
+                    const texture = atlas.regions[0] ? (atlas.regions[0] as any).texture as PIXI.Texture : PIXI.Texture.EMPTY;
+                    onSpineLoaded(texture, spineData, skeletonData, 3);
+                }
+            } catch (error) {
+                console.error("Error loading Spine data:", error);
+                callback(undefined);
+            }
         } else if (spineData.pngFiles && spineData.pngFiles.length) {
             // Spine 3 without atlas, with separate PNG files
 
