@@ -128,6 +128,10 @@ export declare class ZContainer extends PIXI.Container {
     set scaleY(value: number);
     set pivotX(value: number);
     set pivotY(value: number);
+    setAlpha(value: number): void;
+    getAlpha(): number;
+    setVisible(value: boolean): void;
+    getVisible(): boolean;
     loadParticle(emitterConfig: any, texture: PIXI.Texture, name: string): void;
     playParticleAnim(): void;
     stopParticleAnim(): void;

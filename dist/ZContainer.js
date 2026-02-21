@@ -304,6 +304,7 @@ export class ZContainer extends PIXI.Container {
         this.scale.y = this.currentTransform.scaleY || 1;
         this.pivot.x = this.currentTransform.pivotX || 0;
         this.pivot.y = this.currentTransform.pivotY || 0;
+        this.visible = this.currentTransform.visible !== false; // default to true if not specified
         this.applyAnchor();
     }
     resize(width, height, orientation) {
@@ -439,6 +440,24 @@ export class ZContainer extends PIXI.Container {
         if (this.currentTransform) {
             this.currentTransform.pivotY = value;
         }
+    }
+    setAlpha(value) {
+        this.alpha = value;
+        if (this.currentTransform) {
+            this.currentTransform.alpha = value;
+        }
+    }
+    getAlpha() {
+        return this.alpha;
+    }
+    setVisible(value) {
+        this.visible = value;
+        if (this.currentTransform) {
+            this.currentTransform.visible = value;
+        }
+    }
+    getVisible() {
+        return this.visible;
     }
     loadParticle(emitterConfig, texture, name) {
         try {

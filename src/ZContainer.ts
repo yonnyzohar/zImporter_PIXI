@@ -367,6 +367,7 @@ export class ZContainer extends PIXI.Container {
         this.scale.y = this.currentTransform.scaleY || 1;
         this.pivot.x = this.currentTransform.pivotX || 0;
         this.pivot.y = this.currentTransform.pivotY || 0;
+        this.visible = this.currentTransform.visible !== false; // default to true if not specified
         this.applyAnchor();
     }
 
@@ -523,6 +524,28 @@ export class ZContainer extends PIXI.Container {
         if (this.currentTransform) {
             this.currentTransform.pivotY = value;
         }
+    }
+
+    public setAlpha(value: number) {
+        this.alpha = value;
+        if (this.currentTransform) {
+            this.currentTransform.alpha = value;
+        }
+    }
+
+    public getAlpha(): number {
+        return this.alpha;
+    }
+
+    public setVisible(value: boolean) {
+        this.visible = value;
+        if (this.currentTransform) {
+            this.currentTransform.visible = value;
+        }
+    }
+
+    public getVisible(): boolean {
+        return this.visible;
     }
 
     public loadParticle(emitterConfig: any, texture: PIXI.Texture, name: string): void {
