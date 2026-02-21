@@ -58,7 +58,12 @@ export class ZState extends ZContainer {
         if (this.children) {
             for (let i = 0; i < this.children.length; i++) {
                 let child = this.children[i];
-                child.visible = false;
+                if (child instanceof ZContainer) {
+                    child.setVisible(false);
+                }
+                else {
+                    child.visible = false;
+                }
                 if (child instanceof ZTimeline) {
                     let t = child;
                     t.stop();
@@ -66,7 +71,12 @@ export class ZState extends ZContainer {
             }
         }
         if (chosenChild) {
-            chosenChild.visible = true;
+            if (chosenChild instanceof ZContainer) {
+                chosenChild.setVisible(true);
+            }
+            else {
+                chosenChild.visible = true;
+            }
             this.currentState = chosenChild;
             chosenChild.parent.addChild(chosenChild);
             if (chosenChild instanceof ZTimeline) {

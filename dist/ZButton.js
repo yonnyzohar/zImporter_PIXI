@@ -309,7 +309,7 @@ export class ZButton extends ZContainer {
         }
         if (upState) {
             this.hideAllStates();
-            upState.visible = true;
+            upState.setVisible(true);
             this.addChild(upState);
         }
         if (labelState === "single" && topLabelContainer) {
@@ -334,7 +334,7 @@ export class ZButton extends ZContainer {
         this.removeAllListeners();
         if (this.disabledState) {
             this.hideAllStates();
-            this.disabledState.visible = true;
+            this.disabledState.setVisible(true);
             this.addChild(this.disabledState);
         }
         if (this.topLabelContainer) {
@@ -352,19 +352,19 @@ export class ZButton extends ZContainer {
      */
     hideAllStates() {
         if (this.overState)
-            this.overState.visible = false;
+            this.overState.setVisible(false);
         if (this.downState)
-            this.downState.visible = false;
+            this.downState.setVisible(false);
         if (this.upState)
-            this.upState.visible = false;
+            this.upState.setVisible(false);
         if (this.disabledState)
-            this.disabledState.visible = false;
+            this.disabledState.setVisible(false);
     }
     /** Shows `downState` and dims label containers to 0.5 alpha. */
     onDown() {
         if (this.downState) {
             this.hideAllStates();
-            this.downState.visible = true;
+            this.downState.setVisible(true);
             this.addChild(this.downState);
         }
         if (this.topLabelContainer) {
@@ -380,7 +380,7 @@ export class ZButton extends ZContainer {
     onOut() {
         if (this.upState) {
             this.hideAllStates();
-            this.upState.visible = true;
+            this.upState.setVisible(true);
             this.addChild(this.upState);
         }
         if (this.topLabelContainer) {
@@ -396,7 +396,7 @@ export class ZButton extends ZContainer {
     onOver() {
         if (this.overState) {
             this.hideAllStates();
-            this.overState.visible = true;
+            this.overState.setVisible(true);
             this.addChild(this.overState);
         }
         if (this.topLabelContainer) {

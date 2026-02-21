@@ -75,11 +75,11 @@ export class ZScroll extends ZContainer {
         }
         if (contentHeight <= scrollBarHeight) {
             console.log("Content fits, no scroll needed.");
-            this.scrollBar.visible = false;
+            this.scrollBar.setVisible(false);
             this.scrollContent.y = 0;
             return;
         }
-        this.scrollBar.visible = true;
+        this.scrollBar.setVisible(true);
         let w = this.scrollBar.x - this.scrollContent.x;
         console.log("Calculated scroll width:", w);
         this.msk = new Graphics();
