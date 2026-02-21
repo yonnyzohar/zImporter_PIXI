@@ -25,11 +25,11 @@ export class ZTextInput extends ZContainer {
             }
         }
 
-        this.textInput.updateBox(this.props.box.default,'DEFAULT');
+        this.textInput.updateBox(this.props.box.default, 'DEFAULT');
         this.textInput.updateBox(this.props.box.focused, 'FOCUSED');
         this.textInput.updateBox(this.props.box.disabled, 'DISABLED');
 
         this.addChild(this.textInput);
     }
-    
+
 }

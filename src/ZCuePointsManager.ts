@@ -1,4 +1,4 @@
-export class ZCuePointsManager{
+export class ZCuePointsManager {
     //static class where you can add a listener to a cue point with a callback function
     private static cuePoints: Map<string, Function[]> = new Map();
 

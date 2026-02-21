@@ -13,31 +13,31 @@ import { ZScene } from "./ZScene";
  * 
  * @public
  */
-export class ZSceneStack{
-    
+export class ZSceneStack {
+
     //the following is a stack of resources of tyoe T
-    private static stack:ZScene[] = [];
-    private static stackSize:number = 0;
-    private static top:number = 0;
+    private static stack: ZScene[] = [];
+    private static stackSize: number = 0;
+    private static top: number = 0;
 
 
     /**
      * Pushes a scene onto the top of the stack.
      * @param resource - The `ZScene` to push.
      */
-    public static push(resource:ZScene):void{
+    public static push(resource: ZScene): void {
         this.stack[this.top] = resource;
         this.top++;
         this.stackSize++;
-        
+
     }
 
     /**
      * Removes and returns the scene at the top of the stack.
      * @returns The removed `ZScene`, or `null` if the stack is empty.
      */
-    public static pop():ZScene | null{
-        if(this.stackSize > 0){
+    public static pop(): ZScene | null {
+        if (this.stackSize > 0) {
             this.top--;
             this.stackSize--;
             return this.stack[this.top];
@@ -49,8 +49,8 @@ export class ZSceneStack{
      * Returns the scene at the top of the stack without removing it.
      * @returns The top `ZScene`, or `null` if the stack is empty.
      */
-    public static peek():ZScene | null{
-        if(this.stackSize > 0){
+    public static peek(): ZScene | null {
+        if (this.stackSize > 0) {
             return this.stack[this.top - 1];
         }
         return null;
@@ -60,14 +60,14 @@ export class ZSceneStack{
      * Returns the current number of scenes in the stack.
      * @returns The stack size.
      */
-    public static getStackSize():number{
+    public static getStackSize(): number {
         return this.stackSize;
     }
 
     /**
      * Removes all scenes from the stack and resets the size and top-of-stack index.
      */
-    public static clear():void{
+    public static clear(): void {
         this.stack = [];
         this.stackSize = 0;
         this.top = 0;
@@ -82,13 +82,11 @@ export class ZSceneStack{
      * @param templateName - The template/asset name to spawn.
      * @returns The spawned `ZContainer`, or `undefined` if not found in any scene.
      */
-    static spawn(templateName: string):ZContainer | undefined {
-        for(let i = this.stack.length-1; i >=0 ; i-- )
-        {
-            let gameScene:ZScene = this.stack[i];
-            let ent:ZContainer | undefined = gameScene.spawn(templateName);
-            if(ent)
-            {
+    static spawn(templateName: string): ZContainer | undefined {
+        for (let i = this.stack.length - 1; i >= 0; i--) {
+            let gameScene: ZScene = this.stack[i];
+            let ent: ZContainer | undefined = gameScene.spawn(templateName);
+            if (ent) {
                 return ent;
             }
         }
@@ -100,9 +98,8 @@ export class ZSceneStack{
      * @param height - The new viewport height.
      */
     static resize(width: number, height: number): void {
-        for(let i = this.stack.length-1; i >=0 ; i-- )
-        {
-            let gameScene:ZScene = this.stack[i];
+        for (let i = this.stack.length - 1; i >= 0; i--) {
+            let gameScene: ZScene = this.stack[i];
             gameScene.resize(width, height);
         }
     }
