@@ -81,6 +81,7 @@ export class ZScene {
   private sceneName: string | null = null;
 
 
+  /** Returns the root `ZContainer` that all scene display objects are added to. */
   public get sceneStage() {
     return this._sceneStage;
   }
@@ -155,6 +156,11 @@ export class ZScene {
     this.resizeMap.delete(mc);
   }
 
+  /**
+   * Returns the logical (un-scaled) inner dimensions of the scene, swapping
+   * width and height when in portrait orientation.
+   * @returns An object with `width` and `height` in scene units.
+   */
   public getInnerDimensions(): { width: number, height: number } {
     if (this.data && this.data.resolution) {
     }
@@ -203,6 +209,7 @@ export class ZScene {
     }
   }
 
+  /** The logical width of the scene in scene units for the current orientation. */
   public get sceneWidth(): number {
     let baseWidth = this.data.resolution.x;
     if (this.orientation === "portrait") {
@@ -212,6 +219,7 @@ export class ZScene {
     return baseWidth;
   }
 
+  /** The logical height of the scene in scene units for the current orientation. */
   public get sceneHeight(): number {
     let baseHeight = this.data.resolution.y;
     if (this.orientation === "portrait") {
@@ -371,6 +379,13 @@ export class ZScene {
     return img;
   }
 
+  /**
+   * Builds the asset-load manifest (alias + src pairs) for scenes that use
+   * individual image files instead of a sprite-sheet atlas.
+   * @param assetBasePath - The base path prepended to each image file path.
+   * @param obj - The scene data whose templates are scanned for `img` and `9slice` assets.
+   * @returns An array of `{ alias, src }` objects suitable for `PIXI.Assets.load`.
+   */
   private createImagesObject(assetBasePath: string, obj: SceneData): { alias: string; src: string }[] {
     let images: { alias: string; src: string }[] = [];
     let record: any = {};
@@ -471,6 +486,11 @@ export class ZScene {
     return frames;
   }
 
+  /**
+   * Returns the constructor registered for the given `AssetType` string.
+   * @param value - An `AssetType` string key.
+   * @returns The corresponding class constructor, or `null` if not registered.
+   */
   static getAssetType(value: string): any {
     if (this.assetTypes.has(value as AssetType)) {
       return this.assetTypes.get(value as AssetType);
@@ -478,6 +498,11 @@ export class ZScene {
     return null;
   }
 
+  /**
+   * Type-guard that checks whether `value` is a known `AssetType` key.
+   * @param value - The string to test.
+   * @returns `true` if `value` is a registered `AssetType`.
+   */
   static isAssetType(value: string): value is AssetType {
     return this.assetTypes.has(value as AssetType);
   }

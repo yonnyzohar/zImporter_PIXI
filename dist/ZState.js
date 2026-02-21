@@ -18,15 +18,35 @@ import { ZTimeline } from "./ZTimeline";
 export class ZState extends ZContainer {
     currentState = null;
     //this is called once all children of the container are loaded
+    /**
+     * Initialises the state container by showing the `"idle"` state (or the
+     * first child if `"idle"` does not exist).
+     */
     init() {
         this.setState("idle");
     }
+    /**
+     * Returns the currently visible state container.
+     * @returns The active `ZContainer` state, or `null` if none has been set.
+     */
     getCurrentState() {
         return this.currentState;
     }
+    /**
+     * Checks whether a direct child with the given name exists.
+     * @param str - The state name to look for.
+     * @returns `true` if a matching child exists.
+     */
     hasState(str) {
         return this.getChildByName(str) !== null;
     }
+    /**
+     * Makes the named child visible and hides all others.
+     * If a `ZTimeline` state is being deactivated it is stopped; the newly
+     * active one is played. Falls back to `"idle"`, then the first child.
+     * @param str - The name of the state to activate.
+     * @returns The activated `ZContainer`, or `null` if no children exist.
+     */
     setState(str) {
         let chosenChild = this.getChildByName(str);
         if (!chosenChild) {
@@ -57,9 +77,17 @@ export class ZState extends ZContainer {
         }
         return null;
     }
+    /**
+     * Returns the names of all direct children (states).
+     * @returns An array of child name strings (may contain `null` for unnamed children).
+     */
     getAllStateNames() {
         return this.children.map((child) => child.name);
     }
+    /**
+     * Returns the class type identifier.
+     * @returns `"ZState"`
+     */
     getType() {
         return "ZState";
     }

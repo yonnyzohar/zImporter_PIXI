@@ -116,6 +116,11 @@ export class ZContainer extends PIXI.Container {
     fixedBoxSize?: boolean;
     _props?: any;
 
+    /**
+     * Performs a breadth-first search and returns the first descendant `ZContainer` with the given name.
+     * @param childName - The `name` to search for.
+     * @returns The first matching `ZContainer`, or `null` if not found.
+     */
     public get(childName: string): ZContainer | null {
         const queue: ZContainer[] = [];
 
@@ -145,6 +150,11 @@ export class ZContainer extends PIXI.Container {
         return null;
     }
 
+    /**
+     * Performs a breadth-first search and returns all descendant `ZContainer` instances with the given name.
+     * @param childName - The `name` to search for.
+     * @returns An array of all matching `ZContainer` instances (may be empty).
+     */
     getAll(childName: string): ZContainer[] {
         const queue: ZContainer[] = [];
         const result: ZContainer[] = [];
@@ -175,7 +185,11 @@ export class ZContainer extends PIXI.Container {
     }
 
 
-    //this is called once all children of the container are loaded
+    /**
+     * Called once all children of the container are loaded.
+     * Captures the original text-field dimensions and font size so they can be
+     * restored when `setText` is called later.
+     */
     public init(): void {
         let tf: PIXI.Text | TextInput | null = this.getTextField();
         if (tf) {
@@ -193,14 +207,29 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Returns a string identifier for the class type.
+     * @returns `"ZContainer"`
+     */
     public getType(): string {
         return "ZContainer";
     }
 
+    /**
+     * Enables or disables fixed-box-size mode. When enabled, `setText` will
+     * shrink the font size to keep the text within the original measured bounds.
+     * @param value - `true` to enable fixed-box mode, `false` to disable.
+     */
     public setFixedBoxSize(value: boolean): void {
         this.fixedBoxSize = value;
     }
 
+    /**
+     * Performs a breadth-first search and returns all descendants that report
+     * the given type string via their `getType()` method.
+     * @param type - The type string to match (e.g. `"ZButton"`, `"ZToggle"`).
+     * @returns An array of matching `ZContainer` descendants.
+     */
     public getAllOfType(type: string): ZContainer[] {
         const queue: ZContainer[] = [];
         const result: ZContainer[] = [];
@@ -232,6 +261,12 @@ export class ZContainer extends PIXI.Container {
     }
 
 
+    /**
+     * Sets the text content of the first text-field child (named `"label"` or
+     * the first `PIXI.Text` / `TextInput` found). If fixed-box-size mode is on,
+     * the font size will be reduced until the text fits within the original bounds.
+     * @param text - The string to display.
+     */
     public setText(text: string): void {
         let textChild = this.getTextField();
         if (textChild) {
@@ -251,6 +286,11 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Merges additional style properties onto the text-field's existing style
+     * and re-runs the resize logic to keep the text within bounds.
+     * @param data - Partial `PIXI.TextStyle` properties to merge.
+     */
     public setTextStyle(data: Partial<PIXI.TextStyle>): void {
         let tf = this.getTextField();
         if (tf) {
@@ -262,10 +302,20 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Returns the raw instance-data props object that was set via `setInstanceData`.
+     * @returns The stored `_props` object, or `undefined` if not yet set.
+     */
     public getProps(): any {
         return this._props;
     }
 
+    /**
+     * Shrinks the font size of `textChild` until both its width and height fit
+     * within `originalTextWidth` / `originalTextHeight` (only active when
+     * `fixedBoxSize` is `true`).
+     * @param textChild - The `PIXI.Text` whose style will be adjusted.
+     */
     private resizeText(textChild: PIXI.Text) {
         if (this.fixedBoxSize) {
             let style = textChild.style;
@@ -284,6 +334,12 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Finds and returns the first text-field child. Prefers a child named
+     * `"label"`, then falls back to the first `PIXI.Text` or `TextInput` found
+     * among direct children.
+     * @returns The text field, or `null` if none exists.
+     */
     getTextField(): PIXI.Text | TextInput | null {
         let textChild: PIXI.Text | TextInput = this.getChildByName("label") as PIXI.Text | TextInput;
         if (!textChild) {
@@ -302,6 +358,13 @@ export class ZContainer extends PIXI.Container {
 
 
 
+    /**
+     * Applies scene-editor instance data to this container: stores portrait /
+     * landscape transforms, sets the active orientation, applies the resulting
+     * transform, and captures original text dimensions.
+     * @param data - The `InstanceData` exported from the scene editor.
+     * @param orientation - `"portrait"` or `"landscape"`.
+     */
     public setInstanceData(data: InstanceData, orientation: string): void {
         this.portrait = data.portrait;
         this.landscape = data.landscape;
@@ -330,6 +393,11 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * When set to `true`, stretches this container to fill the entire screen
+     * on the next `applyTransform` call.
+     * @param value - `true` to enable fit-to-screen mode.
+     */
     set fitToScreen(value: boolean) {
         this._fitToScreen = value;
         if (value) {
@@ -340,10 +408,16 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /** Returns `true` if fit-to-screen mode is currently active. */
     get fitToScreen(): boolean {
         return this._fitToScreen;
     }
 
+    /**
+     * Reads `currentTransform` (or delegates to `executeFitToScreen`) and
+     * writes position, scale, rotation, pivot, alpha, and visibility onto
+     * this container. Skips the update while a parent `ZTimeline` is playing.
+     */
     applyTransform() {
         if (this._fitToScreen) // if fitToScreen is true, do not apply transform
         {
@@ -372,12 +446,23 @@ export class ZContainer extends PIXI.Container {
     }
 
 
+    /**
+     * Switches the active orientation data and re-applies the transform.
+     * Called by the scene or parent when the viewport size changes.
+     * @param width - The new viewport width (unused directly; stored by parent).
+     * @param height - The new viewport height (unused directly; stored by parent).
+     * @param orientation - The new orientation: `"portrait"` or `"landscape"`.
+     */
     public resize(width: number, height: number, orientation: "portrait" | "landscape") {
         this.currentTransform = orientation === "portrait" ? this.portrait : this.landscape;
         this.applyTransform();
     }
 
-    //this assumes that the asset pivot is topLeft
+    /**
+     * Stretches this container (or its first `ZNineSlice` child) to cover the
+     * full browser viewport. Assumes the asset pivot is at the top-left.
+     * In landscape mode scales by width; in portrait mode scales by height.
+     */
     executeFitToScreen() {
         let children = this.children;
         if (children.length === 0) return;
@@ -419,6 +504,11 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Positions the container at a screen-percentage anchor point when
+     * `currentTransform.isAnchored` is `true`. Converts the percentage
+     * coordinates to local space relative to the parent.
+     */
     public applyAnchor() {
         if (this.currentTransform && this.currentTransform.isAnchored && this.parent) {
             let xPer = this.currentTransform!.anchorPercentage!.x || 0;
@@ -432,10 +522,18 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Returns whether this container is currently configured to use anchor-based positioning.
+     * @returns `true` if the current transform has `isAnchored` set.
+     */
     public isAnchored(): boolean {
         return this.currentTransform && this.currentTransform.isAnchored || false;
     }
 
+    /**
+     * Sets the x position and mirrors the value into `currentTransform` so it
+     * is preserved across orientation changes.
+     */
     public set x(value: number) {
         super.x = value;
         if (this.currentTransform) {
@@ -443,6 +541,10 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Sets the display width and mirrors the derived `scaleX` back into
+     * `currentTransform`.
+     */
     public set width(value: number) {
         super.width = value;
         if (this.currentTransform) {
@@ -457,6 +559,10 @@ export class ZContainer extends PIXI.Container {
         return super.height;
     }
 
+    /**
+     * Sets the display height and mirrors the derived `scaleY` back into
+     * `currentTransform`.
+     */
     public set height(value: number) {
         super.height = value;
         if (this.currentTransform) {
@@ -464,6 +570,9 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Sets the y position and mirrors the value into `currentTransform`.
+     */
     public set y(value: number) {
         super.y = value;
         if (this.currentTransform) {
@@ -471,6 +580,9 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Sets the rotation (in radians) and mirrors the value into `currentTransform`.
+     */
     public set rotation(value: number) {
         super.rotation = value;
         if (this.currentTransform) {
@@ -500,12 +612,18 @@ export class ZContainer extends PIXI.Container {
         return super.pivot.y;
     }
 
+    /**
+     * Sets the horizontal scale and mirrors the value into `currentTransform`.
+     */
     public set scaleX(value: number) {
         super.scale.x = value;
         if (this.currentTransform) {
             this.currentTransform.scaleX = value;
         }
     }
+    /**
+     * Sets the vertical scale and mirrors the value into `currentTransform`.
+     */
     public set scaleY(value: number) {
         super.scale.y = value;
         if (this.currentTransform) {
@@ -513,12 +631,18 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Sets the horizontal pivot and mirrors the value into `currentTransform`.
+     */
     public set pivotX(value: number) {
         super.pivot.x = value;
         if (this.currentTransform) {
             this.currentTransform.pivotX = value;
         }
     }
+    /**
+     * Sets the vertical pivot and mirrors the value into `currentTransform`.
+     */
     public set pivotY(value: number) {
         super.pivot.y = value;
         if (this.currentTransform) {
@@ -526,6 +650,10 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Sets the alpha (opacity) and mirrors the value into `currentTransform`.
+     * @param value - Opacity in the range [0, 1].
+     */
     public setAlpha(value: number) {
         this.alpha = value;
         if (this.currentTransform) {
@@ -533,10 +661,18 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Returns the current alpha (opacity) value.
+     * @returns Opacity in the range [0, 1].
+     */
     public getAlpha(): number {
         return this.alpha;
     }
 
+    /**
+     * Sets the visibility of this container and mirrors the value into `currentTransform`.
+     * @param value - `true` to show, `false` to hide.
+     */
     public setVisible(value: boolean) {
         this.visible = value;
         if (this.currentTransform) {
@@ -544,10 +680,22 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Returns whether this container is currently visible.
+     * @returns `true` if visible.
+     */
     public getVisible(): boolean {
         return this.visible;
     }
 
+    /**
+     * Initialises and starts a particle emitter on this container.
+     * Injects `texture` into the `textureSingle` behavior of `emitterConfig`
+     * before creating the `Emitter` instance.
+     * @param emitterConfig - A PixiJS particle-emitter `behaviors`-based config object.
+     * @param texture - The texture to use for individual particles.
+     * @param name - An identifier for this particle effect (currently unused internally).
+     */
     public loadParticle(emitterConfig: any, texture: PIXI.Texture, name: string): void {
         try {
             (emitterConfig as EmitterConfig).behaviors.find(
@@ -577,6 +725,10 @@ export class ZContainer extends PIXI.Container {
         }
     }
 
+    /**
+     * Starts (or resumes) the particle emitter.
+     * Must be called after `loadParticle` has initialised the emitter.
+     */
     playParticleAnim() {
         if (!this.emitter) {
             console.warn("Emitter not initialized. Call loadParticle first.");
@@ -585,6 +737,10 @@ export class ZContainer extends PIXI.Container {
         this.emitter!.emit = true;
     }
 
+    /**
+     * Pauses particle emission by setting `emitter.emit = false`.
+     * The existing particles continue to age and disappear naturally.
+     */
     stopParticleAnim() {
         if (!this.emitter) {
             console.warn("Emitter not initialized. Call loadParticle first.");

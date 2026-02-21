@@ -28,16 +28,67 @@ export declare class ZTimeline extends ZContainer {
     cuePoints: Record<number, string>;
     func: ((self: ZTimeline) => void) | undefined;
     constructor();
+    /**
+     * Sets cue-point labels keyed by frame number. When playback reaches a
+     * labelled frame, `ZCuePointsManager.triggerCuePoint` is called with the
+     * label string and this timeline as the argument.
+     * @param cuePoints - A map of `frameIndex -> cuePointName`.
+     */
     setCuePoints(cuePoints: Record<number, string>): void;
+    /**
+     * Returns the raw frame-data object for all tracked children.
+     * @returns The internal `_frames` record.
+     */
     getFrames(): any;
+    /**
+     * Called once all children are loaded. Delegates to `ZContainer.init` and
+     * then starts playback.
+     */
     init(): void;
+    /**
+     * Sets the frame data for all tracked children and calculates `totalFrames`
+     * as the length of the longest child track.
+     * @param value - A record mapping child instance names to their array of per-frame transform data.
+     */
     setFrames(value: any): void;
+    /**
+     * Removes the end-of-timeline callback so no function is called when the
+     * timeline finishes or loops.
+     */
     removeStateEndEventListener(): void;
+    /**
+     * Registers a callback that is invoked each time the timeline reaches its last frame.
+     * @param func - Called with this `ZTimeline` instance as the argument.
+     */
     addStateEndEventListener(func: (self: ZTimeline) => void): void;
+    /**
+     * Registers this timeline (and all `ZTimeline` children) with `ZUpdatables`
+     * so they receive `update()` calls each tick.
+     */
     play(): void;
+    /**
+     * Unregisters this timeline (and all `ZTimeline` children) from `ZUpdatables`,
+     * halting playback at the current frame.
+     */
     stop(): void;
+    /**
+     * Jumps to `frameNum` and resumes playback from that point.
+     * @param frameNum - The frame index to jump to.
+     */
     gotoAndPlay(frameNum: number): void;
+    /**
+     * Called each tick by `ZUpdatables`. Applies the current frame's transforms,
+     * fires any cue point at the current frame, increments the frame counter, and
+     * handles looping / end-of-timeline notification.
+     * @remarks Frame advancement is based on tick count, not elapsed time.
+     */
     update(): void;
+    /**
+     * Jumps to `frameNum` and applies the transform data for every tracked child
+     * at that frame (position, scale, rotation, pivot, alpha). Does not start or
+     * stop playback.
+     * @param frameNum - The frame index to display.
+     */
     gotoAndStop(frameNum: number): void;
 }
 //# sourceMappingURL=ZTimeline.d.ts.map

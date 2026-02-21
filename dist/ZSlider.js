@@ -8,6 +8,11 @@ export class ZSlider extends ZContainer {
     onDragStartBinded;
     onDragEndBinded;
     onDragBinded;
+    /**
+     * Initialises the slider: resolves the `handle` and `track` children,
+     * measures the track width, binds drag handlers, and attaches listeners to
+     * the handle.
+     */
     init() {
         super.init();
         const handle = this.get('handle');
@@ -24,9 +29,18 @@ export class ZSlider extends ZContainer {
             .on('pointerdown', this.onDragStartBinded).on('touchstart', this.onDragStartBinded)
             .cursor = 'pointer';
     }
+    /**
+     * Returns the class type identifier.
+     * @returns `"ZSlider"`
+     */
     getType() {
         return "ZSlider";
     }
+    /**
+     * Programmatically moves the handle to the given normalised position and
+     * fires the callback.
+     * @param t - A value in [0, 1] representing the handle position across the track.
+     */
     setHandlePosition(t) {
         let handle = this.handle;
         handle.x = t * this.sliderWidth;
@@ -35,12 +49,22 @@ export class ZSlider extends ZContainer {
         }
     }
     ;
+    /**
+     * Registers a function to be called whenever the slider value changes.
+     * @param callback - Receives a normalised value in [0, 1].
+     */
     setCallback(callback) {
         this.callback = callback;
     }
+    /** Clears the registered value-change callback. */
     removeCallback() {
         this.callback = undefined;
     }
+    /**
+     * Starts a drag interaction: attaches pointer-up and pointer-move listeners
+     * to both the handle and the window.
+     * @param e - The pointer-down event that initiated the drag.
+     */
     onDragStart(e) {
         this.dragging = true;
         let handle = this.handle;
@@ -53,6 +77,10 @@ export class ZSlider extends ZContainer {
         window.addEventListener('pointermove', this.onDragBinded);
         window.addEventListener('touchmove', this.onDragBinded);
     }
+    /**
+     * Ends a drag interaction: removes all pointer-up and pointer-move listeners.
+     * @param e - The pointer-up event that ended the drag.
+     */
     onDragEnd(e) {
         this.dragging = false;
         let handle = this.handle;
@@ -65,6 +93,12 @@ export class ZSlider extends ZContainer {
         window.removeEventListener('pointermove', this.onDragBinded);
         window.removeEventListener('touchmove', this.onDragBinded);
     }
+    /**
+     * Handles pointer movement during a drag. Converts the global pointer
+     * position to local track space, clamps it to track bounds, moves the
+     * handle, and fires the callback with a normalised [0, 1] value.
+     * @param e - A PIXI `FederatedPointerEvent`, browser `PointerEvent`, or `TouchEvent`.
+     */
     onDrag(e) {
         let globalPoint;
         if ('data' in e && e.data?.global) {

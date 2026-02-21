@@ -2,6 +2,10 @@
 import { ZContainer } from "./ZContainer";
 import { InstanceData } from './SceneData';
 
+/**
+ * Removes all pointer/touch click listeners that were attached by `AttachClickListener`.
+ * @param container - The `ZContainer` to clean up listeners on.
+ */
 export const RemoveClickListener = (container: ZContainer): void => {
     container.removeAllListeners('mouseup');
     container.removeAllListeners('touchend');
@@ -11,6 +15,14 @@ export const RemoveClickListener = (container: ZContainer): void => {
     container.removeAllListeners('touchstart');
 };
 
+/**
+ * Attaches a unified click / long-press listener to any `ZContainer`.
+ * A press is only fired if the pointer has not moved more than 20 px (drag guard)
+ * and a long-press has not been triggered first.
+ * @param container - The target container.
+ * @param pressCallback - Called on a normal tap/click.
+ * @param longPressCallback - Called after the pointer is held for 500 ms without moving.
+ */
 export const AttachClickListener = (
     container: ZContainer,
     pressCallback?: () => void,
@@ -84,11 +96,21 @@ export const AttachClickListener = (
 type LabelState = "single" | "multi" | "none";
 
 
+/**
+ * Attaches `mouseover` and `mouseout` listeners to a container.
+ * @param container - The container to listen on.
+ * @param hoverCallback - Called when the pointer enters.
+ * @param outCallback - Called when the pointer leaves.
+ */
 export const AddHoverListener = (container: ZContainer, hoverCallback: (...args: any[]) => void, outCallback: (...args: any[]) => void): void => {
     container.on('mouseover', hoverCallback);
     container.on('mouseout', outCallback);
 };
 
+/**
+ * Removes any hover listeners that were attached via `AddHoverListener`.
+ * @param container - The container to clean up.
+ */
 export const RemoveHoverListener = (container: ZContainer): void => {
     container.removeAllListeners('mouseover');
     container.removeAllListeners('mouseout');
@@ -119,10 +141,19 @@ export class ZButton extends ZContainer {
 
     private labelState: LabelState = "none";
 
+    /**
+     * Returns the class type identifier.
+     * @returns `"ZButton"`
+     */
     public getType(): string {
         return "ZButton";
     }
 
+    /**
+     * Initialises the button by resolving label containers and visual states
+     * from the scene-editor hierarchy, then calls `enable()`.
+     * @param _labelStr - Optional initial label string (reserved for future use).
+     */
     init(_labelStr: string = "") {
         super.init();
 
@@ -170,6 +201,12 @@ export class ZButton extends ZContainer {
     }
 
 
+    /**
+     * Sets the primary label text on all visible label containers.
+     * In `"single"` label mode all `labelContainer` descendants are updated;
+     * in `"multi"` mode each state's `labelContainer` is updated individually.
+     * @param name - The string to display.
+     */
     setLabel(name: string): void {
         if (this.labelState === "single") {
             const labelContainers = this.getAll("labelContainer") as ZContainer[];
@@ -189,6 +226,11 @@ export class ZButton extends ZContainer {
         }
     }
 
+    /**
+     * Sets the secondary label text on all visible `labelContainer2` containers
+     * in the same manner as `setLabel`.
+     * @param name - The string to display.
+     */
     setLabel2(name: string): void {
         if (this.labelState === "single") {
             const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
@@ -208,6 +250,11 @@ export class ZButton extends ZContainer {
         }
     }
 
+    /**
+     * Enables or disables fixed-box-size mode on every label container so that
+     * long strings are automatically shrunk to fit.
+     * @param fixed - `true` to constrain text size, `false` to allow free sizing.
+     */
     setFixedTextSize(fixed: boolean): void {
         const labelContainers = this.getAll("labelContainer") as ZContainer[];
         const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
@@ -215,6 +262,10 @@ export class ZButton extends ZContainer {
         labelContainers2.forEach(container => container.setFixedBoxSize(fixed));
     }
 
+    /**
+     * Hides `labelContainer2` everywhere and repositions `labelContainer` to
+     * the vertical centre of its parent, effectively making the button single-line.
+     */
     makeSingleLine(): void {
         const labelContainers = this.getAll("labelContainer") as ZContainer[];
         const labelContainers2 = this.getAll("labelContainer2") as ZContainer[];
@@ -227,26 +278,48 @@ export class ZButton extends ZContainer {
         });
     }
 
+    /**
+     * Registers a function to be called when the button is clicked.
+     * @param func - The click handler.
+     */
     setCallback(func: () => void) {
         this.callback = func;
     }
 
+    /**
+     * Clears the registered click callback so pressing the button does nothing.
+     */
     removeCallback() {
         this.callback = undefined;
     }
 
+    /**
+     * Registers a function to be called when the button is long-pressed (≥500 ms).
+     * @param func - The long-press handler.
+     */
     setLongPressCallback(func: () => void) {
         this.longPressCallback = func;
     }
 
+    /**
+     * Clears the registered long-press callback.
+     */
     removeLongPressCallback() {
         this.longPressCallback = undefined;
     }
 
+    /**
+     * Invokes the registered click callback (if any). Called internally by the
+     * pointer-up handler; may also be called programmatically to simulate a click.
+     */
     onClicked() {
         if (this.callback) this.callback();
     }
 
+    /**
+     * Re-enables the button: restores pointer-cursor, re-attaches hover/down
+     * listeners, shows the `upState`, and re-registers the click callback.
+     */
     enable() {
         this.cursor = "pointer";
         [this.upState, this.overState, this.downState].forEach(state => state && (state.cursor = "pointer"));
@@ -297,6 +370,10 @@ export class ZButton extends ZContainer {
         AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, this.longPressCallback);
     }
 
+    /**
+     * Disables the button: removes interactivity, switches to `disabledState`,
+     * and dims label containers to 0.5 alpha.
+     */
     disable() {
         this.cursor = "default";
         this.interactive = false;
@@ -319,6 +396,10 @@ export class ZButton extends ZContainer {
         }
     }
 
+    /**
+     * Sets all visual state containers (`upState`, `overState`, `downState`,
+     * `disabledState`) to invisible. Used internally before showing the active state.
+     */
     hideAllStates() {
         if (this.overState) this.overState.visible = false;
         if (this.downState) this.downState.visible = false;
@@ -326,6 +407,7 @@ export class ZButton extends ZContainer {
         if (this.disabledState) this.disabledState.visible = false;
     }
 
+    /** Shows `downState` and dims label containers to 0.5 alpha. */
     onDown() {
         if (this.downState) {
             this.hideAllStates();
@@ -342,6 +424,7 @@ export class ZButton extends ZContainer {
         }
     }
 
+    /** Restores `upState` and sets label containers to full alpha. */
     onOut() {
 
         if (this.upState) {
@@ -359,6 +442,7 @@ export class ZButton extends ZContainer {
         }
     }
 
+    /** Shows `overState` and sets label containers to full alpha. */
     onOver() {
         if (this.overState) {
             this.hideAllStates();

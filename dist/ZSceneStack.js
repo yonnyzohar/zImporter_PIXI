@@ -15,11 +15,19 @@ export class ZSceneStack {
     static stack = [];
     static stackSize = 0;
     static top = 0;
+    /**
+     * Pushes a scene onto the top of the stack.
+     * @param resource - The `ZScene` to push.
+     */
     static push(resource) {
         this.stack[this.top] = resource;
         this.top++;
         this.stackSize++;
     }
+    /**
+     * Removes and returns the scene at the top of the stack.
+     * @returns The removed `ZScene`, or `null` if the stack is empty.
+     */
     static pop() {
         if (this.stackSize > 0) {
             this.top--;
@@ -28,21 +36,38 @@ export class ZSceneStack {
         }
         return null;
     }
+    /**
+     * Returns the scene at the top of the stack without removing it.
+     * @returns The top `ZScene`, or `null` if the stack is empty.
+     */
     static peek() {
         if (this.stackSize > 0) {
             return this.stack[this.top - 1];
         }
         return null;
     }
+    /**
+     * Returns the current number of scenes in the stack.
+     * @returns The stack size.
+     */
     static getStackSize() {
         return this.stackSize;
     }
+    /**
+     * Removes all scenes from the stack and resets the size and top-of-stack index.
+     */
     static clear() {
         this.stack = [];
         this.stackSize = 0;
         this.top = 0;
     }
     //////
+    /**
+     * Searches the stack from top to bottom and calls `spawn(templateName)` on
+     * each scene until one returns a container instance.
+     * @param templateName - The template/asset name to spawn.
+     * @returns The spawned `ZContainer`, or `undefined` if not found in any scene.
+     */
     static spawn(templateName) {
         for (let i = this.stack.length - 1; i >= 0; i--) {
             let gameScene = this.stack[i];
@@ -52,6 +77,11 @@ export class ZSceneStack {
             }
         }
     }
+    /**
+     * Calls `resize(width, height)` on every scene in the stack (top to bottom).
+     * @param width - The new viewport width.
+     * @param height - The new viewport height.
+     */
     static resize(width, height) {
         for (let i = this.stack.length - 1; i >= 0; i--) {
             let gameScene = this.stack[i];

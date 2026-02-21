@@ -6,6 +6,12 @@ export class ZTextInput extends ZContainer {
     private textInput: TextInput;
     private props: TextInputObj;
 
+    /**
+     * Constructs a `ZTextInput` container from scene-editor data.
+     * Creates the underlying `TextInput` instance, applies all input and box styles
+     * from `data.props`, and adds the input as a child.
+     * @param data - The `TextInputData` exported from the scene editor.
+     */
     constructor(data: TextInputData) {
         super();
         this.props = data.props;

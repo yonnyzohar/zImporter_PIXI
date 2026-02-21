@@ -48,6 +48,7 @@ export declare class ZScene {
      * The current stage of the scene, used for managing scene transitions.
      */
     private sceneName;
+    /** Returns the root `ZContainer` that all scene display objects are added to. */
     get sceneStage(): ZContainer;
     /**
      * Constructs a new ZScene instance.
@@ -79,6 +80,11 @@ export declare class ZScene {
      * @param mc - The container to remove.
      */
     removeFromResizeMap(mc: ZContainer): void;
+    /**
+     * Returns the logical (un-scaled) inner dimensions of the scene, swapping
+     * width and height when in portrait orientation.
+     * @returns An object with `width` and `height` in scene units.
+     */
     getInnerDimensions(): {
         width: number;
         height: number;
@@ -89,7 +95,9 @@ export declare class ZScene {
      * @param height - The new height.
      */
     resize(width: number, height: number): void;
+    /** The logical width of the scene in scene units for the current orientation. */
     get sceneWidth(): number;
+    /** The logical height of the scene in scene units for the current orientation. */
     get sceneHeight(): number;
     /**
      * Loads the scene's placement and asset data asynchronously.
@@ -114,6 +122,13 @@ export declare class ZScene {
      * @returns The created sprite, or null if not found.
      */
     createFrame(itemName: string): PIXI.Sprite | null;
+    /**
+     * Builds the asset-load manifest (alias + src pairs) for scenes that use
+     * individual image files instead of a sprite-sheet atlas.
+     * @param assetBasePath - The base path prepended to each image file path.
+     * @param obj - The scene data whose templates are scanned for `img` and `9slice` assets.
+     * @returns An array of `{ alias, src }` objects suitable for `PIXI.Assets.load`.
+     */
     private createImagesObject;
     /**
      * Gets the number of frames that match a given prefix in the spritesheet data.
@@ -138,7 +153,17 @@ export declare class ZScene {
      * @returns A record mapping child instance names to their animation tracks.
      */
     getChildrenFrames(_templateName: string): Record<string, AnimTrackData[]>;
+    /**
+     * Returns the constructor registered for the given `AssetType` string.
+     * @param value - An `AssetType` string key.
+     * @returns The corresponding class constructor, or `null` if not registered.
+     */
     static getAssetType(value: string): any;
+    /**
+     * Type-guard that checks whether `value` is a known `AssetType` key.
+     * @param value - The string to test.
+     * @returns `true` if `value` is a registered `AssetType`.
+     */
     static isAssetType(value: string): value is AssetType;
     /**
      * Spawns a new container or timeline for a given template name.

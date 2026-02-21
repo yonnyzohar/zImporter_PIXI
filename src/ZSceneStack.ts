@@ -21,6 +21,10 @@ export class ZSceneStack{
     private static top:number = 0;
 
 
+    /**
+     * Pushes a scene onto the top of the stack.
+     * @param resource - The `ZScene` to push.
+     */
     public static push(resource:ZScene):void{
         this.stack[this.top] = resource;
         this.top++;
@@ -28,6 +32,10 @@ export class ZSceneStack{
         
     }
 
+    /**
+     * Removes and returns the scene at the top of the stack.
+     * @returns The removed `ZScene`, or `null` if the stack is empty.
+     */
     public static pop():ZScene | null{
         if(this.stackSize > 0){
             this.top--;
@@ -37,6 +45,10 @@ export class ZSceneStack{
         return null;
     }
 
+    /**
+     * Returns the scene at the top of the stack without removing it.
+     * @returns The top `ZScene`, or `null` if the stack is empty.
+     */
     public static peek():ZScene | null{
         if(this.stackSize > 0){
             return this.stack[this.top - 1];
@@ -44,10 +56,17 @@ export class ZSceneStack{
         return null;
     }
 
+    /**
+     * Returns the current number of scenes in the stack.
+     * @returns The stack size.
+     */
     public static getStackSize():number{
         return this.stackSize;
     }
 
+    /**
+     * Removes all scenes from the stack and resets the size and top-of-stack index.
+     */
     public static clear():void{
         this.stack = [];
         this.stackSize = 0;
@@ -57,6 +76,12 @@ export class ZSceneStack{
 
     //////
 
+    /**
+     * Searches the stack from top to bottom and calls `spawn(templateName)` on
+     * each scene until one returns a container instance.
+     * @param templateName - The template/asset name to spawn.
+     * @returns The spawned `ZContainer`, or `undefined` if not found in any scene.
+     */
     static spawn(templateName: string):ZContainer | undefined {
         for(let i = this.stack.length-1; i >=0 ; i-- )
         {
@@ -69,6 +94,11 @@ export class ZSceneStack{
         }
     }
 
+    /**
+     * Calls `resize(width, height)` on every scene in the stack (top to bottom).
+     * @param width - The new viewport width.
+     * @param height - The new viewport height.
+     */
     static resize(width: number, height: number): void {
         for(let i = this.stack.length-1; i >=0 ; i-- )
         {

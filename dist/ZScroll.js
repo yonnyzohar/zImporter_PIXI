@@ -19,6 +19,11 @@ export class ZScroll extends ZContainer {
     onBeedDownBinded;
     onBeedUpBinded;
     onWheelBinded;
+    /**
+     * Initialises the scroll component: resolves the required children (`beed`,
+     * `scrollBar`, `scrollContent`), binds event handlers, and calculates the
+     * initial scroll bar dimensions.
+     */
     init() {
         super.init();
         this.onPointerDownBinded = this.onPointerDown.bind(this);
@@ -36,10 +41,19 @@ export class ZScroll extends ZContainer {
         }
         this.calculateScrollBar();
     }
+    /**
+     * Returns the class type identifier.
+     * @returns `"ZScroll"`
+     */
     getType() {
         return "ZScroll";
     }
     ;
+    /**
+     * (Re-)calculates the scroll bar, mask, and interactive scroll area based on
+     * the current dimensions of `scrollBar` and `scrollContent`.
+     * If the content fits within the scroll bar height, scrolling is hidden.
+     */
     calculateScrollBar() {
         if (!this.scrollBar || !this.scrollContent) {
             return;
@@ -88,6 +102,11 @@ export class ZScroll extends ZContainer {
         this.addEventListeners();
         this.enableChildPassThrough();
     }
+    /**
+     * Forwards pointer events from interactive children (`ZButton`, `ZToggle`)
+     * inside `scrollContent` to the `scrollArea`, so that dragging over a button
+     * still scrolls the list.
+     */
     enableChildPassThrough() {
         // Allow buttons/toggles inside scrollContent to propagate events to scrollArea
         //now we need to go over all child components of the scroll contents and make sure they pass the events to the scroll area
@@ -127,6 +146,10 @@ export class ZScroll extends ZContainer {
             }
         }
     }
+    /**
+     * Attaches all pointer, touch, and wheel event listeners to `scrollArea` and
+     * `beed`. Calls `removeEventListeners` first to avoid duplicates.
+     */
     addEventListeners() {
         this.removeEventListeners();
         if (this.scrollArea) {
@@ -151,26 +174,48 @@ export class ZScroll extends ZContainer {
         this.beed.on('touchendoutside', this.onBeedUpBinded);
         document.body.addEventListener('wheel', this.onWheelBinded);
     }
+    /**
+     * Removes all pointer/touch/wheel event listeners from `scrollArea`, `beed`,
+     * and the document body.
+     */
     removeEventListeners() {
         this.scrollArea?.removeAllListeners();
         this.beed?.removeAllListeners();
         document.body.removeEventListener('wheel', this.onWheelBinded);
     }
+    /**
+     * Public alias for `removeEventListeners`; call this when removing the
+     * scroll component from the stage to clean up all listeners.
+     */
     removeListeners() {
         this.removeEventListeners();
     }
+    /**
+     * Begins a drag on the scroll area (inverts direction relative to beed drag).
+     * @param event - The pointer-down event.
+     */
     onPointerDown(event) {
         this.isDragging = true;
         this.scrollBarHeight = this.scrollBar.height;
         this.dragStartY = event.data.global.y;
         this.beedStartY = this.beed.y;
     }
+    /**
+     * Begins a direct drag on the scroll thumb (`beed`).
+     * @param event - The pointer-down event.
+     */
     onBeedDown(event) {
         this.isBeedDragging = true;
         this.scrollBarHeight = this.scrollBar.height;
         this.dragStartY = event.data.global.y;
         this.beedStartY = this.beed.y;
     }
+    /**
+     * Handles pointer movement during a drag. Moves the `beed` thumb and
+     * scrolls `scrollContent` proportionally. Clamps the thumb within the
+     * scroll bar bounds.
+     * @param event - The pointer-move event.
+     */
     onPointerMove(event) {
         if (this.isDragging || this.isBeedDragging) {
             const currentY = event.data.global.y;
@@ -187,12 +232,19 @@ export class ZScroll extends ZContainer {
             event.stopPropagation();
         }
     }
+    /** Ends the scroll-area drag. */
     onPointerUp() {
         this.isDragging = false;
     }
+    /** Ends the beed (thumb) drag. */
     onBeedUp() {
         this.isBeedDragging = false;
     }
+    /**
+     * Scrolls the content in response to a mouse-wheel event.
+     * Only active when `scrollingEnabled` is `true`.
+     * @param event - The native `WheelEvent`.
+     */
     onWheel(event) {
         if (!this.scrollingEnabled) {
             return;
@@ -208,6 +260,10 @@ export class ZScroll extends ZContainer {
         this.scrollContent.y = -per * (this.scrollContent.height - this.scrollBarHeight);
         event.stopPropagation();
     }
+    /**
+     * Overrides `ZContainer.applyTransform` to recalculate the scroll bar
+     * whenever the container's transform (position, scale, etc.) changes.
+     */
     applyTransform() {
         super.applyTransform();
         this.calculateScrollBar();

@@ -5,10 +5,28 @@ import * as PIXI from "pixi.js";
 export class ZSpine {
     spineData;
     assetBasePath;
+    /**
+     * Creates a `ZSpine` loader.
+     * @param spineData - The spine asset descriptor from the scene editor.
+     * @param assetBasePath - Base URL / path prepended to all asset file references.
+     */
     constructor(spineData, assetBasePath) {
         this.spineData = spineData;
         this.assetBasePath = assetBasePath;
     }
+    /**
+     * Loads the Spine asset described by `spineData` and returns a fully
+     * configured Spine instance via `callback`.
+     *
+     * - If `spineData.spineAtlas` is set, the atlas and JSON are fetched
+     *   manually (bypassing PIXI's filename-guessing logic) and the correct
+     *   v3 or v4 runtime is chosen based on the skeleton version string.
+     * - If `spineData.pngFiles` is provided instead, each PNG is loaded as a
+     *   `PIXI.Texture`, an atlas is built from them, and the skeleton is parsed.
+     *
+     * @param callback - Receives the finished `Spine` instance, or `undefined`
+     *   if loading failed.
+     */
     async load(callback) {
         let spineData = this.spineData;
         let assetBasePath = this.assetBasePath;
@@ -197,6 +215,11 @@ export class ZSpine {
             }
         }
     }
+    /**
+     * Extracts the file name without its extension from a file path.
+     * @param path - A file path or URL string.
+     * @returns The base file name without the extension (e.g. `"windmill-pma"`).
+     */
     getFileNameWithoutExtension(path) {
         const lastSlash = path.lastIndexOf('/');
         const fileName = lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
