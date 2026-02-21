@@ -22,6 +22,10 @@ export class ZSpine {
                 spine = new PIXISpine3.Spine(skeletonData);
             }
             spine.name = spineData.name;
+            // Prevent PIXI v7's event system from recursing into spine's internal
+            // mesh/bone objects, which come from a different PIXI build and lack
+            // the isInteractive() method, causing "t.isInteractive is not a function".
+            spine.eventMode = 'none';
             if (spineData.skin) {
                 spine.skeleton.setSkinByName(spineData.skin);
                 spine.skeleton.setSlotsToSetupPose();
