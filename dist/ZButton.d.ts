@@ -42,7 +42,7 @@ export declare class ZButton extends ZContainer {
     disabledState: ZContainer;
     disabledLabelContainer: ZContainer;
     disabledLabelContainer2: ZContainer;
-    callback?: () => void;
+    pressCallback?: () => void;
     longPressCallback?: () => void;
     private labelState;
     /**
@@ -120,11 +120,6 @@ export declare class ZButton extends ZContainer {
      * Clears the registered long-press callback.
      */
     removeLongPressCallback(): void;
-    /**
-     * Invokes the registered click callback (if any). Called internally by the
-     * pointer-up handler; may also be called programmatically to simulate a click.
-     */
-    onClicked(): void;
     /**
      * Re-enables the button: restores pointer-cursor, re-attaches hover/down
      * listeners, shows the `upState`, and re-registers the click callback.

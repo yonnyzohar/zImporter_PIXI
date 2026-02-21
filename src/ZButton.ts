@@ -138,7 +138,7 @@ export class ZButton extends ZContainer {
     disabledLabelContainer: ZContainer;
     disabledLabelContainer2: ZContainer;
 
-    callback?: () => void;
+    pressCallback?: () => void;
     longPressCallback?: () => void;
 
     private labelState: LabelState = "none";
@@ -329,14 +329,14 @@ export class ZButton extends ZContainer {
      * @param func - The click handler.
      */
     setCallback(func: () => void) {
-        this.callback = func;
+        this.pressCallback = func;
     }
 
     /**
      * Clears the registered click callback so pressing the button does nothing.
      */
     removeCallback() {
-        this.callback = undefined;
+        this.pressCallback = undefined;
     }
 
     /**
@@ -354,13 +354,6 @@ export class ZButton extends ZContainer {
         this.longPressCallback = undefined;
     }
 
-    /**
-     * Invokes the registered click callback (if any). Called internally by the
-     * pointer-up handler; may also be called programmatically to simulate a click.
-     */
-    onClicked() {
-        if (this.callback) this.callback();
-    }
 
     /**
      * Re-enables the button: restores pointer-cursor, re-attaches hover/down
@@ -413,7 +406,7 @@ export class ZButton extends ZContainer {
         }
 
         this.onOut();
-        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, this.longPressCallback);
+        AttachClickListener(this, undefined, undefined);
     }
 
     /**

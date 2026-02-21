@@ -111,7 +111,7 @@ export class ZButton extends ZContainer {
     disabledState;
     disabledLabelContainer;
     disabledLabelContainer2;
-    callback;
+    pressCallback;
     longPressCallback;
     labelState = "none";
     /**
@@ -288,13 +288,13 @@ export class ZButton extends ZContainer {
      * @param func - The click handler.
      */
     setCallback(func) {
-        this.callback = func;
+        this.pressCallback = func;
     }
     /**
      * Clears the registered click callback so pressing the button does nothing.
      */
     removeCallback() {
-        this.callback = undefined;
+        this.pressCallback = undefined;
     }
     /**
      * Registers a function to be called when the button is long-pressed (≥500 ms).
@@ -308,14 +308,6 @@ export class ZButton extends ZContainer {
      */
     removeLongPressCallback() {
         this.longPressCallback = undefined;
-    }
-    /**
-     * Invokes the registered click callback (if any). Called internally by the
-     * pointer-up handler; may also be called programmatically to simulate a click.
-     */
-    onClicked() {
-        if (this.callback)
-            this.callback();
     }
     /**
      * Re-enables the button: restores pointer-cursor, re-attaches hover/down
@@ -363,7 +355,7 @@ export class ZButton extends ZContainer {
             }
         }
         this.onOut();
-        AttachClickListener(this, this.callback ? () => this.onClicked() : undefined, this.longPressCallback);
+        AttachClickListener(this, undefined, undefined);
     }
     /**
      * Disables the button: removes interactivity, switches to `disabledState`,
