@@ -155,6 +155,42 @@ The package exposes several classes and methods for interacting with imported as
   You can also set a string on the text via the container using:
   `setText(text:string):void`
 
+#### `Transform Properties and Orientation`
+
+`x`, `y`, `scale`, `width`, and `height` should always be set via `ZContainer`'s methods (e.g. `setX`, `setY`, `setScale`) rather than assigned directly on the PIXI properties. This ensures that changes are stored against the active orientation (portrait or landscape) and survive any resize/reorientation event.
+
+`visibility`, `alpha`, and `rotation`, however, apply to **both** orientations and can be set directly:
+
+```ts
+mc.visible = false;   // applies in both portrait and landscape
+mc.alpha = 0.5;       // applies in both orientations
+mc.rotation = 0.3;    // applies in both orientations
+
+mc.setX(100);         // stored per-orientation — use this instead of mc.x = 100
+mc.setY(200);         // stored per-orientation
+mc.setScaleX(1.5);    // stored per-orientation
+```
+
+#### `Working with Spine`
+
+Spine objects loaded through zStudio are wrapped in a `ZContainer`. To access the underlying Spine instance use `getSpine()`:
+
+```ts
+import { ZContainer } from 'zimporter-pixi';
+
+const spineContainer = ZSceneStack.spawn('MySpineAsset') as ZContainer;
+stage.addChild(spineContainer);
+
+const spineObj = spineContainer.getSpine() as PIXISpine3.Spine | PIXISpine4.Spine | undefined; // Spine 3.8 | Spine 4.0 | undefined
+
+if (spineObj) {
+  spineObj.state.setAnimation(0, 'idle', true);
+  spineObj.state.addAnimation(0, 'walk', true, 0);
+}
+```
+
+Once you have the `Spine` reference you can interact with it exactly as you would with any regular pixi-spine object — set animations, attach listeners, adjust skin, etc.
+
 ### `ZButton`
 
 * Extends `ZContainer`.
