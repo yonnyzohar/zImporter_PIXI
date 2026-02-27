@@ -197,7 +197,7 @@ export class ZScene {
      * @param assetBasePath - The base path for assets.
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
      */
-    async load(assetBasePath, _loadCompleteFnctn) {
+    async load(assetBasePath, _loadCompleteFnctn, _updateProgressFnctn) {
         this.assetBasePath = assetBasePath;
         let placementsUrl = assetBasePath + "placements.json?rnd=" + Math.random();
         fetch(placementsUrl)
@@ -208,7 +208,7 @@ export class ZScene {
             return response.json();
         })
             .then((placemenisObj) => {
-            this.loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn);
+            this.loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn, _updateProgressFnctn);
         })
             .catch((error) => {
             //errorCallback(error);
@@ -236,8 +236,9 @@ export class ZScene {
      * @param assetBasePath - The base path for assets.
      * @param placemenisObj - The placements object describing the scene.
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
+     * @param _updateProgressFnctn - Optional callback function to update loading progress.
      */
-    async loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn) {
+    async loadAssets(assetBasePath, placemenisObj, _loadCompleteFnctn, _updateProgressFnctn) {
         let _jsonPath = assetBasePath + "ta.json?rnd=" + Math.random();
         let isAtlas = placemenisObj.atlas;
         if (isAtlas === null || isAtlas === undefined) {
@@ -245,7 +246,7 @@ export class ZScene {
         }
         if (isAtlas) {
             try {
-                this.scene = await PIXI.Assets.load(_jsonPath);
+                this.scene = await PIXI.Assets.load(_jsonPath, _updateProgressFnctn);
             }
             catch (err) {
                 console.error("Error loading spritesheet:", err);
@@ -254,7 +255,7 @@ export class ZScene {
         else {
             let imagesObj = this.createImagesObject(assetBasePath, placemenisObj);
             // handle the missing file gracefully here
-            this.scene = await PIXI.Assets.load(imagesObj);
+            this.scene = await PIXI.Assets.load(imagesObj, _updateProgressFnctn);
             this.scene.textures = this.scene; //ugly hack
         }
         this.sceneName = _jsonPath;

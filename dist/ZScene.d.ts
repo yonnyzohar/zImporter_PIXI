@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { ZContainer } from "./ZContainer";
 import { SceneData, TemplateData, AnimTrackData } from "./SceneData";
+import { ProgressCallback } from "pixi.js";
 import { ZNineSlice } from "./ZNineSlice";
 export type AssetType = "btn" | "asset" | "state" | "toggle" | "none" | "slider" | "scrollBar" | "fullScreen" | "animation";
 /**
@@ -104,7 +105,7 @@ export declare class ZScene {
      * @param assetBasePath - The base path for assets.
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
      */
-    load(assetBasePath: string, _loadCompleteFnctn: Function): Promise<void>;
+    load(assetBasePath: string, _loadCompleteFnctn: Function, _updateProgressFnctn?: ProgressCallback): Promise<void>;
     /**
      * Destroys the scene and its assets, freeing resources.
      */
@@ -114,8 +115,9 @@ export declare class ZScene {
      * @param assetBasePath - The base path for assets.
      * @param placemenisObj - The placements object describing the scene.
      * @param _loadCompleteFnctn - Callback function to invoke when loading is complete.
+     * @param _updateProgressFnctn - Optional callback function to update loading progress.
      */
-    loadAssets(assetBasePath: string, placemenisObj: SceneData, _loadCompleteFnctn: Function): Promise<void>;
+    loadAssets(assetBasePath: string, placemenisObj: SceneData, _loadCompleteFnctn: Function, _updateProgressFnctn?: ProgressCallback): Promise<void>;
     /**
      * Creates a PIXI.Sprite for a given frame name from the loaded spritesheet.
      * @param itemName - The name of the frame.
