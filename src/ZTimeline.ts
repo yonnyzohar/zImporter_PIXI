@@ -66,15 +66,6 @@ export class ZTimeline extends ZContainer {
     }
 
     /**
-     * Called once all children are loaded. Delegates to `ZContainer.init` and
-     * then starts playback.
-     */
-    public init(): void {
-        super.init();
-        this.play();
-    }
-
-    /**
      * Sets the frame data for all tracked children and calculates `totalFrames`
      * as the length of the longest child track.
      * @param value - A record mapping child instance names to their array of per-frame transform data.
