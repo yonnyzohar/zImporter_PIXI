@@ -193,6 +193,13 @@ export declare class ZScene {
      */
     createAsset(mc: ZContainer, baseNode: TemplateData): Promise<void>;
     /**
+     * Instantiates an asset described by `assetData` and adds it to a Spine slot container.
+     * Supports container/animation asset types that reference a template in the scene data.
+     * @param assetData - The asset descriptor (portrait/landscape `InstanceData`, typed as `BaseAssetData`).
+     * @param slotContainer - The Spine slot `PIXI.Container` the child will be added to.
+     */
+    private addSlotAttachment;
+    /**
      * Applies visual filters (such as drop shadow) to a PIXI container.
      * @param obj - The object containing filter data.
      * @param tf - The PIXI container to apply filters to.

@@ -533,6 +533,7 @@ export class ZScene {
         (mc as ZTimeline).setCuePoints(this.data.cuePoints[tempName]);
       }
       (mc as ZTimeline).gotoAndStop(0);
+
     } else {
       mc = new (ZScene.getAssetType(baseNode.type) || ZContainer)();
       this.createAsset(mc, baseNode);
@@ -797,6 +798,7 @@ export class ZScene {
           if (this.data.cuePoints && this.data.cuePoints[childNode.name]) {
             (asset as ZTimeline).setCuePoints(this.data.cuePoints[childNode.name]);
           }
+
         }
         else {
           asset = new (ZScene.getAssetType(type) || ZContainer)();
@@ -851,6 +853,15 @@ export class ZScene {
         zSpine.load((spine: PIXISpine3.Spine | PIXISpine4.Spine | undefined) => {
           if (spine) {
             mc.addChild(spine);
+            if (spineData.slotAttachments && spineData.slotAttachments.length > 0) {
+              for (const attachment of spineData.slotAttachments) {
+                const slotIndex = spine.skeleton.findSlotIndex(attachment.slotName);
+                if (slotIndex < 0) continue;
+                const slotContainer = spine.slotContainers[slotIndex];
+                if (!slotContainer) continue;
+                this.addSlotAttachment(attachment.assetData, slotContainer);
+              }
+            }
           }
         });
       }
@@ -865,6 +876,24 @@ export class ZScene {
         }
       }
       asset?.init();
+    }
+  }
+
+  /**
+   * Instantiates an asset described by `assetData` and adds it to a Spine slot container.
+   * Supports container/animation asset types that reference a template in the scene data.
+   * @param assetData - The asset descriptor (portrait/landscape `InstanceData`, typed as `BaseAssetData`).
+   * @param slotContainer - The Spine slot `PIXI.Container` the child will be added to.
+   */
+  private addSlotAttachment(assetData: BaseAssetData, slotContainer: PIXI.Container): void {
+    if (ZScene.isAssetType(assetData.type)) {
+      const instanceData = assetData as InstanceData;
+      const child = this.spawn(instanceData.name);
+      if (child) {
+        child.name = instanceData.instanceName;
+        child.setInstanceData(instanceData, this.orientation);
+        slotContainer.addChild(child);
+      }
     }
   }
 

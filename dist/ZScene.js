@@ -730,6 +730,17 @@ export class ZScene {
                 zSpine.load((spine) => {
                     if (spine) {
                         mc.addChild(spine);
+                        if (spineData.slotAttachments && spineData.slotAttachments.length > 0) {
+                            for (const attachment of spineData.slotAttachments) {
+                                const slotIndex = spine.skeleton.findSlotIndex(attachment.slotName);
+                                if (slotIndex < 0)
+                                    continue;
+                                const slotContainer = spine.slotContainers[slotIndex];
+                                if (!slotContainer)
+                                    continue;
+                                this.addSlotAttachment(attachment.assetData, slotContainer);
+                            }
+                        }
                     }
                 });
             }
@@ -744,6 +755,23 @@ export class ZScene {
                 }
             }
             asset?.init();
+        }
+    }
+    /**
+     * Instantiates an asset described by `assetData` and adds it to a Spine slot container.
+     * Supports container/animation asset types that reference a template in the scene data.
+     * @param assetData - The asset descriptor (portrait/landscape `InstanceData`, typed as `BaseAssetData`).
+     * @param slotContainer - The Spine slot `PIXI.Container` the child will be added to.
+     */
+    addSlotAttachment(assetData, slotContainer) {
+        if (ZScene.isAssetType(assetData.type)) {
+            const instanceData = assetData;
+            const child = this.spawn(instanceData.name);
+            if (child) {
+                child.name = instanceData.instanceName;
+                child.setInstanceData(instanceData, this.orientation);
+                slotContainer.addChild(child);
+            }
         }
     }
     /**

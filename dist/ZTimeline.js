@@ -35,6 +35,12 @@ export class ZTimeline extends ZContainer {
         this.currentFrame = 0;
         this.looping = true;
     }
+    setInstanceData(data, orientation) {
+        super.setInstanceData(data, orientation);
+        if (data.playOnStart) {
+            this.play();
+        }
+    }
     /**
      * Sets cue-point labels keyed by frame number. When playback reaches a
      * labelled frame, `ZCuePointsManager.triggerCuePoint` is called with the
